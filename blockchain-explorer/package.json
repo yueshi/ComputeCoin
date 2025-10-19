@@ -1,0 +1,28 @@
+{
+  "name": "hardhat-blockchain-explorer",
+  "version": "1.0.0",
+  "description": "轻量级区块链浏览器 for Hardhat 本地网络",
+  "main": "explorer-server.js",
+  "scripts": {
+    "start": "node explorer-server.js",
+    "dev": "nodemon explorer-server.js",
+    "test": "node test-connection.js",
+    "hardhat:reload": "curl -X POST http://localhost:3000/api/deployments/reload"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "ethers": "^6.13.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "keywords": [
+    "blockchain",
+    "explorer",
+    "hardhat",
+    "ethereum"
+  ],
+  "author": "Hardhat Explorer",
+  "license": "MIT"
+}

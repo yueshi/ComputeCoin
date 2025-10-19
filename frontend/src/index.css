@@ -1,0 +1,274 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+}
+
+/* RainbowKit 主题样式增强 */
+@layer utilities {
+  /* 自定义 RainbowKit 主题变量 */
+  :root {
+    --rk-backdrop-filter: blur(8px);
+  }
+
+  .dark {
+    --rk-backdrop-filter: blur(12px);
+  }
+}
+
+/* 背景主题样式 - 绿色主题 */
+.bg-gradient-theme {
+  background: linear-gradient(135deg, #f0fdf4 0%, #f0fdfa 50%, #ecfdf5 100%);
+}
+
+.dark .bg-gradient-theme {
+  background: linear-gradient(135deg, #052e16 0%, #042f2e 50%, #022c22 100%);
+}
+
+/* 主按钮样式 - 绿色品牌渐变 */
+.btn-primary {
+  background: linear-gradient(135deg, #22c55e 0%, #14b8a6 50%, #10b981 100%);
+  color: white;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  box-shadow: 0 10px 15px -3px rgba(34, 197, 94, 0.3);
+}
+
+.btn-primary:focus {
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.5);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 20px 25px -5px rgba(34, 197, 94, 0.4);
+  transform: scale(1.05);
+}
+
+/* 次要按钮样式 */
+.btn-secondary {
+  background-color: white;
+  color: #111827;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+}
+
+.btn-secondary:hover {
+  background-color: #f9fafb;
+}
+
+.btn-secondary:focus {
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.5);
+}
+
+.dark .btn-secondary {
+  background-color: #1f2937;
+  color: #f9fafb;
+  border-color: #4b5563;
+}
+
+.dark .btn-secondary:hover {
+  background-color: #374151;
+}
+
+.dark .btn-secondary:focus {
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.5);
+}
+
+/* 卡片样式 */
+.card {
+  background-color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.dark .card {
+  background-color: #1f2937;
+  border-color: #374151;
+}
+
+/* 文字颜色系统 */
+.text-theme-primary {
+  color: #111827;
+}
+
+.dark .text-theme-primary {
+  color: #f9fafb;
+}
+
+.text-theme-secondary {
+  color: #4b5563;
+}
+
+.dark .text-theme-secondary {
+  color: #d1d5db;
+}
+
+.text-theme-tertiary {
+  color: #6b7280;
+}
+
+.dark .text-theme-tertiary {
+  color: #9ca3af;
+}
+
+/* 边框颜色系统 */
+.border-theme {
+  border-color: #e5e7eb;
+}
+
+.dark .border-theme {
+  border-color: #374151;
+}
+
+/* 背景颜色系统 */
+.bg-theme-card {
+  background-color: white;
+}
+
+.dark .bg-theme-card {
+  background-color: #1f2937;
+}
+
+.bg-theme-secondary {
+  background-color: #f9fafb;
+}
+
+.dark .bg-theme-secondary {
+  background-color: #111827;
+}
+
+.bg-theme-tertiary {
+  background-color: #f3f4f6;
+}
+
+.dark .bg-theme-tertiary {
+  background-color: #1f2937;
+}
+
+.bg-theme-input {
+  background-color: white;
+}
+
+.dark .bg-theme-input {
+  background-color: #374151;
+}
+
+/* NFT等级颜色系统 - 绿色主题优化 */
+.tier-bronze {
+  background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+}
+
+.tier-silver {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+}
+
+.tier-gold {
+  background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+}
+
+.tier-platinum {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+/* 状态指示器 */
+.status-success {
+  background-color: #d1fae5;
+  color: #065f46;
+  border: 1px solid #6ee7b7;
+}
+
+.status-warning {
+  background-color: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde047;
+}
+
+.status-error {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+
+.status-info {
+  background-color: #dbeafe;
+  color: #1e40af;
+  border: 1px solid #60a5fa;
+}
+
+/* 通知动画样式 */
+@layer utilities {
+  .animate-slide-in-right {
+    animation: slideInRight 0.3s ease-out forwards;
+  }
+
+  @keyframes slideInRight {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes shrink-width {
+    from {
+      width: 100%;
+    }
+    to {
+      width: 0%;
+    }
+  }
+
+  .notification-hover:hover {
+    transform: scale(1.02);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  }
+
+  .notification-hover {
+    transition: all 0.2s ease;
+  }
+
+  .animate-fade-out {
+    animation: fadeOut 0.3s ease-in forwards;
+  }
+
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+  }
+}

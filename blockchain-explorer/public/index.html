@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CC - Computing DePIN Network</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-shadow { box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .hash-text { font-family: 'Courier New', monospace; word-break: break-all; }
+        .loading { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+        
+        /* 新增样式优化代币信息展示 */
+        .token-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .token-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        .section-spacing {
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- 头部导航 -->
+    <nav class="gradient-bg shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-cube text-white text-2xl mr-3"></i>
+                    <h1 class="text-white text-xl font-bold">CC Network DashBoard</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="network-status flex items-center text-white">
+                        <div class="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
+                        <span id="network-name">local Hardhat</span>
+                    </div>
+                    <button id="reload-deployments" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-3 py-1 rounded text-sm transition-all">
+                        <i class="fas fa-sync-alt mr-1"></i>Reload Contracts
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- 搜索栏 -->
+        <div class="mb-8">
+            <div class="max-w-2xl mx-auto">
+                <div class="relative">
+                    <input type="text" id="search-input" placeholder="搜索地址、交易哈希或区块号..." 
+                           class="w-full px-4 py-3 pl-12 pr-4 text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                    <button onclick="performSearch()" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                        <i class="fas fa-arrow-right text-purple-600 hover:text-purple-800"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 网络统计 -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg p-6 card-shadow">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-blue-100">
+                        <i class="fas fa-cube text-blue-600"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-gray-500 text-sm">当前区块</p>
+                        <p id="current-block" class="text-2xl font-semibold text-gray-900">-</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg p-6 card-shadow">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-green-100">
+                        <i class="fas fa-gas-pump text-green-600"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-gray-500 text-sm">Gas价格</p>
+                        <p id="gas-price" class="text-2xl font-semibold text-gray-900">-</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg p-6 card-shadow">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-purple-100">
+                        <i class="fas fa-network-wired text-purple-600"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-gray-500 text-sm">链ID</p>
+                        <p id="chain-id" class="text-2xl font-semibold text-gray-900">-</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg p-6 card-shadow">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-orange-100">
+                        <i class="fas fa-exchange-alt text-orange-600"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-gray-500 text-sm">总交易数</p>
+                        <p id="total-txs" class="text-2xl font-semibold text-gray-900">-</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 代币和NFT信息展示区域 - 移动到这里 -->
+        <div class="mb-8">
+            <div class="bg-white rounded-lg shadow-md">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                        <i class="fas fa-coins mr-2 text-yellow-600"></i>
+                        代币和NFT信息
+                    </h3>
+                </div>
+                <div class="p-6">
+                    <div id="tokens-loading" class="text-center py-4">
+                        <i class="fas fa-spinner fa-spin text-gray-400 text-2xl"></i>
+                        <p class="text-gray-500 mt-2">加载代币信息中...</p>
+                    </div>
+                    <div id="tokens-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主要内容区域 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- 最新区块 -->
+            <div class="bg-white rounded-lg shadow-md">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                        <i class="fas fa-cubes mr-2 text-blue-600"></i>
+                        最新区块
+                    </h3>
+                </div>
+                <div class="p-6">
+                    <div id="blocks-loading" class="text-center py-4">
+                        <i class="fas fa-spinner fa-spin text-gray-400 text-2xl"></i>
+                        <p class="text-gray-500 mt-2">加载区块中...</p>
+                    </div>
+                    <div id="blocks-list" class="space-y-4"></div>
+                </div>
+            </div>
+
+            <!-- 最新交易 -->
+            <div class="bg-white rounded-lg shadow-md">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                        <i class="fas fa-exchange-alt mr-2 text-green-600"></i>
+                        最新交易
+                    </h3>
+                </div>
+                <div class="p-6">
+                    <div id="transactions-loading" class="text-center py-4">
+                        <i class="fas fa-spinner fa-spin text-gray-400 text-2xl"></i>
+                        <p class="text-gray-500 mt-2">加载交易中...</p>
+                    </div>
+                    <div id="transactions-list" class="space-y-4"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 搜索结果区域 -->
+        <div id="search-results" class="mt-8 hidden">
+            <div class="bg-white rounded-lg shadow-md">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">搜索结果</h3>
+                </div>
+                <div class="p-6">
+                    <div id="search-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模态框 -->
+    <div id="modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                <h3 id="modal-title" class="text-lg font-semibold text-gray-900">详情</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div id="modal-content" class="p-6"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/cc-logo.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>$CC Token Economy - 分布式算力交易市场</title>
+    <meta name="description" content="基于区块链的分布式算力交易平台，支持CC token交易、质押和NFT系统" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://localhost:8088/" />
+    <meta property="og:title" content="$CC Token Economy - 分布式算力交易市场" />
+    <meta property="og:description" content="基于区块链的分布式算力交易平台" />
+    <meta property="og:image" content="/og-image.svg" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="http://localhost:8088/" />
+    <meta property="twitter:title" content="$CC Token Economy - 分布式算力交易市场" />
+    <meta property="twitter:description" content="基于区块链的分布式算力交易平台" />
+    <meta property="twitter:image" content="/og-image.svg" />
+
+    <style>
+      /* 加载动画样式 */
+      #loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        color: white;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      }
+
+      .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top: 4px solid white;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      .loading-text {
+        font-size: 18px;
+        margin-bottom: 10px;
+        font-weight: 500;
+      }
+
+      .loading-subtitle {
+        font-size: 14px;
+        opacity: 0.8;
+      }
+
+      /* 隐藏加载画面 */
+      .loaded #loading {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loading">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">$CC Token Economy</div>
+      <div class="loading-subtitle">正在加载分布式算力交易市场...</div>
+    </div>
+
+    <div id="root"></div>
+
+    <script type="module" src="/src/main.jsx"></script>
+
+    <script>
+      // 页面加载完成后隐藏加载画面
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          document.body.classList.add('loaded');
+        }, 1000); // 1秒后隐藏加载画面，给React足够时间初始化
+      });
+
+      // 错误处理
+      window.addEventListener('error', function(e) {
+        console.error('页面加载错误:', e.error);
+      });
+
+      // 未处理的Promise拒绝
+      window.addEventListener('unhandledrejection', function(e) {
+        console.error('未处理的Promise拒绝:', e.reason);
+      });
+    </script>
+  </body>
+</html>

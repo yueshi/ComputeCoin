@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="%VITE_APP_DESCRIPTION%" />
+    <meta name="keywords" content="blockchain, compute, decentralized, CC, marketplace" />
+    <meta name="author" content="CC Platform Team" />
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="%VITE_APP_NAME%" />
+    <meta property="og:description" content="%VITE_APP_DESCRIPTION%" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/og-image.png" />
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="%VITE_APP_NAME%" />
+    <meta name="twitter:description" content="%VITE_APP_DESCRIPTION%" />
+
+    <!-- Theme and Appearance -->
+    <meta name="theme-color" content="#10b981" />
+    <meta name="color-scheme" content="light dark" />
+
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <title>%VITE_APP_NAME%</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+
+    <!-- Loading Fallback -->
+    <noscript>
+      <div style="
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        font-family: Inter, system-ui, sans-serif;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        color: #1f2937;
+        text-align: center;
+        padding: 2rem;
+      ">
+        <div>
+          <h1 style="margin-bottom: 1rem; color: #10b981;">%VITE_APP_NAME%</h1>
+          <p style="margin-bottom: 1.5rem;">%VITE_APP_DESCRIPTION%</p>
+          <p style="color: #6b7280; font-size: 0.875rem;">
+            请启用JavaScript以使用此应用。
+            <br>Please enable JavaScript to use this application.
+          </p>
+        </div>
+      </div>
+    </noscript>
+
+    <!-- Development Mode Indicator -->
+    <script>
+      if (import.meta.env.DEV) {
+        console.log('🚀 %VITE_APP_NAME% - Development Mode');
+        console.log('📦 Version: %VITE_APP_VERSION%');
+        console.log('🌐 Network: %VITE_NETWORK_NAME% (Chain ID: %VITE_CHAIN_ID%)');
+        console.log('🔧 Debug Mode: %VITE_DEBUG_MODE%');
+      }
+    </script>
+  </body>
+</html>

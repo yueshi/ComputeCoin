@@ -1,0 +1,1247 @@
+{
+  "layout": {
+    "formatBalanceError": "Failed to format balance",
+    "formatCCBalanceError": "Failed to format CC balance",
+    "formatCCUSDBalanceError": "Failed to format CCUSD balance",
+    "switchNetwork": "Switch Network"
+  },
+  "wallet": {
+    "myWallet": "My Wallet",
+    "ethBalance": "ETH Balance",
+    "ethereum": "Ethereum",
+    "ccBalance": "CC Balance",
+    "ccToken": "CC Token",
+    "ccusdBalance": "CCUSD Balance",
+    "ccusdToken": "CCUSD Token",
+    "addressCopied": "Address copied to clipboard",
+    "copyFailed": "Copy failed",
+    "copyAddress": "Copy Address",
+    "disconnect": "Disconnect",
+    "connectWalletPrompt": "Please connect wallet",
+    "connectWalletRequired": "You need to connect your wallet to access this feature",
+    "walletDisconnected": "Wallet connection disconnected",
+    "reconnectWallet": "Please reconnect wallet to continue",
+    "walletConnected": "Wallet connected",
+    "signatureRequired": "You have connected your wallet, but signature verification is required to access full features. This signature will not cost any fees.",
+    "addressNormalizationFailed": "Address normalization failed",
+    "formatBalanceFailed": "Failed to format balance",
+    "networkConnectionFailed": "Network connection failed, data saved locally\n\nPlease check network connection and try again.",
+    "walletAddressChanged": "Wallet address changed, {page} page notification status reset",
+    "fetchingUserInfo": "Fetching your profile from server...",
+    "loadingUserInfo": "Loading user information",
+    "originalAddress": "Original wallet address",
+    "normalizedAddress": "Normalized wallet address",
+    "addressType": "Address type",
+    "addressLength": "Address length",
+    "address": "Wallet address",
+    "connect": "Connect Wallet",
+    "connecting": "Connecting...",
+    "connected": "Connected",
+    "wrongNetwork": "Wrong Network",
+    "switchNetwork": "Switch Network",
+    "account": "Account",
+    "explorer": "Block Explorer",
+    "balance": "Wallet Balance",
+    "depositBalance": "Deposit Balance",
+    "startingUserInfoLoad": "Starting to load user information...",
+    "callingCheckUserExists": "Before calling checkUserExists, address:",
+    "checkFailedNetworkIssue": "Check failed, possibly network issue, entering editable state",
+    "showingCriticalErrorsOnly": "Only showing real critical errors (network issues, etc.)",
+    "networkConnectionIssue": "Network connection issue",
+    "ethBalanceFetchFailed": "ETH balance fetch failed",
+    "vaultDataRefreshComplete": "Wallet connection data refresh complete",
+    "vaultDataRefreshFailed": "Wallet connection data refresh failed:",
+    "walletBalanceRefreshFailed": "Wallet balance refresh failed:"
+  },
+  "network": {
+    "localTest": "Local Test",
+    "polygon": "Polygon",
+    "bscTestnet": "BSC Testnet"
+  },
+  "footer": {
+    "builtOnBlockchain": "Built on blockchain technology",
+    "features": "Decentralized Service Marketplace | CC Token Payment | NFT Rights System"
+  },
+  "exchange": {
+    "title": "ETH to CCUSD Exchange",
+    "wallet": {
+      "connect": "Connect Wallet",
+      "startSwap": "Start Exchange",
+      "description": "Connect your Web3 wallet to start secure exchange between ETH and CCUSD",
+      "connectStart": "Connect Wallet to Start"
+    },
+    "features": {
+      "title": "Exchange Features",
+      "subtitle": "Secure, fast, and transparent digital asset exchange service",
+      "directSwap": {
+        "title": "Direct Exchange",
+        "description": "One-click direct exchange between ETH and CCUSD, no complex operations needed"
+      },
+      "fixedRate": {
+        "title": "Fixed Rate",
+        "description": "Fixed rate mechanism ensures stable and transparent exchange prices"
+      },
+      "secure": {
+        "title": "Secure & Reliable",
+        "description": "Smart contract-based secure exchange mechanism protects your funds"
+      }
+    },
+    "info": {
+      "title": "ETH to CCUSD Exchange",
+      "subtitle": "Convert your ETH to CCUSD tokens and participate in the distributed computing ecosystem",
+      "tagline": "Fast Exchange • Fixed Rate • Instant Arrival",
+      "ethToCcsd": {
+        "title": "ETH → CCUSD",
+        "description": "Secure exchange through smart contracts to get stablecoin CCUSD",
+        "benefit1": "Fixed Rate Protection",
+        "benefit2": "Instant Exchange & Arrival",
+        "benefit3": "Zero Transaction Fees"
+      },
+      "fixedRate": "Fixed Rate"
+    },
+    "notifications": {
+      "closeNotification": "Close Notification",
+      "error": {
+        "title": "Exchange Error",
+        "connectWallet": "Please connect wallet first",
+        "insufficientBalance": "Insufficient balance",
+        "invalidAmount": "Please enter a valid exchange amount",
+        "converterNotReady": "Exchange contract not ready",
+        "insufficientLiquidity": "Insufficient liquidity, currently available: {available} CCUSD",
+        "unsupportedDirection": "Unsupported exchange direction",
+        "userRejected": "User rejected transaction",
+        "insufficientAllowance": "Insufficient allowance",
+        "unknown": "Unknown error"
+      },
+      "exchangeSuccess": {
+        "title": "Exchange Successful",
+        "message": "Successfully exchanged {fromAmount} {fromToken} for {toAmount} {toToken}",
+        "details": {
+          "amount": "Exchange Amount",
+          "received": "Received Amount",
+          "rate": "Exchange Rate"
+        }
+      },
+      "exchangeError": {
+        "title": "Exchange Failed",
+        "details": {
+          "message": "Error Message",
+          "code": "Error Code"
+        }
+      },
+      "exchangeSubmitted": {
+        "context": "Exchange transaction submitted"
+      },
+      "approveSuccess": {
+        "title": "Approval Successful",
+        "message": "Token approval successful, please continue with exchange operation"
+      },
+      "approveFailed": {
+        "context": "Approval failed"
+      },
+      "approvePending": {
+        "title": "Approving",
+        "button": "Approving"
+      },
+      "exchanging": {
+        "title": "Exchanging"
+      }
+    },
+    "stats": {
+      "ethTotal": "Total ETH Exchanged",
+      "exchanges": "Exchanges",
+      "ccusdTotal": "Total CCUSD Supply",
+      "available": "Available",
+      "exchangeRateLabel": "Exchange Rate",
+      "active": "Active",
+      "paused": "Paused",
+      "serviceAvailability": "Service Status",
+      "emergencyMode": "Emergency Mode",
+      "normalOperation": "Normal Operation",
+      "amountPlaceholder": "Enter amount",
+      "myAssets": "My Assets",
+      "ethBalance": "ETH Balance",
+      "exchangedCcusdBalance": "Exchanged CCUSD Balance",
+      "totalValue": "Total Value",
+      "currencySymbol": "$",
+      "priceChange": "24h Change",
+      "quickActions": "Quick Actions",
+      "buyComputeService": "Buy Computing Services",
+      "participateStaking": "Participate in Staking",
+      "viewTransactionHistory": "View Transaction History"
+    },
+    "swap": {
+      "title": "Token Exchange",
+      "subtitle": "Secure exchange between ETH and CCUSD",
+      "exchangeRate": "Exchange Rate",
+      "lowLiquidity": "Low Liquidity",
+      "liquidityWarning": "Warning: Low liquidity, currently available {available} CCUSD",
+      "from": "From",
+      "to": "To",
+      "balance": "Balance",
+      "button": "Exchange Now",
+      "enterAmount": "Please enter exchange amount"
+    },
+    "advantages": {
+      "title": "Exchange Advantages",
+      "fixedRate": "Fixed Rate",
+      "fixedRateDesc": "Fixed rate mechanism avoids price fluctuation risks",
+      "instantArrival": "Instant Arrival",
+      "instantArrivalDesc": "Instant arrival after exchange completion, no waiting for confirmations",
+      "zeroFees": "Zero Fees",
+      "zeroFeesDesc": "All exchange operations have zero fees, reducing transaction costs"
+    },
+    "security": {
+      "title": "Security Tips",
+      "tip1": "Please carefully verify the exchange amount and address information",
+      "tip2": "Use official exchange contracts to avoid third-party risks",
+      "tip3": "Recommend small test amounts, large amounts in batches"
+    }
+  },
+  "common": {
+    "locale": "en-US",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "unknownError": "Unknown Error",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "view": "View",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "details": "Details",
+    "search": "Search",
+    "filter": "Filter",
+    "refresh": "Refresh",
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "wallet": "Wallet",
+    "balance": "Balance",
+    "amount": "Amount",
+    "price": "Price",
+    "total": "Total",
+    "status": "Status",
+    "date": "Date",
+    "time": "Time",
+    "hash": "Hash",
+    "transaction": "Transaction",
+    "pending": "Pending",
+    "completed": "Completed",
+    "failed": "Failed"
+  },
+  "navigation": {
+    "home": "Home",
+    "marketplace": "Market",
+    "exchange": "Exchange",
+    "staking": "Staking",
+    "nfts": "NFT",
+    "profile": "Profile"
+  },
+  "home": {
+    "hero": {
+      "tagline": "De-Service New Era",
+      "title": "Global De-Service Market",
+      "subtitle": "Connect Global Service Resources, Provide Efficient Decentralized Services",
+      "description": "Connect global service resources through blockchain technology, providing efficient, secure, and transparent decentralized services for AI training, 3D rendering, scientific computing, data storage, and other fields",
+      "connectWallet": "Connect Wallet",
+      "enterMarket": "Enter Market",
+      "viewDocs": "View Docs"
+    },
+    "features": {
+      "title": "Core Features",
+      "subtitle": "Innovative Computing Services Based on Blockchain Technology",
+      "tagline": "Decentralized • High Performance • Secure & Reliable",
+      "decentralized": {
+        "title": "Decentralized Network",
+        "description": "Peer-to-peer network based on blockchain technology, no centralized servers needed, providing more secure and transparent services"
+      },
+      "tokenEconomy": {
+        "title": "Token Economy Model",
+        "description": "Using CC tokens as the basic economic unit to achieve value circulation and incentive mechanisms, promoting ecosystem development"
+      },
+      "nftSystem": {
+        "title": "NFT Rights System",
+        "description": "Digitize rights through NFTs, providing discounts, rewards, priority privileges, and enhancing user participation"
+      },
+      "performance": {
+        "title": "High-Performance Services",
+        "description": "World-leading service nodes providing millisecond-level response speeds and 99.9% service availability"
+      },
+      "security": {
+        "title": "Security Guarantee",
+        "description": "Multi-layer security protection mechanisms, including smart contract audits, multi-signature, fund segregation, ensuring user asset security"
+      },
+      "community": {
+        "title": "Global Community",
+        "description": "Connect global developers, service resource providers, and users to jointly build a prosperous De-Service ecosystem"
+      }
+    },
+    "process": {
+      "title": "Usage Process",
+      "subtitle": "Simple Four Steps to Start Your De-Service Journey",
+      "tagline": "Connect • Select • Use • Benefit",
+      "step1": {
+        "title": "Connect Wallet",
+        "description": "Connect your Web3 wallet, supporting MetaMask, Rainbow and other mainstream wallets"
+      },
+      "step2": {
+        "title": "Select Service",
+        "description": "Choose appropriate service types according to your needs, supporting AI training, 3D rendering, scientific computing, data storage, etc."
+      },
+      "step3": {
+        "title": "Pay & Use",
+        "description": "Pay service fees using CC tokens, enjoy exclusive discounts for NFT holders"
+      },
+      "step4": {
+        "title": "Get Services",
+        "description": "Instantly obtain required service resources, complete tasks and enjoy services"
+      }
+    },
+    "stats": {
+      "activeUsers": "Active Users",
+      "computeNodes": "Service Nodes",
+      "dailyVolume": "Daily Volume",
+      "availability": "Service Availability"
+    },
+    "realTimeData": {
+      "title": "Real-time Data Display",
+      "subtitle": "Real-time Platform Operating Status",
+      "tagline": "Transparent • Real-time • Credible",
+      "averagePrice": "Average Price",
+      "ccusdPerHour": "CCUSD/hour",
+      "changeFromLastWeek": "Change from Last Week",
+      "currentAPR": "Current APR",
+      "maxNFTDiscount": "Max NFT Discount",
+      "platinumTier": "Platinum Tier",
+      "serviceAvailability": "Service Availability",
+      "uptime": "Uptime"
+    },
+    "cta": {
+      "title": "Get Started Now",
+      "tagline": "Join the De-Service Revolution",
+      "description": "Connect your wallet and explore the infinite possibilities of De-Service",
+      "connectWallet": "Connect Wallet",
+      "enterMarket": "Enter Market",
+      "getStarted": "Get Started",
+      "viewDocumentation": "View Documentation"
+    }
+  },
+  "marketplace": {
+    "title": "De-Service Market",
+    "subtitle": "Connect global service resources, provide efficient decentralized services",
+    "filter": {
+      "title": "Filter Decentralized Services",
+      "computingType": "Service Type",
+      "allTypes": "All Types",
+      "aiTraining": "AI Training",
+      "rendering": "3D Rendering",
+      "scientific": "Scientific Computing",
+      "blockchain": "Blockchain Computing",
+      "video": "Video Processing"
+    },
+    "sort": {
+      "highestRated": "Highest Rated",
+      "lowestPrice": "Lowest Price",
+      "highestPrice": "Highest Price",
+      "mostReviews": "Most Reviews"
+    },
+    "services": {
+      "aiTraining": {
+        "title": "High-Performance AI Model Training",
+        "description": "NVIDIA A100 GPU clusters, supporting large-scale deep learning model training"
+      },
+      "renderFarm": {
+        "title": "3D Render Farm Service",
+        "description": "Professional Blender/Cinema4D rendering, supporting complex scenes and animations"
+      },
+      "rendering": "3D Rendering",
+      "scientificCompute": {
+        "title": "Scientific Computing Cluster",
+        "description": "High-performance computing environment, suitable for numerical simulation and scientific computing"
+      },
+      "scientific": {
+        "title": "Scientific Computing"
+      },
+      "title": "Decentralized Services",
+      "connectToOrder": "Connect wallet to order services",
+      "noResults": "No matching decentralized services found",
+      "tryAdjustingFilters": "Try adjusting search criteria or filter options",
+      "clearFilters": "Clear Filters"
+    },
+    "tags": {
+      "deepLearning": "Deep Learning",
+      "creative": "Creative",
+      "hpc": "HPC",
+      "numericalSimulation": "Numerical Simulation"
+    },
+    "specs": {
+      "cpu": {
+        "64coreAmd": "64-core AMD EPYC",
+        "32coreIntel": "32-core Intel Xeon",
+        "128coreIntel": "128-core Intel Xeon"
+      }
+    },
+    "serviceCard": {
+      "providerLabel": "Provider:"
+    },
+    "buttons": {
+      "orderNow": "Order Now"
+    },
+    "errors": {
+      "connectWallet": "Please connect wallet first"
+    },
+    "actions": {
+      "createOrder": "Create Order:"
+    },
+    "availability": {
+      "available": "Available",
+      "limited": "Limited"
+    },
+    "common": {
+      "perHour": "hour"
+    },
+    "createOrder": "Create Order",
+    "myOrders": "My Orders",
+    "availableServices": "Available Services",
+    "orderForm": {
+      "title": "Create Service Order",
+      "computeType": "Service Type",
+      "duration": "Duration",
+      "budget": "Budget",
+      "requirements": "Specific Requirements",
+      "submit": "Submit Order"
+    },
+    "orderStatus": {
+      "pending": "Pending Payment",
+      "paid": "Paid",
+      "active": "Active",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "categories": {
+      "aiMl": "AI/Machine Learning",
+      "all": "All",
+      "blockchain": "Blockchain",
+      "rendering": "Rendering",
+      "scientific": "Scientific",
+      "video": "Video Processing"
+    },
+    "features": {
+      "ccPayment": {
+        "title": "CC Token Payment",
+        "description": "Support CC token payments with favorable rates and fast settlement"
+      },
+      "diverseCompute": {
+        "title": "Diverse Services",
+        "description": "Provide various decentralized services including AI training, 3D rendering, scientific computing, data storage"
+      },
+      "nftDiscount": {
+        "title": "NFT Discount",
+        "description": "Hold NFTs to enjoy service discounts and reduce computing costs"
+      },
+      "security": {
+        "title": "Security Guarantee",
+        "description": "Smart contracts ensure transaction security and provide reliable computing services"
+      },
+      "title": "Marketplace Features",
+      "subtitle": "Secure, efficient, and diverse distributed computing services"
+    },
+    "filters": {
+      "advanced": "Advanced Filters",
+      "maxPrice": "Max Price",
+      "minPrice": "Min Price",
+      "priceRange": "Price Range",
+      "reset": "Reset",
+      "sortBy": "Sort By"
+    },
+    "search": {
+      "placeholder": "Search decentralized services..."
+    },
+    "wallet": {
+      "connect": "Connect Wallet",
+      "connectStart": "Connect Wallet to Start",
+      "description": "Connect your Web3 wallet to access the decentralized service marketplace",
+      "exploreMarket": "Explore Market"
+    }
+  },
+  "staking": {
+    "title": "Staking Mining",
+    "subtitle": "Stake assets to earn rewards",
+    "ethStaking": "ETH Staking",
+    "ccStaking": "CC Token Staking",
+    "apy": "Annual Percentage Rate",
+    "stakeAmount": "Stake Amount",
+    "unstake": "Unstake",
+    "claimRewards": "Claim Rewards",
+    "totalStaked": "Total Staked",
+    "yourRewards": "Your Rewards",
+    "mining": "Staking Mining",
+    "connectWallet": "Connect Wallet",
+    "startStaking": "Start Staking",
+    "description": "Connect your Web3 wallet, stake CC tokens or ETH to earn stable returns, while unlocking NFT minting permissions",
+    "connectToStart": "Connect wallet to start",
+    "features": {
+      "title": "Staking Mining Features",
+      "subtitle": "After connecting your wallet, you can enjoy the following staking mining features",
+      "ccStaking": {
+        "title": "CC Token Staking",
+        "description": "Stake CC tokens to earn stable annual returns, while unlocking NFT minting permissions and enjoying multiple benefits"
+      },
+      "ethStaking": {
+        "title": "ETH Staking",
+        "description": "Stake ETH to earn stable returns, support unstaking anytime, flexibly manage your crypto assets"
+      },
+      "nftMinting": {
+        "title": "NFT Minting",
+        "description": "Unlock NFT minting permissions through staking, get higher tier discounts and additional reward bonuses"
+      },
+      "earningTracking": {
+        "title": "Earning Tracking",
+        "description": "Track staking rewards and earnings in real-time, transparent and clear earning records, ensuring your investment returns are clear"
+      }
+    },
+    "dataUpdate": "Data Update",
+    "currentAPR": "Current APR",
+    "pendingRewards": "Pending Rewards",
+    "claiming": "Claiming...",
+    "activeStakes": "Active Stakes",
+    "ccBalance": "CC Token Balance",
+    "ccusdBalance": "CCUSD Balance",
+    "tabs": {
+      "stake": "Stake",
+      "rewards": "Reward Records"
+    },
+    "selectMethod": "Select Staking Method",
+    "createStake": "Create Stake",
+    "stakeAmountPlaceholder": "Stake amount ({token})",
+    "minAmount": "Minimum {amount}",
+    "forNFTMinting": "Stake for NFT Minting",
+    "nftBenefits": "(Get discounts and extra rewards)",
+    "normalStaking": {
+      "title": "💰 Normal Staking Mode",
+      "description": "Only get staking rewards, no NFT minting. Can unstake anytime."
+    },
+    "selectNFTType": "Select NFT Type",
+    "customerNFT": {
+      "title": "Customer NFT",
+      "description": "Get purchase discounts"
+    },
+    "providerNFT": {
+      "title": "Provider NFT",
+      "description": "Get computing rewards"
+    },
+    "selectNFTTier": "Select {type} NFT Tier",
+    "estimatedEarnings": "Estimated Earnings",
+    "dailyEarnings": "Daily estimated earnings: {amount} {token}",
+    "nftBenefitsCustomer": "NFT Benefits: {discount} discount",
+    "nftBenefitsProvider": "NFT Benefits: {bonus} reward bonus",
+    "stakeButton": {
+      "authorizing": "Authorizing...",
+      "staking": "Staking...",
+      "stakeAmount": "{action} {amount} {token}",
+      "stakeAndMint": "Stake and Mint",
+      "authorizeAndStake": "Authorize and Stake",
+      "authorizeAndStakeAndMint": "Authorize and Stake and Mint"
+    },
+    "reauthorize": "Reauthorize",
+    "authorizeNow": "Authorize Now",
+    "authorizationSuccess": "Authorization successful!",
+    "authorizationFailed": "Authorization failed",
+    "reauthorizationSuccess": "Reauthorization successful!",
+    "reauthorizationFailed": "Reauthorization failed",
+    "balanceSufficient": "Balance sufficient",
+    "balanceInsufficient": "Balance insufficient",
+    "ccAuthorized": "CC tokens authorized sufficiently",
+    "ccNeedsAuthorization": "CC tokens need to be authorized first",
+    "authorizeConfirmation": "Are you sure you want to authorize CC tokens?\n\nAuthorization amount: {amount} CC",
+    "reauthorizeConfirmation": "Are you sure you want to reauthorize CC tokens?\n\nAuthorization amount: {amount} CC",
+    "stakingRecords": "Staking Records",
+    "realTimeUpdate": "Real-time Update",
+    "noStakingRecords": "No staking records",
+    "startStakingToEarn": "Start staking to earn rewards and NFT minting permissions",
+    "startTime": "Start time: {date}",
+    "stakeAmountLabel": "Stake Amount",
+    "nftMintingLabel": "NFT Minting",
+    "apyLabel": "8% APR",
+    "daysStaked": "Staked for {days} days",
+    "errors": {
+      "invalidAmount": "Please enter a valid staking amount",
+      "alreadyHasCustomerNFT": "You already have Customer NFT, each user can only have one Customer NFT",
+      "alreadyHasProviderNFT": "You already have Provider NFT, each user can only have one Provider NFT",
+      "insufficientStakeAmount": "Insufficient staking amount. {tier} tier {nftType} NFT requires at least {amount} {token}",
+      "providerNFTRequirements": "Minting {tier} tier Provider NFT requirements:\n\n📊 Device count: {devices} computing devices\n🎁 Reward bonus: {bonus}\n💰 Staking requirement: {amount} {token}\n\nPlease confirm you meet all the above requirements.",
+      "insufficientCCBalance": "Insufficient CC token balance. Current balance: {balance} CC, required: {amount} CC",
+      "insufficientETHBalance": "Insufficient ETH balance. Current balance: {balance} ETH, required: {amount} ETH",
+      "ccBalanceInsufficient": "CC token balance insufficient!\nCurrent balance: {balance} CC\nRequired amount: {amount} CC",
+      "ccAuthorizationRequired": "You need to authorize CC tokens to the staking contract first. Continue?\n\nAuthorization amount: {amount} CC",
+      "authorizationSuccessPrompt": "Authorization successful! Please click the stake button again to complete staking.",
+      "ccAllowanceInsufficient": "CC token authorization insufficient!\nCurrent authorization: {allowance} CC\nRequired authorization: {amount} CC\nPlease reauthorize and try again.",
+      "noRewardsToClaim": "No rewards to claim",
+      "noActiveStakes": "You have no active staking records, cannot claim rewards",
+      "mintFailed": "Minting failed: {error}",
+      "stakingFailed": "Staking failed",
+      "ccStakeFailed": "CC staking failed",
+      "ethStakeFailed": "ETH staking failed"
+    },
+    "success": {
+      "stakeCreated": "Stake created successfully!",
+      "nftMinted": "NFT minted successfully!",
+      "rewardsClaimed": "Rewards claimed successfully!"
+    },
+    "alerts": {
+      "authorizationFailed": "Authorization failed",
+      "authorizationRejected": "User rejected authorization",
+      "authorizationSuccess": "Authorization successful",
+      "contractCallFailed": "Contract call failed",
+      "contractExecutionFailed": "Contract execution failed",
+      "erc20AllowanceInsufficient": "ERC20 allowance insufficient",
+      "erc20BalanceExceeded": "ERC20 balance exceeded",
+      "insufficientFunds": "Insufficient funds",
+      "insufficientStakeForNFT": "Insufficient stake for NFT",
+      "networkError": "Network error",
+      "reauthorizationSuccess": "Reauthorization successful",
+      "stakingFailed": "Staking failed"
+    },
+    "authorization": {
+      "authorizeNow": "Authorize Now",
+      "reauthorize": "Reauthorize"
+    },
+    "authorizationSuccessPrompt": "Authorization successful! Please click the stake button again to complete staking.",
+    "balance": {
+      "ccAuthorized": "CC tokens authorized",
+      "ccNeedsAuthorization": "CC tokens need authorization",
+      "insufficient": "Insufficient balance",
+      "sufficient": "Sufficient balance",
+      "current": "Current balance: {balance}"
+    },
+    "nftStatus": {
+      "title": "NFT Status",
+      "customerNFT": "Customer NFT",
+      "providerNFT": "Provider NFT",
+      "alreadyOwned": "Already Owned",
+      "notOwned": "Not Owned",
+      "mintingDisabled": "Minting Disabled",
+      "viewDetails": "View Details"
+    },
+    "notifications": {
+      "stakeSuccessTitle": "Stake Successful",
+      "stakeSuccessMessage": "Successfully staked {amount} {token}",
+      "claimSuccessTitle": "Claim Successful",
+      "closeNotification": "Close Notification",
+      "errorTip": "Error Tip"
+    },
+    "consoleErrors": {
+      "alreadyHasCustomerNFT": "Already have Customer NFT",
+      "dailyStakingLimitExceeded": "Daily staking limit exceeded",
+      "insufficientETHForCustomerNFT": "Insufficient ETH for Customer NFT",
+      "stakingPaused": "Staking paused"
+    },
+    "types": {
+      "customer": "Customer",
+      "provider": "Provider"
+    },
+    "ui": {
+      "annualPercentage": "Annual Percentage Rate",
+      "apyLabel": "8% APR",
+      "currentAddress": "Current Address",
+      "customerNFTDescription": "Customer NFT provides computing service discounts",
+      "discount": "Discount",
+      "estimatedEarnings": "Estimated Earnings",
+      "nftBenefits": "NFT Benefits",
+      "nftMintingLabel": "NFT Minting",
+      "noStakingRecords": "No staking records",
+      "normalStakingDescription": "Get staking rewards only, no NFT minting",
+      "normalStakingMode": "Normal Staking Mode",
+      "providerNFTDescription": "Provider NFT provides computing reward bonus",
+      "realTimeUpdate": "Real-time Update",
+      "required": "Required",
+      "reward": "Reward",
+      "selectNFTType": "Select NFT Type",
+      "selectNFTTier": "Select {type} NFT Tier",
+      "stakeAmountLabel": "Stake Amount",
+      "stakeButtonAuthorizeAndStake": "Authorize and Stake",
+      "stakeButtonAuthorizeAndStakeAndMint": "Authorize and Stake and Mint",
+      "stakeButtonAuthorizing": "Authorizing...",
+      "stakeButtonStakeAndMint": "Stake and Mint",
+      "stakeButtonStakeAmount": "{action} {amount} {token}",
+      "stakeButtonStake": "Stake {amount} {token}",
+      "stakeButtonStakeAndMintAmount": "Stake and Mint {amount} {token}",
+      "stakeButtonAuthorizeAndStakeAmount": "Authorize and Stake {amount} {token}",
+      "stakeButtonAuthorizeAndStakeAndMintAmount": "Authorize and Stake and Mint {amount} {token}",
+      "stakeButtonStaking": "Staking...",
+      "stakeForNFTMinting": "Stake for NFT Minting",
+      "stakingRecords": "Staking Records",
+      "startStaking": "Start Staking",
+      "startStakingToEarn": "Start staking to earn rewards",
+      "ethStakeRecord": "ETH Stake Record #{number}",
+      "ccStakeRecord": "CC Stake Record #{number}",
+      "startTime": "Start time: {date}",
+      "daysStaked": "Staked for {days} days",
+      "minimumRequired": "Minimum required: {amount}",
+      "annualAPR": "Annual APR: {rate}%",
+      "deviceRequirement": "Device requirement: {count} units",
+      "dailyEarnings": "Daily estimated earnings: {amount} {token}",
+      "nftBenefitsCustomer": "NFT Benefits: {discount} discount",
+      "nftBenefitsProvider": "NFT Benefits: {bonus} reward bonus",
+      "dataUpdated": "Data updated at: {time}"
+    }
+  },
+  "nft": {
+    "common": {
+      "customerNFT": "Customer NFT",
+      "providerNFT": "Provider NFT",
+      "mint": "Mint",
+      "upgrade": "Upgrade",
+      "benefits": "Benefits",
+      "tier": "Tier",
+      "active": "Active",
+      "inactive": "Inactive",
+      "bronze": "Bronze",
+      "silver": "Silver",
+      "gold": "Gold",
+      "platinum": "Platinum",
+      "discount": "Discount",
+      "bonus": "Bonus"
+    },
+    "details": {
+      "title": {
+        "customerNFT": "Customer NFT Details",
+        "providerNFT": "Provider NFT Details",
+        "withType": "{type} Details"
+      },
+      "tokenId": "Token ID",
+      "owner": "Owner",
+      "mintedAt": "Minted At",
+      "status": "Status",
+      "errors": {
+        "invalidTokenId": "Invalid Token ID",
+        "notFound": "NFT not found",
+        "notFoundDescription": "The specified NFT could not be found, please check if the Token ID is correct",
+        "invalidTier": "Invalid NFT tier",
+        "loadFailed": "Failed to load NFT data"
+      },
+      "symbols": {
+        "tokenNumber": "#",
+        "discount": "% discount",
+        "ccToken": "CC",
+        "multiplier": "×"
+      },
+      "benefits": {
+        "discount": "Discount Benefits",
+        "discountDescription": "Enjoy discount on computing service purchases",
+        "monthlyReward": "Monthly Rewards",
+        "monthlyRewardDescription": "Monthly claimable token rewards",
+        "bonusMultiplier": "Reward Multiplier",
+        "bonusMultiplierDescription": "Get additional reward bonus",
+        "priorityTaskAllocation": "Priority Task Allocation",
+        "rewardBonus": "Reward Bonus",
+        "qualityRatingSystem": "Quality Rating System"
+      },
+      "actions": {
+        "stake": "Stake",
+        "marketplace": "Marketplace",
+        "manage": "Manage",
+        "viewDetails": "View Details"
+      },
+      "information": {
+        "title": "Information",
+        "customerDescription": "Customer NFT provides computing purchase discounts and monthly reward benefits",
+        "providerDescription": "Provider NFT provides reward bonuses and priority task allocation benefits"
+      },
+      "descriptions": {
+        "customerTier": "{name} tier: enjoy {discount}% discount, receive {monthlyReward} CC rewards monthly",
+        "providerTier": "{name} tier: enjoy {bonus}% reward bonus"
+      },
+      "totalStaked": "Total Staked",
+      "totalStakedDescription": "Total staked amount for this provider NFT"
+    },
+    "management": {
+      "title": "NFT Management",
+      "subtitle": "Manage Your Digital Rights Assets",
+      "connectWallet": "Connect Wallet to Access NFT Management",
+      "description": "Connect your Web3 wallet to view and manage your customer and provider NFTs, enjoy exclusive discounts and reward bonuses",
+      "features": {
+        "title": "NFT Management Features",
+        "subtitle": "After connecting your wallet, you can enjoy the following NFT management features",
+        "customerNFT": {
+          "title": "Customer NFTs",
+          "description": "View and manage your customer NFTs, enjoy computing service purchase discounts and monthly rewards"
+        },
+        "providerNFT": {
+          "title": "Provider NFTs",
+          "description": "View and manage your provider NFTs, enjoy reward bonuses and priority task allocation"
+        },
+        "minting": {
+          "title": "NFT Minting",
+          "description": "Mint new customer and provider NFTs to unlock higher tier discounts and reward bonuses"
+        },
+        "statistics": {
+          "title": "NFT Statistics",
+          "description": "View detailed NFT statistics including discount rates, reward multipliers and earnings estimates"
+        }
+      },
+      "stats": {
+        "customerNFTCount": "Customer NFT Count",
+        "providerNFTCount": "Provider NFT Count",
+        "ccusdBalance": "CCUSD Balance",
+        "ccBalance": "CC Balance"
+      },
+      "tabs": {
+        "customer": "Customer NFTs",
+        "provider": "Provider NFTs"
+      },
+      "myNFTs": "My NFTs",
+      "refresh": "Refresh",
+      "actions": {
+        "viewDetails": "View Details",
+        "mintNew": "Mint New {type} NFT",
+        "selectTier": "Select NFT Tier",
+        "paymentMethod": "Payment Method",
+        "paymentAmount": "Payment Amount",
+        "enterPaymentAmount": "Enter payment amount",
+        "mintingInProgress": "Minting...",
+        "mintTierNFT": "Mint {tier} NFT"
+      },
+      "modal": {
+        "title": {
+          "customerNFT": "Customer NFT",
+          "providerNFT": "Provider NFT",
+          "withType": "{type} Details"
+        },
+        "tokenId": "Token ID",
+        "computingDiscount": "Computing Discount",
+        "monthlyRewards": "Monthly Rewards",
+        "exclusivePrivileges": "Exclusive Privileges",
+        "discountDescription": "Purchase computing services at discount",
+        "monthlyRewardDescription": "Monthly claimable token rewards",
+        "governanceVoting": "Participate in platform governance voting",
+        "exclusiveSupport": "Exclusive Customer Support",
+        "type": "Type",
+        "providerIncentiveNFT": "Provider Incentive NFT",
+        "status": "Status",
+        "active": "Active",
+        "coreAttributes": "Core Attributes",
+        "benefits": "Benefits",
+        "rewardMultiplier": "Reward Multiplier",
+        "yieldImprovement": "Yield Improvement",
+        "estimatedDailyEarnings": "Estimated Daily Earnings",
+        "qualityScore": "Quality Score",
+        "providerStats": "Provider Stats",
+        "completedJobs": "Completed Jobs",
+        "totalRewards": "Total Rewards",
+        "deviceRequirement": "Device Requirement",
+        "exclusiveBenefits": "Exclusive Benefits",
+        "priorityTaskAllocation": "Priority Task Allocation",
+        "rewardBonus": "Reward Bonus",
+        "qualityRatingSystem": "Quality Rating System",
+        "technicalInfo": "Technical Info",
+        "contractAddress": "Contract Address",
+        "network": "Network",
+        "tokenStandard": "Token Standard",
+        "close": "Close",
+        "mintNewNFT": "Mint New {type}",
+        "noCustomerNFTs": "No Customer NFTs",
+        "noCustomerNFTsDescription": "Mint Customer NFTs to enjoy computing service purchase discounts and monthly rewards, start your distributed computing journey now",
+        "noProviderNFTs": "No Provider NFTs",
+        "noProviderNFTsDescription": "Mint Provider NFTs to enjoy computing reward bonuses and priority task allocation, become an important node in the distributed computing network",
+        "exclusiveBenefitsList": "Exclusive Benefits",
+        "computeDiscount": "Computing Discount",
+        "monthlyReward": "Monthly Reward",
+        "participateGovernance": "Participate in Platform Governance Voting",
+        "selectNFTTier": "Select NFT Tier",
+        "paymentMethod": "Payment Method",
+        "paymentAmount": "Payment Amount",
+        "enterPaymentAmount": "Enter Payment Amount",
+        "ccToken": "CC Token",
+        "ccusdBalance": "CCUSD Balance",
+        "ccBalance": "CC Balance",
+        "mintingInProgress": "Minting...",
+        "mintTierNFT": "Mint {tier} NFT",
+        "discount": "Discount",
+        "multiplier": "Multiplier",
+        "deviceUnits": "units",
+        "providerNFTType": "Provider Incentive NFT",
+        "tokenIdLabel": "Token ID",
+        "tier": "Tier",
+        "viewDetails": "View Details",
+        "enjoyDiscount": "Enjoy {discount}% discount on computing services",
+        "claimMonthlyReward": "Claim {reward} CC monthly",
+        "providerNFTTypeWithId": "{type} #{id}",
+        "benefitDiscount": "{discount}% purchase discount",
+        "benefitMonthlyReward": "{reward} CC monthly reward",
+        "benefitPriorityAccess": "Priority computing service access",
+        "benefitBonus": "{bonus}% reward bonus",
+        "benefitPriorityTasks": "Priority task allocation",
+        "benefitQualityRating": "Higher service quality rating",
+        "benefitExclusiveSupport": "Exclusive provider support"
+      },
+      "display": {
+        "noCustomerNFTs": "No Customer NFTs",
+        "noCustomerNFTsDescription": "Mint Customer NFTs to enjoy computing service purchase discounts and monthly rewards, start your distributed computing journey now",
+        "noProviderNFTs": "No Provider NFTs",
+        "noProviderNFTsDescription": "Mint Provider NFTs to enjoy computing reward bonuses and priority task allocation, become an important node in the distributed computing network",
+        "activeStatus": "Active Status",
+        "coreBenefits": "Core Benefits",
+        "purchaseDiscount": "Purchase Discount",
+        "monthlyReward": "Monthly Reward",
+        "annualSavings": "Annual Savings",
+        "rewardMultiplier": "Reward Multiplier",
+        "yieldImprovement": "Yield Improvement",
+        "deviceRequirement": "Device Requirement",
+        "estimatedDailyEarnings": "Estimated Daily Earnings",
+        "providerStats": "Provider Statistics",
+        "completedJobs": "Completed Jobs",
+        "totalRewards": "Total Rewards",
+        "qualityScore": "Quality Score",
+        "technicalInfo": "Technical Information",
+        "contractAddress": "Contract Address",
+        "network": "Network",
+        "tokenStandard": "Token Standard",
+        "exclusiveBenefits": "Exclusive Benefits",
+        "priorityTaskAllocation": "Priority Task Allocation",
+        "rewardBonus": "Reward Bonus",
+        "qualityRatingSystem": "Quality Rating System"
+      }
+    },
+    "networkWarning": {
+      "title": "⚠️ Network Reminder",
+      "description": "Current network may not have deployed contracts, recommended to switch to test network",
+      "currentNetwork": "Current Network: {network}"
+    },
+    "shared": {
+      "errors": {
+        "invalidPaymentAmount": "Please enter a valid payment amount",
+        "mintCustomerNFTFailed": "Mint customer NFT failed: {error}",
+        "mintProviderNFTFailed": "Mint provider NFT failed: {error}"
+      },
+      "success": {
+        "nftMinting": "NFT Minting",
+        "mintingCustomer": "Minting customer NFT, tier: {tier}",
+        "mintingProvider": "Minting provider NFT, tier: {tier}",
+        "action": "Operation",
+        "nftMintedSuccessfully": "NFT Minted Successfully",
+        "customerNFTMinted": "Successfully minted customer NFT, tier: {tier}",
+        "providerNFTMinted": "Successfully minted provider NFT, tier: {tier}"
+      },
+      "close": "Close"
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "subtitle": "Manage Your Account and Settings",
+    "accountInfo": "Account Information",
+    "transactionHistory": "Transaction History",
+    "settings": "Settings",
+    "activity": "Activity",
+    "rewards": "Rewards",
+    "walletAddress": "Wallet Address",
+    "connectedNetwork": "Connected Network",
+    "connectWallet": "Connect Wallet",
+    "accessProfile": "Access Profile",
+    "description": "Connect your Web3 wallet to view personal assets, transaction records, and NFT collections, manage your decentralized identity",
+    "connectToStart": "Connect Wallet to Start",
+    "features": {
+      "title": "Profile Features",
+      "subtitle": "After connecting your wallet, you can enjoy the following profile features",
+      "assetOverview": {
+        "title": "Asset Overview",
+        "description": "View your ETH and CC token balances and total asset value in real-time, stay on top of your financial situation"
+      },
+      "stakingManagement": {
+        "title": "Staking Management",
+        "description": "Manage your ETH and CC token staking, view returns and staking history"
+      },
+      "nftCollection": {
+        "title": "NFT Collection",
+        "description": "View your Customer and Provider NFTs, enjoy exclusive discounts and reward bonuses"
+      },
+      "activityRecords": {
+        "title": "Activity Records",
+        "description": "View complete transaction history, staking records, and NFT minting activities, track your operation history"
+      }
+    },
+    "stats": {
+      "totalAssetValue": "Total Asset Value",
+      "ethBalance": "ETH Balance",
+      "ccTokens": "CC Tokens",
+      "ccusdBalance": "CCUSD Balance",
+      "ccsdBalance": "CCSD Balance",
+      "changeFromLastMonth": "from last month"
+    },
+    "tabs": {
+      "overview": "Overview",
+      "staking": "Staking",
+      "deposits": "Exchange",
+      "nfts": "NFTs",
+      "activity": "Activity"
+    },
+    "overview": {
+      "ethDeposits": "ETH Deposits",
+      "walletBalance": "Wallet Balance",
+      "depositBalance": "Deposit Balance",
+      "totalAssetValue": "Total Asset Value",
+      "stakedAssets": "Staked Assets",
+      "stakedEth": "Staked ETH",
+      "stakedCc": "Staked CC",
+      "estimatedAnnualReturn": "Estimated Annual Return",
+      "customerNft": "Customer NFT",
+      "providerNft": "Provider NFT",
+      "holdingAmount": "Holding Amount",
+      "currentTier": "Current Tier",
+      "enjoyServiceDiscount": "Enjoy {discount}% service discount",
+      "enjoyRewardBonus": "Enjoy {bonus}% reward bonus"
+    },
+    "staking": {
+      "ethStaking": "ETH Staking",
+      "ccStaking": "CC Staking",
+      "stakedEth": "Staked ETH",
+      "stakedCc": "Staked CC",
+      "apr": "APR"
+    },
+    "vault": {
+      "ethDeposits": "ETH Deposits",
+      "secureStorage": "Secure Storage",
+      "totalAssetValue": "Total Asset Value",
+      "ethDepositDescription": "ETH Deposit Description",
+      "features": {
+        "secureStorage": "Securely store your ETH assets",
+        "flexibleDeposit": "Support deposits and withdrawals anytime",
+        "separatePool": "Completely separate from staking pool",
+        "noLockTime": "No lock-up time limit"
+      }
+    },
+    "nfts": {
+      "serviceDiscount": "Service Discount",
+      "rewardBonus": "Reward Bonus",
+      "discountRate": "Discount Rate",
+      "rewardBonusRate": "Reward Bonus",
+      "customerNftDescription": "Use Customer NFT to enjoy computing service fee discounts, higher tiers get more discounts",
+      "providerNftDescription": "Use Provider NFT to enjoy service provider reward bonuses, increase your returns",
+      "tierDescription": "NFT Tier Description",
+      "customerNftTiers": {
+        "bronze": "BRONZE: 1 NFT, 5% discount",
+        "silver": "SILVER: 2 NFTs, 8% discount",
+        "gold": "GOLD: 3 NFTs, 12% discount",
+        "platinum": "PLATINUM: 4 NFTs, 15% discount"
+      },
+      "providerNftTiers": {
+        "bronze": "BRONZE: 1 NFT, 10% reward",
+        "silver": "SILVER: 2 NFTs, 12% reward",
+        "gold": "GOLD: 3 NFTs, 14% reward",
+        "platinum": "PLATINUM: 4 NFTs, 15% reward"
+      }
+    },
+    "nftTiers": {
+      "none": "None",
+      "bronze": "BRONZE",
+      "silver": "SILVER",
+      "gold": "GOLD",
+      "platinum": "PLATINUM"
+    },
+    "actions": {
+      "stake": "Stake",
+      "marketplace": "Marketplace",
+      "manage": "Manage"
+    },
+    "orderStatus": {
+      "created": "Created",
+      "accepted": "Accepted",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "unknown": "Unknown"
+    },
+    "errors": {
+      "invalidAddress": "Invalid address",
+      "invalidTokenId": "Invalid Token ID",
+      "noNFT": "No NFT found at this address",
+      "loadFailed": "Failed to load NFT information",
+      "notFound": "NFT Not Found",
+      "notFoundDescription": "No NFT found for this Token ID",
+      "invalidTier": "Invalid NFT tier"
+    },
+    "ui": {
+      "ethDeposits": "ETH Deposits",
+      "totalAssetValue": "Total Asset Value",
+      "stakedAssets": "Staked Assets",
+      "stakedEth": "Staked ETH",
+      "stakedCc": "Staked CC",
+      "estimatedAnnualReturn": "Estimated Annual Return",
+      "holdingAmount": "Holding Amount",
+      "currentTier": "Current Tier",
+      "ethStaking": "ETH Staking",
+      "ccStaking": "CC Staking",
+      "stakedEthLabel": "Staked ETH",
+      "stakedCcLabel": "Staked CC",
+      "secureStorage": "Secure Storage",
+      "vaultBalance": "Vault Balance",
+      "ethDepositDescription": "ETH Deposit Instructions",
+      "secureStorageDescription": "Securely store your ETH assets",
+      "flexibleDeposit": "Support deposits and withdrawals anytime",
+      "separatePool": "Completely separated from staking pool",
+      "noLockTime": "No lock time restrictions",
+      "serviceDiscount": "Service Discount",
+      "discountRate": "Discount Rate",
+      "rewardBonus": "Reward Bonus",
+      "customerNftDescription": "Use Customer NFT to enjoy computing service fee discounts, higher tiers offer better discounts",
+      "providerNftDescription": "Use Provider NFT to enjoy service provider reward bonuses and increase earnings",
+      "nftTierDescription": "NFT Tier Description",
+      "customerNftTiers": {
+        "bronze": "BRONZE: 1 NFT, 5% discount",
+        "silver": "SILVER: 2 NFTs, 8% discount",
+        "gold": "GOLD: 3 NFTs, 12% discount",
+        "platinum": "PLATINUM: 4 NFTs, 15% discount"
+      },
+      "providerNftTiers": {
+        "bronze": "BRONZE: 1 NFT, 10% reward",
+        "silver": "SILVER: 2 NFTs, 12% reward",
+        "gold": "GOLD: 3 NFTs, 14% reward",
+        "platinum": "PLATINUM: 4 NFTs, 15% reward"
+      },
+      "customerNftTitle": "Customer NFT",
+      "providerNftTitle": "Provider NFT",
+      "enjoyServiceDiscount": "Enjoy {discount}% service discount",
+      "enjoyRewardBonus": "Enjoy {bonus}% reward bonus"
+    },
+    "tokenId": "Token ID",
+    "owner": "Owner",
+    "mintedAt": "Minted At",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "totalStaked": "Total Staked",
+    "totalStakedDescription": "Total staked assets associated with this NFT",
+    "benefits": {
+      "discount": "Discount Benefits",
+      "discountDescription": "Enjoy exclusive discounts on distributed computing services",
+      "monthlyReward": "Monthly Reward",
+      "monthlyRewardDescription": "Monthly CC token rewards that can be claimed",
+      "bonusMultiplier": "Bonus Multiplier",
+      "bonusMultiplierDescription": "Reward multiplier when providing computing services"
+    },
+    "information": {
+      "title": "NFT Information",
+      "customerDescription": "Customer NFT provides you with discounts on distributed computing services and monthly CC token rewards. Higher tiers offer better benefits.",
+      "providerDescription": "Provider NFT increases your reward multiplier in the distributed computing marketplace, helping you earn more rewards."
+    },
+    "descriptions": {
+      "customerTier": "{name} tier Customer NFT, enjoy {discount}% discount and {monthlyReward} CC monthly rewards",
+      "providerTier": "{name} tier Provider NFT, enjoy {bonus}% reward bonus"
+    },
+    "symbols": {
+      "tokenNumber": "#",
+      "discount": "OFF",
+      "multiplier": "×",
+      "ccToken": "CC"
+    },
+    "errors": {
+      "profileSaveSuccess": "Profile saved successfully",
+      "profileSavePartial": "Profile partially saved successfully",
+      "profileSaveFailed": "Failed to save profile",
+      "networkConnectionFailed": "Network connection failed",
+      "invalidEmail": "Invalid email format",
+      "invalidWebsite": "Invalid website format",
+      "signatureVerificationFailed": "Signature verification failed",
+      "challengeGenerationFailed": "Challenge generation failed",
+      "signatureLoginFailed": "Signature login failed"
+    },
+    "actions": {
+      "stakeEth": {
+        "prompt": "Enter ETH staking amount"
+      },
+      "stakeCc": {
+        "prompt": "Enter CC staking amount"
+      },
+      "unstakeEth": {
+        "prompt": "Enter ETH unstaking amount"
+      },
+      "unstakeCc": {
+        "prompt": "Enter CC unstaking amount"
+      }
+    },
+    "ui": {
+      "ethDeposit": "ETH Deposit",
+      "totalAssetValue": "Total Asset Value",
+      "stakedAssets": "Staked Assets",
+      "stakedEth": "Staked ETH",
+      "stakedCc": "Staked CC",
+      "estimatedAnnualReturn": "Estimated Annual Return",
+      "holdingAmount": "Holding Amount",
+      "currentTier": "Current Tier",
+      "ethStaking": "ETH Staking",
+      "ccStaking": "CC Staking",
+      "stakedEthLabel": "Staked ETH",
+      "stakedCcLabel": "Staked CC",
+      "secureStorage": "Secure Storage",
+      "vaultBalance": "Vault Balance",
+      "ethDepositDescription": "ETH Deposit Instructions",
+      "secureStorageDescription": "Securely store your ETH assets",
+      "flexibleDeposit": "Support deposits and withdrawals anytime",
+      "separatePool": "Completely separated from staking pool",
+      "noLockTime": "No lock time restrictions",
+      "serviceDiscount": "Service Discount",
+      "discountRate": "Discount Rate",
+      "rewardBonus": "Reward Bonus",
+      "customerNftDescription": "Use Customer NFT to enjoy computing service fee discounts, higher tiers offer better discounts",
+      "providerNftDescription": "Use Provider NFT to enjoy service provider reward bonuses and increase earnings",
+      "nftTierDescription": "NFT Tier Description",
+      "customerNftTiers": {
+        "bronze": "BRONZE: 1 NFT, 5% discount",
+        "silver": "SILVER: 2 NFTs, 8% discount",
+        "gold": "GOLD: 3 NFTs, 12% discount",
+        "platinum": "PLATINUM: 4 NFTs, 15% discount"
+      },
+      "providerNftTiers": {
+        "bronze": "BRONZE: 1 NFT, 10% reward",
+        "silver": "SILVER: 2 NFTs, 12% reward",
+        "gold": "GOLD: 3 NFTs, 14% reward",
+        "platinum": "PLATINUM: 4 NFTs, 15% reward"
+      },
+      "customerNftTitle": "Customer NFT",
+      "providerNftTitle": "Provider NFT",
+      "enjoyServiceDiscount": "Enjoy {discount}% service discount",
+      "enjoyRewardBonus": "Enjoy {bonus}% reward bonus"
+    }
+  },
+  "activityFeed": {
+    "title": "Activity Feed",
+    "loading": "Loading...",
+    "realTimeUpdate": "Real-time Update",
+    "refresh": "Refresh",
+    "showMore": "Show {count} more",
+    "showLess": "Show Less",
+    "noRecords": "No Records",
+    "noActivitiesDescription": "You don't have any activity records yet",
+    "noFilteredActivities": "No {filter} activities found",
+    "statistics": "Last updated: {time}",
+    "filters": {
+      "all": "All",
+      "stake": "Staking",
+      "deposit": "Deposit",
+      "nft": "NFT",
+      "order": "Order"
+    }
+  },
+  "exchangeData": {
+    "title": "Exchange Data",
+    "realtime": "Real-time",
+    "currentRate": "Current Rate",
+    "exchangeRateDisplay": "1 ETH = {rate} CCUSD",
+    "exchangedCcUSD": "Exchanged CCUSD",
+    "estimatedExchange": "Estimated Exchange",
+    "myExchangeData": "My Exchange Data",
+    "personalStats": "Personal Stats",
+    "exchangedCcUSDBalance": "Exchanged CCUSD Balance",
+    "walletETHBalance": "Wallet ETH Balance",
+    "walletCCUSDBalance": "Wallet CCUSD Balance",
+    "loading": "Loading..."
+  },
+  "language": {
+    "switchSuccess": "Language switched to {language}",
+    "switchFailed": "Language switch failed",
+    "switching": "Switching..."
+  }
+}
