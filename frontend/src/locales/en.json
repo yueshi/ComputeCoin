@@ -812,7 +812,7 @@
           "providerNFT": "Provider NFT",
           "withType": "{type} Details"
         },
-        "tokenId": "Token ID",
+        "tokenId": "Token ID: {id}",
         "computingDiscount": "Computing Discount",
         "monthlyRewards": "Monthly Rewards",
         "exclusivePrivileges": "Exclusive Privileges",
@@ -1243,5 +1243,10 @@
     "switchSuccess": "Language switched to {language}",
     "switchFailed": "Language switch failed",
     "switching": "Switching..."
+  },
+  "themeToggle": {
+    "toggleTheme": "Toggle Theme",
+    "switchToDark": "Switch to Dark Theme",
+    "switchToLight": "Switch to Light Theme"
   }
 }

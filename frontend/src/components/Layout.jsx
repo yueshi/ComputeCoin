@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { useAccount, useBalance, useSwitchChain, useDisconnect, useReadContract } from 'wagmi'
 import { formatEther } from 'viem'
 import { CONTRACT_ADDRESSES, CONTRACT_ABI } from '../config/contracts'
@@ -19,9 +18,11 @@ import {
   BanknotesIcon,
   ArrowsRightLeftIcon,
   ArrowLeftOnRectangleIcon,
+  ChartBarIcon,
 } from '@heroicons/react/24/outline'
 import ThemeToggle from './ThemeToggle'
 import LanguageToggle from './LanguageToggle'
+import { InlineWalletConnectButton } from './WalletConnectButton'
 
 
 export default function Layout({ children }) {
@@ -48,6 +49,7 @@ export default function Layout({ children }) {
     { name: t('navigation.exchange').toUpperCase(), href: '/exchange', icon: ArrowTrendingUpIcon },
     { name: t('navigation.staking').toUpperCase(), href: '/staking', icon: CurrencyDollarIcon },
     { name: t('navigation.nfts').toUpperCase(), href: '/nfts', icon: PhotoIcon },
+    { name: t('navigation.orders').toUpperCase(), href: '/orders', icon: ChartBarIcon },
     { name: t('navigation.profile').toUpperCase(), href: '/profile', icon: UserIcon },
   ]
   
@@ -188,22 +190,12 @@ export default function Layout({ children }) {
                   <div className="flex items-center space-x-2 lg:space-x-3 ml-4 lg:ml-6 flex-shrink-0">
                     {/* 语言切换 */}
                     <LanguageToggle />
-                    
+
                     {/* 主题切换 */}
                     <ThemeToggle />
-                    
+
                     {/* 钱包连接按钮 */}
-                    <ConnectButton
-                      accountStatus={{
-                        smallScreen: 'avatar',
-                        largeScreen: 'full',
-                      }}
-                      showBalance={false}
-                      chainStatus={{
-                        smallScreen: 'icon',
-                        largeScreen: 'full',
-                      }}
-                    />
+                    <InlineWalletConnectButton />
                   </div>
                 </div>
               </div>
@@ -231,17 +223,7 @@ export default function Layout({ children }) {
                 
                 {/* 移动端钱包连接 */}
                 <div className="mt-3 pt-3 border-t border-theme dark:border-gray-600">
-                  <ConnectButton
-                    accountStatus={{
-                      smallScreen: 'avatar',
-                      largeScreen: 'full',
-                    }}
-                    showBalance={false}
-                    chainStatus={{
-                      smallScreen: 'icon',
-                      largeScreen: 'full',
-                    }}
-                  />
+                  <InlineWalletConnectButton />
                 </div>
               </div>
             </div>
@@ -711,10 +693,6 @@ export default function Layout({ children }) {
         </div>
       )}
 
-      {/* 隐藏的RainbowKit连接按钮 */}
-      <div className="hidden">
-        <ConnectButton showBalance={false} />
       </div>
-    </div>
   )
 }

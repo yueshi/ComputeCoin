@@ -18,7 +18,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
-          web3: ['wagmi', 'viem', '@rainbow-me/rainbowkit', 'ethers'],
+          web3: ['wagmi', 'viem', 'ethers'],
           utils: ['@tanstack/react-query', 'axios'],
           ui: ['@headlessui/react', '@heroicons/react']
         }
@@ -47,7 +47,6 @@ export default defineConfig({
       'react-dom',
       'wagmi',
       'viem',
-      '@rainbow-me/rainbowkit',
       'ethers',
       '@tanstack/react-query'
     ]

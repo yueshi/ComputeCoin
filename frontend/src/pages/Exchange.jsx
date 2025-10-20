@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, useReadContract, useWatchContractEvent, useBalance } from 'wagmi'
 import { useTranslation } from 'react-i18next'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
-import { useNavigate } from 'react-router-dom'
+import WalletConnectButton from '../components/WalletConnectButton'
+import { Link, useNavigate } from 'react-router-dom'
 import { formatEther, parseEther } from 'viem'
 import { 
   ArrowTrendingUpIcon,
@@ -827,55 +827,16 @@ export default function Exchange() {
               {/* 连接钱包按钮 */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <div className="transform hover:scale-105 transition-all duration-200">
-                  <ConnectButton.Custom>
-                    {({
-                      account,
-                      chain,
-                      openAccountModal,
-                      openChainModal,
-                      openConnectModal,
-                      authenticationStatus,
-                      mounted,
-                    }) => {
-                      const ready = mounted && authenticationStatus !== 'loading'
-                      const connected =
-                        ready &&
-                        account &&
-                        chain &&
-                        (!authenticationStatus || authenticationStatus === 'authenticated')
-
-                      return (
-                        <div
-                          {...(!ready && {
-                            'aria-hidden': true,
-                            'style': {
-                              opacity: 0,
-                              pointerEvents: 'none',
-                              userSelect: 'none',
-                            },
-                          })}
-                        >
-                          {(() => {
-                            if (!connected) {
-                              return (
-                                <button
-                                  onClick={openConnectModal}
-                                  className="group relative bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
-                                >
-                                  <span className="absolute inset-0 bg-white/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
-                                  <span className="relative flex items-center space-x-2">
-                                    <WalletIcon className="w-5 h-5" />
-                                    <span>{t('exchange.wallet.connectStart')}</span>
-                                  </span>
-                                </button>
-                              )
-                            }
-                            return null
-                          })()}
-                        </div>
-                      )
-                    }}
-                  </ConnectButton.Custom>
+                  <Link
+                    to="/wallet-connect"
+                    className="group relative bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 inline-flex items-center"
+                  >
+                    <span className="absolute inset-0 bg-white/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
+                    <span className="relative flex items-center space-x-2">
+                      <WalletIcon className="w-5 h-5" />
+                      <span>{t('exchange.wallet.connectStart')}</span>
+                    </span>
+                  </Link>
                 </div>
               </div>
             </div>

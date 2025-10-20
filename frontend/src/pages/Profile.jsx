@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
-import { useAccount, useBalance, useReadContract, useWriteContract, useWaitForTransactionReceipt, useWatchContractEvent, useSignMessage } from 'wagmi'
+import { useAccount, useBalance, useReadContract, useWriteContract, useWaitForTransactionReceipt, useWatchContractEvent, useSignMessage, usePublicClient } from 'wagmi'
 import { useTranslation } from 'react-i18next'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { formatEther, parseEther, formatUnits, getAddress } from 'viem'
 import { 
   UserIcon,
@@ -30,11 +29,13 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useUserProfile, userProfileService } from '../services/userProfileService'
 import { useActivityManager } from '../hooks/useActivityManager'
 import ActivityFeed from '../components/ActivityFeed'
+import { getNFTTierIcon } from '../config/nftIcons'
 
 export default function Profile() {
   const { t } = useTranslation()
   const { address, isConnected } = useAccount()
-  
+  const publicClient = usePublicClient()
+
   // 规范化钱包地址
   const normalizedAddress = useMemo(() => {
     if (!address) return null;
@@ -180,6 +181,95 @@ export default function Profile() {
     args: [address],
     enabled: !!address && !!CONTRACT_ADDRESSES.PROVIDER_NFT,
   })
+
+  // NFT详细信息状态
+  const [customerNFTs, setCustomerNFTs] = useState([])
+  const [providerNFTs, setProviderNFTs] = useState([])
+
+  // 获取用户NFT详细信息
+  useEffect(() => {
+    const fetchNFTDetails = async () => {
+      if (!address) return
+
+      // 获取Customer NFT详细信息
+      if (customerNftBalance && Number(customerNftBalance) > 0) {
+        const nfts = []
+        try {
+          for (let i = 0; i < Number(customerNftBalance); i++) {
+            try {
+              const tokenId = await publicClient.readContract({
+                address: CONTRACT_ADDRESSES.CUSTOMER_NFT,
+                abi: CONTRACT_ABI.CUSTOMER_NFT_ABI,
+                functionName: 'tokenOfOwnerByIndex',
+                args: [address, i],
+              })
+
+              const nftInfo = await publicClient.readContract({
+                address: CONTRACT_ADDRESSES.CUSTOMER_NFT,
+                abi: CONTRACT_ABI.CUSTOMER_NFT_ABI,
+                functionName: 'getNFTInfo',
+                args: [tokenId],
+              })
+
+              nfts.push({
+                tokenId: tokenId.toString(),
+                tier: Number(nftInfo[0]), // tier枚举值
+                discount: Number(nftInfo[1]) / 100, // 折扣百分比
+                monthlyReward: nftInfo[2]
+              })
+            } catch (error) {
+              console.error('获取Customer NFT详情失败:', error)
+            }
+          }
+          setCustomerNFTs(nfts)
+        } catch (error) {
+          console.error('获取Customer NFT列表失败:', error)
+        }
+      } else {
+        setCustomerNFTs([])
+      }
+
+      // 获取Provider NFT详细信息
+      if (providerNftBalance && Number(providerNftBalance) > 0) {
+        const nfts = []
+        try {
+          for (let i = 0; i < Number(providerNftBalance); i++) {
+            try {
+              const tokenId = await publicClient.readContract({
+                address: CONTRACT_ADDRESSES.PROVIDER_NFT,
+                abi: CONTRACT_ABI.PROVIDER_NFT_ABI,
+                functionName: 'tokenOfOwnerByIndex',
+                args: [address, i],
+              })
+
+              const nftInfo = await publicClient.readContract({
+                address: CONTRACT_ADDRESSES.PROVIDER_NFT,
+                abi: CONTRACT_ABI.PROVIDER_NFT_ABI,
+                functionName: 'getNFTInfo',
+                args: [tokenId],
+              })
+
+              nfts.push({
+                tokenId: tokenId.toString(),
+                tier: Number(nftInfo[0]), // tier枚举值
+                multiplier: Number(nftInfo[1]) / 10000, // 倍数
+                deviceRequirement: nftInfo[2]
+              })
+            } catch (error) {
+              console.error('获取Provider NFT详情失败:', error)
+            }
+          }
+          setProviderNFTs(nfts)
+        } catch (error) {
+          console.error('获取Provider NFT列表失败:', error)
+        }
+      } else {
+        setProviderNFTs([])
+      }
+    }
+
+    fetchNFTDetails()
+  }, [address, customerNftBalance, providerNftBalance, publicClient])
 
   // ETH Vault合约已删除，现在通过StakingPool管理ETH质押
 
@@ -777,24 +867,60 @@ export default function Profile() {
     return (ethVaultValue * 3000 + ccValue).toFixed(2)
   }
 
-  // 获取NFT等级
-  const getNftTier = (balance) => {
-    if (!balance || balance === 0n) return t('profile.nftTiers.none')
-    if (balance >= 3n) return t('profile.nftTiers.platinum')
-    if (balance === 2n) return t('profile.nftTiers.gold')
-    if (balance === 1n) return t('profile.nftTiers.bronze')
-    return t('profile.nftTiers.none')
+  // 获取NFT等级 - 基于实际NFT的tier信息
+  const getCustomerNftTier = () => {
+    if (customerNFTs.length === 0) return t('profile.nftTiers.none')
+    // 取最高等级的NFT
+    const highestTier = Math.max(...customerNFTs.map(nft => nft.tier))
+    const tierNames = {
+      1: t('profile.nftTiers.bronze'),
+      2: t('profile.nftTiers.silver'),
+      3: t('profile.nftTiers.gold'),
+      4: t('profile.nftTiers.platinum')
+    }
+    return tierNames[highestTier] || t('profile.nftTiers.none')
   }
 
-  // 获取NFT折扣
-  const getNftDiscount = (balance) => {
-    if (!balance || balance === 0n) return 0
-    if (balance >= 3n) return 15
-    if (balance === 2n) return 12
-    if (balance === 1n) return 5
-    return 0
+  const getProviderNftTier = () => {
+    if (providerNFTs.length === 0) return t('profile.nftTiers.none')
+    // 取最高等级的NFT
+    const highestTier = Math.max(...providerNFTs.map(nft => nft.tier))
+    const tierNames = {
+      1: t('profile.nftTiers.bronze'),
+      2: t('profile.nftTiers.silver'),
+      3: t('profile.nftTiers.gold'),
+      4: t('profile.nftTiers.platinum')
+    }
+    return tierNames[highestTier] || t('profile.nftTiers.none')
   }
 
+  // 获取NFT颜色和图标
+  const getNftTierColor = (tier) => {
+    const colors = {
+      1: 'from-yellow-600 to-yellow-700',  // BRONZE
+      2: 'from-gray-400 to-gray-500',      // SILVER
+      3: 'from-yellow-400 to-yellow-500',  // GOLD
+      4: 'from-slate-300 to-slate-400'     // PLATINUM
+    }
+    return colors[tier] || 'from-gray-400 to-gray-500'
+  }
+
+  // 获取NFT折扣 - 基于实际NFT的折扣信息
+  const getCustomerNftDiscount = () => {
+    if (customerNFTs.length === 0) return 0
+    // 取最高等级的NFT折扣
+    const highestDiscount = Math.max(...customerNFTs.map(nft => nft.discount))
+    return highestDiscount
+  }
+
+  const getProviderNftBonus = () => {
+    if (providerNFTs.length === 0) return 0
+    // 取最高等级的NFT奖励加成
+    const highestBonus = Math.max(...providerNFTs.map(nft => (nft.multiplier - 1) * 100))
+    return highestBonus
+  }
+
+  
   // 获取订单状态文本
   const getOrderStatusText = (status) => {
     const statuses = [
@@ -909,55 +1035,16 @@ export default function Profile() {
               {/* 连接钱包按钮 */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <div className="transform hover:scale-105 transition-all duration-200">
-                  <ConnectButton.Custom>
-                    {({
-                      account,
-                      chain,
-                      openAccountModal,
-                      openChainModal,
-                      openConnectModal,
-                      authenticationStatus,
-                      mounted,
-                    }) => {
-                      const ready = mounted && authenticationStatus !== 'loading'
-                      const connected =
-                        ready &&
-                        account &&
-                        chain &&
-                        (!authenticationStatus || authenticationStatus === 'authenticated')
-
-                      return (
-                        <div
-                          {...(!ready && {
-                            'aria-hidden': true,
-                            'style': {
-                              opacity: 0,
-                              pointerEvents: 'none',
-                              userSelect: 'none',
-                            },
-                          })}
-                        >
-                          {(() => {
-                            if (!connected) {
-                              return (
-                                <button
-                                  onClick={openConnectModal}
-                                  className="group relative bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
-                                >
-                                  <span className="absolute inset-0 bg-white/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
-                                  <span className="relative flex items-center space-x-2">
-                                    <WalletIcon className="w-5 h-5" />
-                                    <span>{t('profile.connectToStart')}</span>
-                                  </span>
-                                </button>
-                              )
-                            }
-                            return null
-                          })()}
-                        </div>
-                      )
-                    }}
-                  </ConnectButton.Custom>
+                  <Link
+                    to="/wallet-connect"
+                    className="group relative bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 inline-flex items-center"
+                  >
+                    <span className="absolute inset-0 bg-white/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
+                    <span className="relative flex items-center space-x-2">
+                      <WalletIcon className="w-5 h-5" />
+                      <span>{t('profile.connectToStart')}</span>
+                    </span>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -1169,15 +1256,26 @@ export default function Profile() {
                     </div>
                     <div className="text-right">
                       <p className="text-gray-600 dark:text-gray-300">{t('profile.ui.currentTier')}</p>
-                      <p className="text-lg font-semibold text-emerald-600 dark:text-emerald-400">
-                        {getNftTier(customerNftBalance)}
-                      </p>
+                      {customerNFTs.length > 0 ? (
+                        <div className="flex items-center justify-end space-x-2">
+                          <div className={`w-6 h-6 bg-gradient-to-br ${getNftTierColor(Math.max(...customerNFTs.map(nft => nft.tier)))} rounded flex items-center justify-center`}>
+                            {React.createElement(getNFTTierIcon('CUSTOMER', Math.max(...customerNFTs.map(nft => nft.tier))), { className: "w-3 h-3 text-white" })}
+                          </div>
+                          <p className="text-lg font-semibold text-emerald-600 dark:text-emerald-400">
+                            {getCustomerNftTier()}
+                          </p>
+                        </div>
+                      ) : (
+                        <p className="text-lg font-semibold text-gray-500 dark:text-gray-400">
+                          {getCustomerNftTier()}
+                        </p>
+                      )}
                     </div>
                   </div>
-                  {customerNftBalance && customerNftBalance > 0n && (
+                  {customerNFTs.length > 0 && (
                     <div className="mt-4 p-3 bg-emerald-100 dark:bg-emerald-800/30 rounded-lg">
                       <p className="text-sm text-emerald-800 dark:text-emerald-200">
-                        {t('profile.ui.enjoyServiceDiscount', { discount: getNftDiscount(customerNftBalance) })}
+                        {t('profile.ui.enjoyServiceDiscount', { discount: getCustomerNftDiscount() })}
                       </p>
                     </div>
                   )}
@@ -1194,15 +1292,26 @@ export default function Profile() {
                     </div>
                     <div className="text-right">
                       <p className="text-gray-600 dark:text-gray-300">{t('profile.ui.currentTier')}</p>
-                      <p className="text-lg font-semibold text-emerald-600 dark:text-emerald-400">
-                        {getNftTier(providerNftBalance)}
-                      </p>
+                      {providerNFTs.length > 0 ? (
+                        <div className="flex items-center justify-end space-x-2">
+                          <div className={`w-6 h-6 bg-gradient-to-br ${getNftTierColor(Math.max(...providerNFTs.map(nft => nft.tier)))} rounded flex items-center justify-center`}>
+                            {React.createElement(getNFTTierIcon('PROVIDER', Math.max(...providerNFTs.map(nft => nft.tier))), { className: "w-3 h-3 text-white" })}
+                          </div>
+                          <p className="text-lg font-semibold text-emerald-600 dark:text-emerald-400">
+                            {getProviderNftTier()}
+                          </p>
+                        </div>
+                      ) : (
+                        <p className="text-lg font-semibold text-gray-500 dark:text-gray-400">
+                          {getProviderNftTier()}
+                        </p>
+                      )}
                     </div>
                   </div>
-                  {providerNftBalance && providerNftBalance > 0n && (
+                  {providerNFTs.length > 0 && (
                     <div className="mt-4 p-3 bg-emerald-100 dark:bg-emerald-800/30 rounded-lg">
                       <p className="text-sm text-emerald-800 dark:text-emerald-200">
-                        {t('profile.ui.enjoyRewardBonus', { bonus: getNftDiscount(providerNftBalance) + 5 })}
+                        {t('profile.ui.enjoyRewardBonus', { bonus: getProviderNftBonus() })}
                       </p>
                     </div>
                   )}
@@ -1340,7 +1449,7 @@ export default function Profile() {
                       <span className="text-sm text-emerald-600 dark:text-emerald-400">{t('profile.ui.serviceDiscount')}</span>
                     </div>
                   </div>
-                  
+
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600 dark:text-gray-300">{t('profile.ui.holdingAmount')}</span>
@@ -1348,21 +1457,32 @@ export default function Profile() {
                         {customerNftBalance?.toString() || '0'} NFT
                       </span>
                     </div>
-                    
+
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600 dark:text-gray-300">{t('profile.ui.currentTier')}</span>
-                      <span className="font-medium text-gray-900 dark:text-white">
-                        {getNftTier(customerNftBalance)}
-                      </span>
+                      {customerNFTs.length > 0 ? (
+                        <div className="flex items-center space-x-2">
+                          <div className={`w-6 h-6 bg-gradient-to-br ${getNftTierColor(Math.max(...customerNFTs.map(nft => nft.tier)))} rounded flex items-center justify-center`}>
+                            {React.createElement(getNFTTierIcon('CUSTOMER', Math.max(...customerNFTs.map(nft => nft.tier))), { className: "w-3 h-3 text-white" })}
+                          </div>
+                          <span className="font-medium text-gray-900 dark:text-white">
+                            {getCustomerNftTier()}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="font-medium text-gray-500 dark:text-gray-400">
+                          {getCustomerNftTier()}
+                        </span>
+                      )}
                     </div>
-                    
+
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600 dark:text-gray-300">{t('profile.ui.discountRate')}</span>
                       <span className="font-medium text-green-600 dark:text-green-400">
-                        {getNftDiscount(customerNftBalance)}%
+                        {getCustomerNftDiscount()}%
                       </span>
                     </div>
-                    
+
                     <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-3">
                       <p className="text-sm text-emerald-800 dark:text-emerald-200">
                         {t('profile.ui.customerNftDescription')}
@@ -1379,7 +1499,7 @@ export default function Profile() {
                       <span className="text-sm text-emerald-600 dark:text-emerald-400">{t('profile.ui.rewardBonus')}</span>
                     </div>
                   </div>
-                  
+
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600 dark:text-gray-300">{t('profile.ui.holdingAmount')}</span>
@@ -1387,21 +1507,32 @@ export default function Profile() {
                         {providerNftBalance?.toString() || '0'} NFT
                       </span>
                     </div>
-                    
+
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600 dark:text-gray-300">{t('profile.ui.currentTier')}</span>
-                      <span className="font-medium text-gray-900 dark:text-white">
-                        {getNftTier(providerNftBalance)}
-                      </span>
+                      {providerNFTs.length > 0 ? (
+                        <div className="flex items-center space-x-2">
+                          <div className={`w-6 h-6 bg-gradient-to-br ${getNftTierColor(Math.max(...providerNFTs.map(nft => nft.tier)))} rounded flex items-center justify-center`}>
+                            {React.createElement(getNFTTierIcon('PROVIDER', Math.max(...providerNFTs.map(nft => nft.tier))), { className: "w-3 h-3 text-white" })}
+                          </div>
+                          <span className="font-medium text-gray-900 dark:text-white">
+                            {getProviderNftTier()}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="font-medium text-gray-500 dark:text-gray-400">
+                          {getProviderNftTier()}
+                        </span>
+                      )}
                     </div>
-                    
+
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600 dark:text-gray-300">{t('profile.ui.rewardBonus')}</span>
                       <span className="font-medium text-emerald-600 dark:text-emerald-400">
-                        {getNftDiscount(providerNftBalance) + 5}%
+                        {getProviderNftBonus()}%
                       </span>
                     </div>
-                    
+
                     <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-3">
                       <p className="text-sm text-emerald-800 dark:text-emerald-200">
                         {t('profile.ui.providerNftDescription')}
@@ -1411,30 +1542,7 @@ export default function Profile() {
                 </div>
               </div>
 
-              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
-                <h4 className="font-medium text-gray-900 dark:text-white mb-2">{t('profile.ui.nftTierDescription')}</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <h5 className="font-medium text-gray-900 dark:text-white mb-1">Customer NFT</h5>
-                    <ul className="text-gray-600 dark:text-gray-300 space-y-1">
-                      <li>• {t('profile.ui.customerNftTiers.bronze')}</li>
-                      <li>• {t('profile.ui.customerNftTiers.silver')}</li>
-                      <li>• {t('profile.ui.customerNftTiers.gold')}</li>
-                      <li>• {t('profile.ui.customerNftTiers.platinum')}</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h5 className="font-medium text-gray-900 dark:text-white mb-1">Provider NFT</h5>
-                    <ul className="text-gray-600 dark:text-gray-300 space-y-1">
-                      <li>• {t('profile.ui.providerNftTiers.bronze')}</li>
-                      <li>• {t('profile.ui.providerNftTiers.silver')}</li>
-                      <li>• {t('profile.ui.providerNftTiers.gold')}</li>
-                      <li>• {t('profile.ui.providerNftTiers.platinum')}</li>
-                    </ul>
-                  </div>
-                </div>
               </div>
-            </div>
           )}
 
           {activeTab === 'activity' && (

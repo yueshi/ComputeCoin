@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>钱包连接测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>钱包连接测试页面</h1>
+
+    <div class="test-section">
+        <h2>环境检查</h2>
+        <div id="environment-status"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>钱包检测</h2>
+        <div id="wallet-status"></div>
+        <button onclick="testWalletDetection()">重新检测钱包</button>
+    </div>
+
+    <div class="test-section">
+        <h2>应用访问</h2>
+        <div>
+            <a href="/" target="_blank">
+                <button>打开主应用</button>
+            </a>
+            <button onclick="testAppInNewTab()">在新标签页测试钱包连接</button>
+        </div>
+        <div id="app-status"></div>
+    </div>
+
+    <script>
+        // 检查基础环境
+        function checkEnvironment() {
+            const status = document.getElementById('environment-status');
+            let html = '';
+
+            // 检查 window.ethereum
+            if (typeof window.ethereum !== 'undefined') {
+                html += '<div class="status success">✓ window.ethereum 已定义</div>';
+            } else {
+                html += '<div class="status error">✗ window.ethereum 未定义</div>';
+            }
+
+            // 检查 MetaMask
+            if (window.ethereum?.isMetaMask) {
+                html += '<div class="status success">✓ MetaMask 检测到</div>';
+            } else {
+                html += '<div class="status error">✗ MetaMask 未检测到</div>';
+            }
+
+            // 检查 wagmi 配置
+            if (window.wagmiConfig) {
+                html += '<div class="status success">✓ Wagmi 配置已加载</div>';
+            } else {
+                html += '<div class="status info">ℹ Wagmi 配置未加载（可能正常，需要 React 应用运行）</div>';
+            }
+
+            status.innerHTML = html;
+        }
+
+        // 检测钱包
+        function testWalletDetection() {
+            const status = document.getElementById('wallet-status');
+            let html = '';
+
+            // 检测各种钱包
+            const wallets = {
+                'MetaMask': window.ethereum?.isMetaMask,
+                'Coinbase': !!window.coinbaseWalletExtension,
+                'Trust Wallet': window.ethereum?.isTrust,
+                'Brave Wallet': window.ethereum?.isBraveWallet,
+                'Rabby': window.ethereum?.isRabby,
+            };
+
+            for (const [name, detected] of Object.entries(wallets)) {
+                if (detected) {
+                    html += `<div class="status success">✓ ${name} 检测到</div>`;
+                } else {
+                    html += `<div class="status info">ℹ ${name} 未检测到</div>`;
+                }
+            }
+
+            // 检查 providers 数组
+            if (window.ethereum?.providers && Array.isArray(window.ethereum.providers)) {
+                html += `<div class="status success">✓ 检测到 ${window.ethereum.providers.length} 个钱包提供者</div>`;
+            }
+
+            status.innerHTML = html;
+        }
+
+        // 测试应用
+        function testAppInNewTab() {
+            const status = document.getElementById('app-status');
+            status.innerHTML = '<div class="status info">ℹ 正在新标签页中打开应用进行测试...</div>';
+
+            // 在新标签页中打开应用
+            const newWindow = window.open('/', '_blank');
+
+            if (newWindow) {
+                setTimeout(() => {
+                    status.innerHTML = '<div class="status success">✓ 应用已在新标签页中打开，请测试钱包连接功能</div>';
+                }, 1000);
+            } else {
+                status.innerHTML = '<div class="status error">✗ 无法打开新标签页，请检查弹窗阻止设置</div>';
+            }
+        }
+
+        // 页面加载时执行检查
+        window.addEventListener('load', () => {
+            checkEnvironment();
+            testWalletDetection();
+
+            // 定期检查钱包状态
+            setInterval(() => {
+                checkEnvironment();
+            }, 3000);
+        });
+
+        // 监听钱包变化
+        if (typeof window.ethereum !== 'undefined' && window.ethereum.on) {
+            window.ethereum.on('accountsChanged', (accounts) => {
+                console.log('钱包账户变化:', accounts);
+                checkEnvironment();
+                testWalletDetection();
+            });
+
+            window.ethereum.on('chainChanged', (chainId) => {
+                console.log('链ID变化:', chainId);
+                checkEnvironment();
+                testWalletDetection();
+            });
+        }
+    </script>
+</body>
+</html>

@@ -328,6 +328,7 @@
     "exchange": "兑换",
     "staking": "质押",
     "nfts": "NFT",
+    "orders": "订单",
     "profile": "我的"
   },
   "marketplace": {
@@ -812,7 +813,7 @@
           "providerNFT": "提供商NFT",
           "withType": "{type}详情"
         },
-        "tokenId": "Token ID",
+        "tokenId": "Token ID: {id}",
         "computingDiscount": "算力折扣",
         "monthlyRewards": "每月奖励",
         "exclusivePrivileges": "专属特权",
@@ -1243,5 +1244,10 @@
     "switchSuccess": "语言已切换为 {language}",
     "switchFailed": "语言切换失败",
     "switching": "切换中..."
+  },
+  "themeToggle": {
+    "toggleTheme": "切换主题",
+    "switchToDark": "切换到深色主题",
+    "switchToLight": "切换到浅色主题"
   }
 }

@@ -26,6 +26,152 @@ export const CONTRACT_ABI = {
     "event Approval(address indexed owner, address indexed spender, uint256 value)"
   ],
 
+  // ComputeMarket合约ABI (基于实际合约ComputeMarket.sol修复)
+  COMPUTE_MARKET_ORDER_ABI: [
+    {
+      "inputs": [{"internalType": "uint256", "name": "orderId", "type": "uint256"}],
+      "name": "getOrder",
+      "outputs": [
+        {
+          "components": [
+            {"internalType": "uint256", "name": "id", "type": "uint256"},
+            {"internalType": "address", "name": "client", "type": "address"},
+            {"internalType": "address", "name": "provider", "type": "address"},
+            {"internalType": "uint256", "name": "usdPrice", "type": "uint256"},
+            {"internalType": "uint256", "name": "finalPrice", "type": "uint256"},
+            {"internalType": "uint256", "name": "ccPaymentAmount", "type": "uint256"},
+            {"internalType": "enum ComputeMarket.OrderStatus", "name": "status", "type": "uint8"},
+            {"internalType": "uint256", "name": "createTime", "type": "uint256"},
+            {"internalType": "uint256", "name": "customerNftId", "type": "uint256"}
+          ],
+          "internalType": "struct ComputeMarket.ComputeOrder",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {"internalType": "address", "name": "user", "type": "address"},
+        {"internalType": "enum ComputeMarket.OrderStatus", "name": "status", "type": "uint8"}
+      ],
+      "name": "getUserOrders",
+      "outputs": [{"internalType": "uint256[]", "name": "", "type": "uint256[]"}],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getMarketStats",
+      "outputs": [
+        {"internalType": "uint256", "name": "orderCount", "type": "uint256"},
+        {"internalType": "uint256", "name": "volumeUSD", "type": "uint256"},
+        {"internalType": "uint256", "name": "volumeCC", "type": "uint256"},
+        {"internalType": "uint256", "name": "burnedCC", "type": "uint256"},
+        {"internalType": "uint256", "name": "platformFees", "type": "uint256"}
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [{"internalType": "address", "name": "", "type": "address"}],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "nextOrderId",
+      "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "totalOrders",
+      "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "totalVolumeUSD",
+      "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "totalVolumeCC",
+      "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "totalBurnedCC",
+      "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "totalPlatformFees",
+      "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [{"internalType": "uint256", "name": "orderId", "type": "uint256"}],
+      "name": "completeOrder",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [{"internalType": "uint256", "name": "orderId", "type": "uint256"}],
+      "name": "cancelOrder",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [{"internalType": "uint256", "name": "orderId", "type": "uint256"}],
+      "name": "payOrderWithCCUSD",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [{"internalType": "uint256", "name": "orderId", "type": "uint256"}],
+      "name": "payOrderWithCC",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {"internalType": "address", "name": "_provider", "type": "address"},
+        {"internalType": "uint256", "name": "_usdPrice", "type": "uint256"},
+        {"internalType": "bool", "name": "_useNFTDiscount", "type": "bool"}
+      ],
+      "name": "createOrder",
+      "outputs": [{"internalType": "uint256", "name": "orderId", "type": "uint256"}],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [{"internalType": "uint256", "name": "usdAmount", "type": "uint256"}],
+      "name": "estimateCCPayment",
+      "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+
   // CC代币ABI - 基于实际合约生成的完整ABI
   CC_TOKEN_ABI: [
     {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt, useChainId, usePublicClient, useWatchContractEvent } from 'wagmi'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
+import WalletConnectButton from '../components/WalletConnectButton'
 import { formatEther, parseEther, parseUnits } from 'viem'
 import { 
   PhotoIcon, 
@@ -30,6 +30,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { CONTRACT_ADDRESSES, CONTRACT_ABI, APP_CONFIG, GAS_LIMITS } from '../config/contracts'
 import { useActivityManager } from '../hooks/useActivityManager'
+import { getNFTTierIcon, getTierIcon, getTierIconByEnum } from '../config/nftIcons'
 
 const NFT_TIERS = APP_CONFIG.nftTiers.customer
 const PROVIDER_NFT_TIERS = APP_CONFIG.nftTiers.provider
@@ -869,29 +870,31 @@ export default function NFTManagement() {
   }
 
   const getTierColor = (tier) => {
+    // tier是合约枚举值: 1=BRONZE, 2=SILVER, 3=GOLD, 4=PLATINUM
+    // 需要转换为数组索引 (tier-1)
     const colors = [
-      'from-yellow-600 to-yellow-700',
-      'from-gray-400 to-gray-500', 
-      'from-yellow-400 to-yellow-500',
-      'from-slate-300 to-slate-400'
+      'from-yellow-600 to-yellow-700',  // BRONZE - tier 1
+      'from-gray-400 to-gray-500',      // SILVER - tier 2
+      'from-yellow-400 to-yellow-500',  // GOLD - tier 3
+      'from-slate-300 to-slate-400'     // PLATINUM - tier 4
     ]
-    return colors[tier] || 'from-gray-400 to-gray-500'
+    return colors[tier - 1] || 'from-gray-400 to-gray-500'
   }
 
   const getTierIcon = (tier, type) => {
-    // 统一NFT等级图标：BRONZE(铜牌), SILVER(星星), GOLD(CPU芯片), PLATINUM(闪电)
-    const icons = [TrophyIcon, StarIcon, CpuChipIcon, BoltIcon]
-    return icons[tier] || StarIcon
+    // type是'customer'或'provider'，tier是合约枚举值
+    const nftTypeKey = type === 'customer' ? 'CUSTOMER' : 'PROVIDER'
+    return getNFTTierIcon(nftTypeKey, tier)
   }
 
   const getTierDisplay = (tier) => {
     const tierData = NFT_TIERS[tier - 1]
     return {
       text: tierData?.name || 'UNKNOWN',
-      color: tier === 0 ? 'bg-gradient-to-r from-yellow-500 to-amber-600' : // BRONZE - 青铜色
-             tier === 1 ? 'bg-gradient-to-r from-gray-400 to-gray-500' : // SILVER - 银色
-             tier === 2 ? 'bg-gradient-to-r from-yellow-400 to-yellow-500' : // GOLD - 金色
-             'bg-gradient-to-r from-purple-400 to-purple-500', // PLATINUM - 铂金色
+      color: tier === 1 ? 'bg-gradient-to-r from-yellow-600 to-yellow-700' : // BRONZE - 青铜色
+             tier === 2 ? 'bg-gradient-to-r from-gray-400 to-gray-500' : // SILVER - 银色
+             tier === 3 ? 'bg-gradient-to-r from-yellow-400 to-yellow-500' : // GOLD - 金色
+             'bg-gradient-to-r from-slate-300 to-slate-400', // PLATINUM - 铂金色
       icon: getTierIcon(tier, 'customer')
     }
   }
@@ -926,55 +929,9 @@ export default function NFTManagement() {
               {/* 连接钱包按钮 */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <div className="transform hover:scale-105 transition-all duration-200">
-                  <ConnectButton.Custom>
-                    {({
-                      account,
-                      chain,
-                      openAccountModal,
-                      openChainModal,
-                      openConnectModal,
-                      authenticationStatus,
-                      mounted,
-                    }) => {
-                      const ready = mounted && authenticationStatus !== 'loading'
-                      const connected =
-                        ready &&
-                        account &&
-                        chain &&
-                        (!authenticationStatus || authenticationStatus === 'authenticated')
-
-                      return (
-                        <div
-                          {...(!ready && {
-                            'aria-hidden': true,
-                            'style': {
-                              opacity: 0,
-                              pointerEvents: 'none',
-                              userSelect: 'none',
-                            },
-                          })}
-                        >
-                          {(() => {
-                            if (!connected) {
-                              return (
-                                <button
-                                  onClick={openConnectModal}
-                                  className="group relative bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
-                                >
-                                  <span className="absolute inset-0 bg-white/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
-                                  <span className="relative flex items-center space-x-2">
-                                    <WalletIcon className="w-5 h-5" />
-                                    <span>{t('wallet.connect')}</span>
-                                  </span>
-                                </button>
-                              )
-                            }
-                            return null
-                          })()}
-                        </div>
-                      )
-                    }}
-                  </ConnectButton.Custom>
+                  <WalletConnectButton
+                    className="group relative bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
+                  />
                 </div>
               </div>
             </div>
@@ -1242,7 +1199,7 @@ export default function NFTManagement() {
                     <div className="flex flex-col lg:flex-row gap-6">
                       {/* 左侧：NFT 标题和图标 */}
                       <div className="flex items-center space-x-4 lg:w-1/3">
-                        <div className={`w-20 h-20 bg-gradient-to-br ${getTierColor(nft.tier)} rounded-xl flex items-center justify-center flex-shrink-0 shadow-xl shadow-emerald-500/20 hover:shadow-2xl hover:shadow-emerald-500/30 transition-all duration-300`}>
+                        <div className={`w-20 h-20 bg-gradient-to-r ${getTierColor(nft.tier)} rounded-xl flex items-center justify-center flex-shrink-0 shadow-xl shadow-emerald-500/20 hover:shadow-2xl hover:shadow-emerald-500/30 transition-all duration-300`}>
                           <IconComponent className="w-8 h-8 text-white drop-shadow-lg" />
                         </div>
                         <div>
@@ -1315,7 +1272,7 @@ export default function NFTManagement() {
                     <div className="flex flex-col lg:flex-row gap-6">
                       {/* 左侧：NFT 标题和图标 */}
                       <div className="flex items-center space-x-4 lg:w-1/4">
-                        <div className={`w-20 h-20 bg-gradient-to-br ${getTierColor(nft.tier)} rounded-xl flex items-center justify-center flex-shrink-0 shadow-xl shadow-emerald-500/20 hover:shadow-2xl hover:shadow-emerald-500/30 transition-all duration-300`}>
+                        <div className={`w-20 h-20 bg-gradient-to-r ${getTierColor(nft.tier)} rounded-xl flex items-center justify-center flex-shrink-0 shadow-xl shadow-emerald-500/20 hover:shadow-2xl hover:shadow-emerald-500/30 transition-all duration-300`}>
                           <IconComponent className="w-8 h-8 text-white drop-shadow-lg" />
                         </div>
                         <div>

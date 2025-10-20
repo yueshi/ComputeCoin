@@ -26,6 +26,7 @@ import {
   CpuChipIcon
 } from '@heroicons/react/24/outline'
 import { CONTRACT_ADDRESSES, CONTRACT_ABI, APP_CONFIG } from '../config/contracts'
+import { getNFTTierIcon } from '../config/nftIcons'
 
 const NFT_TIERS = APP_CONFIG.nftTiers.customer
 const PROVIDER_NFT_TIERS = APP_CONFIG.nftTiers.provider
@@ -165,30 +166,22 @@ export default function NFTDetails({ nftType }) {
   }, [refetchOwner, refetchDetails, refetchAdditionalInfo])
 
   const getTierIcon = (tier) => {
-    // tier是枚举值: 1=BRONZE, 2=SILVER, 3=GOLD, 4=PLATINUM
-    if (nftType === 'customer') {
-      return tier === 4 ? TrophyIcon : // PLATINUM
-             tier === 3 ? StarIcon :    // GOLD
-             tier === 2 ? ShieldCheckIcon : // SILVER
-             CheckCircleIcon    // BRONZE (default)
-    } else {
-      return tier === 4 ? BoltIcon :    // PLATINUM
-             tier === 3 ? FireIcon :    // GOLD
-             tier === 2 ? SparklesIcon : // SILVER
-             TrophyIcon      // BRONZE (default)
-    }
+    // 使用统一的图标配置
+    const nftTypeKey = nftType === 'customer' ? 'CUSTOMER' : 'PROVIDER'
+    return getNFTTierIcon(nftTypeKey, tier)
   }
 
   const getTierColor = (tier) => {
     // tier是枚举值: 0=NONE, 1=BRONZE, 2=SILVER, 3=GOLD, 4=PLATINUM
-    const colors = {
-      0: 'bg-gray-100 text-gray-800 border-gray-300',    // NONE
-      1: 'bg-orange-100 text-orange-800 border-orange-300', // BRONZE
-      2: 'bg-blue-100 text-blue-800 border-blue-300',      // SILVER
-      3: 'bg-yellow-100 text-yellow-800 border-yellow-300', // GOLD
-      4: 'bg-purple-100 text-purple-800 border-purple-300'  // PLATINUM
-    }
-    return colors[tier] || colors[0]
+    // 统一使用与staking页面一致的颜色方案
+    const tierIndex = Math.max(0, tier - 1) // 将枚举值转换为数组索引
+    const colors = [
+      'from-yellow-600 to-yellow-700',  // BRONZE - tier 1
+      'from-gray-400 to-gray-500',      // SILVER - tier 2
+      'from-yellow-400 to-yellow-500',  // GOLD - tier 3
+      'from-slate-300 to-slate-400'     // PLATINUM - tier 4
+    ]
+    return tierIndex < colors.length ? colors[tierIndex] : colors[0]
   }
 
   if (loading) {
@@ -258,19 +251,20 @@ export default function NFTDetails({ nftType }) {
         <div className="card mb-8">
           <div className="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
             {/* NFT 图标 */}
-            <div className={`w-32 h-32 rounded-2xl flex items-center justify-center ${nftData.color} bg-opacity-20 border-2 border-opacity-30`}>
-              <TierIcon className="w-16 h-16 text-white" />
+            <div className={`w-32 h-32 rounded-2xl flex items-center justify-center bg-gradient-to-br ${getTierColor(nftData.tier)} shadow-xl`}>
+              <TierIcon className="w-16 h-16 text-white drop-shadow-lg" />
             </div>
 
             {/* NFT 基本信息 */}
             <div className="flex-1 text-center md:text-left">
-              <div className="flex items-center justify-center md:justify-start space-x-3 mb-4">
+              <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start space-y-2 sm:space-y-0 sm:space-x-3 mb-4">
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
                   {nftType === 'customer' ? t('nft.common.customerNFT') : t('nft.common.providerNFT')}
                 </h1>
-                <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getTierColor(nftData.tier)}`}>
+                <div className={`inline-flex items-center px-4 py-2 rounded-full text-white font-bold text-sm bg-gradient-to-r ${getTierColor(nftData.tier)} shadow-lg`}>
+                  <TierIcon className="w-4 h-4 mr-2" />
                   {nftData.tierName}
-                </span>
+                </div>
               </div>
 
               <p className="text-gray-600 dark:text-gray-400 mb-4">{nftData.tierDescription}</p>

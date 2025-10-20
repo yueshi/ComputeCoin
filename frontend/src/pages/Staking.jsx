@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, useReadContract, useWatchContractEvent, useBalance } from 'wagmi'
 import { useTranslation } from 'react-i18next'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
+import WalletConnectButton from '../components/WalletConnectButton'
 import { formatEther, parseEther, formatUnits } from 'viem'
 import { 
   CurrencyDollarIcon,
@@ -27,6 +27,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { CONTRACT_ADDRESSES, CONTRACT_ABI, GAS_LIMITS } from '../config/contracts'
 import { useActivityManager } from '../hooks/useActivityManager'
+import { getNFTTierIcon, getTierIcon, getTierIconByEnum } from '../config/nftIcons'
 
 const STAKING_OPTIONS = (t) => [
   {
@@ -371,10 +372,9 @@ export default function Staking() {
   const batchRefresh = dataRefreshManager.refreshCoreData
 
   // 获取NFT等级图标
-  const getTierIcon = (tier) => {
-    // NFT等级图标：BRONZE(铜牌), SILVER(星星), GOLD(CPU芯片), PLATINUM(闪电)
-    const icons = [TrophyIcon, StarIcon, CpuChipIcon, BoltIcon]
-    return icons[tier] || StarIcon
+  const getTierIconLocal = (tier) => {
+    // 使用统一的图标配置 (处理合约枚举值)
+    return getTierIconByEnum(tier)
   }
 
   // 获取NFT等级颜色
@@ -1518,55 +1518,9 @@ export default function Staking() {
               {/* 连接钱包按钮 */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <div className="transform hover:scale-105 transition-all duration-200">
-                  <ConnectButton.Custom>
-                    {({
-                      account,
-                      chain,
-                      openAccountModal,
-                      openChainModal,
-                      openConnectModal,
-                      authenticationStatus,
-                      mounted,
-                    }) => {
-                      const ready = mounted && authenticationStatus !== 'loading'
-                      const connected =
-                        ready &&
-                        account &&
-                        chain &&
-                        (!authenticationStatus || authenticationStatus === 'authenticated')
-
-                      return (
-                        <div
-                          {...(!ready && {
-                            'aria-hidden': true,
-                            'style': {
-                              opacity: 0,
-                              pointerEvents: 'none',
-                              userSelect: 'none',
-                            },
-                          })}
-                        >
-                          {(() => {
-                            if (!connected) {
-                              return (
-                                <button
-                                  onClick={openConnectModal}
-                                  className="group relative bg-gradient-to-r from-emerald-600 to-emerald-600 text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
-                                >
-                                  <span className="absolute inset-0 bg-white/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
-                                  <span className="relative flex items-center space-x-2">
-                                    <WalletIcon className="w-5 h-5" />
-                                    <span>{t('staking.connectToStart')}</span>
-                                  </span>
-                                </button>
-                              )
-                            }
-                            return null
-                          })()}
-                        </div>
-                      )
-                    }}
-                  </ConnectButton.Custom>
+                  <WalletConnectButton
+                    className="group relative bg-gradient-to-r from-emerald-600 to-emerald-600 text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
+                  />
                 </div>
               </div>
             </div>
@@ -2076,7 +2030,7 @@ export default function Staking() {
                     <label className="block text-sm font-medium text-emerald-700 dark:text-emerald-300 mb-2">{t('staking.ui.selectNFTTier', { type: nftType === 'customer' ? t('staking.types.customer') : t('staking.types.provider') })}</label>
                     <div className="grid grid-cols-4 gap-2">
                       {(nftType === 'customer' ? NFT_TIERS : PROVIDER_NFT_TIERS).map((tier) => {
-                        const IconComponent = getTierIcon(tier.tier)
+                        const IconComponent = getTierIconLocal(tier.tier)
                         const isSelected = nftType === 'customer' ? selectedTier === tier.tier : selectedProviderTier === tier.tier
                         const handleSelect = nftType === 'customer' 
                           ? () => setSelectedTier(tier.tier)
