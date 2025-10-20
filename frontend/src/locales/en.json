@@ -51,7 +51,8 @@
     "ethBalanceFetchFailed": "ETH balance fetch failed",
     "vaultDataRefreshComplete": "Wallet connection data refresh complete",
     "vaultDataRefreshFailed": "Wallet connection data refresh failed:",
-    "walletBalanceRefreshFailed": "Wallet balance refresh failed:"
+    "walletBalanceRefreshFailed": "Wallet balance refresh failed:",
+    "installMetaMask": "Please install MetaMask wallet"
   },
   "network": {
     "localTest": "Local Test",

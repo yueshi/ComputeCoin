@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useAccount, useConnect, useDisconnect, useChainId, useSwitchChain } from 'wagmi'
 import { metaMask } from 'wagmi/connectors'
 import {
@@ -21,6 +22,7 @@ export default function WalletConnectButton({
   showBalance = false,
   className = ''
 }) {
+  const { t } = useTranslation()
   const { isConnected, address } = useAccount()
   const { connect, connectors, isPending } = useConnect()
   const { disconnect } = useDisconnect()
@@ -47,7 +49,7 @@ export default function WalletConnectButton({
   // 处理连接钱包
   const handleConnect = async () => {
     if (connectors.length === 0) {
-      alert('请安装 MetaMask 钱包')
+      alert(t('wallet.installMetaMask'))
       return
     }
 
@@ -102,7 +104,7 @@ export default function WalletConnectButton({
             <div className="p-4 space-y-3">
               {/* 地址信息 */}
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600 dark:text-gray-400">钱包地址</span>
+                <span className="text-sm text-gray-600 dark:text-gray-400">{t('wallet.address')}</span>
                 <span className="text-sm font-mono text-gray-900 dark:text-white">
                   {address.slice(0, 6)}...{address.slice(-4)}
                 </span>
@@ -115,7 +117,7 @@ export default function WalletConnectButton({
                   className="w-full flex items-center justify-center space-x-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
                 >
                   <DocumentDuplicateIcon className="w-4 h-4" />
-                  <span>复制地址</span>
+                  <span>{t('wallet.copyAddress')}</span>
                 </button>
 
                 <button
@@ -123,7 +125,7 @@ export default function WalletConnectButton({
                   className="w-full flex items-center justify-center space-x-2 px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors"
                 >
                   <ArrowRightOnRectangleIcon className="w-4 h-4" />
-                  <span>断开连接</span>
+                  <span>{t('wallet.disconnect')}</span>
                 </button>
               </div>
             </div>
@@ -143,7 +145,7 @@ export default function WalletConnectButton({
       >
         <WalletIcon className="w-5 h-5" />
         <span className="text-sm font-medium">
-          {isConnecting ? '连接中...' : '连接钱包'}
+          {isConnecting ? t('wallet.connecting') : t('wallet.connect')}
         </span>
       </button>
     )
@@ -158,7 +160,7 @@ export default function WalletConnectButton({
       >
         <WalletIcon className="w-5 h-5" />
         <span className="font-medium">
-          {isConnecting ? '连接中...' : '连接钱包'}
+          {isConnecting ? t('wallet.connecting') : t('wallet.connect')}
         </span>
         {!isConnecting && <ArrowRightIcon className="w-4 h-4" />}
       </button>
@@ -173,7 +175,7 @@ export default function WalletConnectButton({
       className={`inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-medium rounded-lg hover:from-emerald-600 hover:to-teal-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
     >
       <WalletIcon className="w-5 h-5" />
-      <span>{isConnecting ? '连接中...' : '连接钱包'}</span>
+      <span>{isConnecting ? t('wallet.connecting') : t('wallet.connect')}</span>
       {!isConnecting && <ArrowRightIcon className="w-4 h-4" />}
     </button>
   )
@@ -181,6 +183,7 @@ export default function WalletConnectButton({
 
 // 专用的内联连接按钮（用于导航栏等空间受限的地方）
 export function InlineWalletConnectButton({ className = '' }) {
+  const { t } = useTranslation()
   const { isConnected, address } = useAccount()
   const { connect } = useConnect()
   const [isConnecting, setIsConnecting] = useState(false)
@@ -211,12 +214,10 @@ export function InlineWalletConnectButton({ className = '' }) {
     <button
       onClick={handleConnect}
       disabled={isConnecting}
-      className={`flex items-center space-x-2 px-3 py-2 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+      className={`flex items-center space-x-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
     >
-      <WalletIcon className="w-4 h-4" />
-      <span className="text-sm font-medium">
-        {isConnecting ? '连接中...' : '连接'}
-      </span>
+      <WalletIcon className="w-4 h-4 flex-shrink-0" />
+      <span>{isConnecting ? t('wallet.connecting') : t('wallet.connect')}</span>
     </button>
   )
 }

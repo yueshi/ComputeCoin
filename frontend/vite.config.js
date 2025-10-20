@@ -7,7 +7,11 @@ export default defineConfig({
   server: {
     port: 8088,
     host: true,
-    open: true // 自动打开浏览器
+    open: true, // 自动打开浏览器
+    fs: {
+      // 确保可以正确处理JSON文件
+      strict: false
+    }
   },
   css: {
     postcss: './postcss.config.js', // 启用PostCSS配置

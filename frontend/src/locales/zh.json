@@ -51,7 +51,8 @@
     "ethBalanceFetchFailed": "ETH余额获取失败",
     "vaultDataRefreshComplete": "钱包连接数据刷新完成",
     "vaultDataRefreshFailed": "钱包连接数据刷新失败:",
-    "walletBalanceRefreshFailed": "钱包余额刷新失败:"
+    "walletBalanceRefreshFailed": "钱包余额刷新失败:",
+    "installMetaMask": "请安装 MetaMask 钱包"
   },
   "network": {
     "localTest": "本地测试",
