@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useAccount, useBalance, useSwitchChain, useDisconnect, useReadContract } from 'wagmi'
 import { formatEther } from 'viem'
 import { CONTRACT_ADDRESSES, CONTRACT_ABI } from '../config/contracts'
+import { CCUSD_CONFIG } from '../config/mockusdc-config'
 import {
   HomeIcon,
   ShoppingCartIcon,
@@ -80,8 +81,8 @@ export default function Layout({ children }) {
   
   // 获取CCUSD代币余额
   const { data: ccusdBalance } = useReadContract({
-    address: CONTRACT_ADDRESSES.CCSD_TOKEN,
-    abi: CONTRACT_ABI.CCSD_ABI,
+    address: CCUSD_CONFIG.address,
+    abi: CCUSD_CONFIG.abi,
     functionName: 'balanceOf',
     args: address ? [address] : undefined,
     watch: true,

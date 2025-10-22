@@ -127,13 +127,14 @@ export default function OrderManagement() {
 
   // 管理员订单获取逻辑
   const fetchOrdersForAdmin = useMemo(() => {
-    if (!marketStats) return []
+    if (!marketStats) return { contracts: [], orderIds: [] }
 
     const totalOrders = Number(marketStats.totalOrders)
-    if (totalOrders === 0) return []
+    if (totalOrders === 0) return { contracts: [], orderIds: [] }
 
     // 使用useReadContracts批量查询订单
     const contracts = []
+    const orderIds = []
     for (let i = 1; i <= Math.min(totalOrders, 20); i++) { // 限制最多查询20个订单
       contracts.push({
         address: CONTRACT_ADDRESSES.COMPUTE_MARKET,
@@ -141,14 +142,15 @@ export default function OrderManagement() {
         functionName: 'getOrder',
         args: [i]
       })
+      orderIds.push(i)
     }
 
-    return contracts
+    return { contracts, orderIds }
   }, [marketStats])
 
   // 批量查询管理员订单
   const { data: adminOrdersData, isLoading: adminOrdersLoading } = useReadContracts({
-    contracts: isAdmin && marketStats ? fetchOrdersForAdmin : [],
+    contracts: isAdmin && marketStats ? fetchOrdersForAdmin.contracts : [],
     enabled: isAdmin && !!marketStats && marketStats.totalOrders > 0
   })
 
@@ -173,28 +175,33 @@ export default function OrderManagement() {
     if (isAdmin && adminOrdersData) {
       orderData = adminOrdersData
         .filter(result => result.result !== undefined)
-        .map((result, index) => ({
-          id: index + 1,
-          ...result.result
-        }))
-        .filter(order => order.id > 0) // 过滤掉无效订单
+        .map((result, index) => {
+          const order = convertBigIntFields(result.result)
+          // 始终使用查询的ID，因为这是我们实际查询的订单ID
+          const orderId = fetchOrdersForAdmin.orderIds[index]
+          return {
+            ...order,
+            id: orderId || 0
+          }
+        })
+        .filter(order => order && order.id && order.id > 0) // 过滤掉无效订单
     } else if (!isAdmin && userOrdersData) {
       // 筛选出与当前用户相关的订单（作为客户或提供商）
       orderData = userOrdersData
         .map((result, index) => {
           if (!result || !result.result) return null
-          const order = {
-            id: userOrderIds[index],
-            ...result.result
-          }
+          const order = convertBigIntFields(result.result)
+          // 设置订单ID
+          order.id = Number(userOrderIds[index])
           // 只返回与当前用户相关的订单
-          if (order.client.toLowerCase() === address.toLowerCase() ||
-              order.provider.toLowerCase() === address.toLowerCase()) {
+          if (order.client && order.provider &&
+              (order.client.toLowerCase() === address.toLowerCase() ||
+               order.provider.toLowerCase() === address.toLowerCase())) {
             return order
           }
           return null
         })
-        .filter(order => order !== null)
+        .filter(order => order !== null && order.id && order.id > 0) // 确保有效的订单ID
     }
 
     // 过滤订单
@@ -210,7 +217,7 @@ export default function OrderManagement() {
     })
     setOrders(filteredOrders)
 
-    // 调试信息
+    // 简化的调试信息
     setDebugInfo({
       isAdmin,
       totalOrders: marketStats?.totalOrders || 0,
@@ -222,7 +229,7 @@ export default function OrderManagement() {
       networkId: window.ethereum?.networkVersion,
       currentAddress: address
     })
-  }, [adminOrdersData, userOrdersData, isAdmin, userOrderIds, filter, marketStats, totalOrdersCount, address, adminOrdersLoading, userOrdersLoading])
+  }, [adminOrdersData, userOrdersData, isAdmin, userOrderIds, fetchOrdersForAdmin.orderIds, filter, marketStats, totalOrdersCount, address, adminOrdersLoading, userOrdersLoading])
 
   // 清理函数，防止内存泄漏
   useEffect(() => {
@@ -242,6 +249,19 @@ export default function OrderManagement() {
     }
   }, [error])
 
+  // 确保所有BigInt字段都转换为数字类型
+  const convertBigIntFields = (order) => {
+    if (!order) return order
+
+    const convertedOrder = { ...order }
+    Object.keys(order).forEach(key => {
+      if (typeof order[key] === 'bigint') {
+        convertedOrder[key] = Number(order[key])
+      }
+    })
+    return convertedOrder
+  }
+
   // 计算资金流向信息 - 基于新的合约结构
   const calculateFundFlow = (order) => {
     const {
@@ -251,7 +271,7 @@ export default function OrderManagement() {
       escrow,
       primaryPaymentToken,
       payments
-    } = order
+    } = convertBigIntFields(order)
 
     // 将状态数字转换为可读状态 (OrderStatus enum)
     const statusMap = {
@@ -426,25 +446,7 @@ export default function OrderManagement() {
               </div>
             )}
 
-            {/* 调试信息 */}
-            {process.env.NODE_ENV === 'development' && (
-              <div className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded text-xs">
-                <div className="font-medium text-yellow-800 mb-2">调试信息:</div>
-                <div className="space-y-1 text-gray-600">
-                  <div>总订单数: {debugInfo.totalOrders}</div>
-                  <div>总订单计数: {debugInfo.totalOrdersCount}</div>
-                  <div>查询的订单ID数量: {debugInfo.userOrderIdsCount}</div>
-                  <div>原始订单数据长度: {debugInfo.rawOrderDataLength}</div>
-                  <div>过滤后订单长度: {debugInfo.filteredOrdersLength}</div>
-                  <div>合约地址: {debugInfo.contractAddress}</div>
-                  <div>网络ID: {debugInfo.networkId}</div>
-                  <div>当前地址: {debugInfo.currentAddress?.slice(0, 6)}...{debugInfo.currentAddress?.slice(-4)}</div>
-                  <div>统计信息状态: {marketStats ? '已加载' : '未加载'}</div>
-                  <div>管理员状态: {debugInfo.isAdmin ? '是' : '否'}</div>
-                </div>
-              </div>
-            )}
-          </div>
+            </div>
 
           <p className="text-gray-600">
             {isAdmin
@@ -575,7 +577,7 @@ export default function OrderManagement() {
                 const fundFlow = calculateFundFlow(order)
 
                 return (
-                  <div key={order.id} className="bg-white rounded-lg shadow overflow-hidden">
+                  <div key={`order-${order.id}-${order.createTime}`} className="bg-white rounded-lg shadow overflow-hidden">
                     {/* 订单头部 */}
                     <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
                       <div className="flex items-center justify-between">

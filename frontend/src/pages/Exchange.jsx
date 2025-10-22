@@ -19,6 +19,7 @@ import {
   XCircleIcon
 } from '@heroicons/react/24/outline'
 import { CONTRACT_ADDRESSES, CONTRACT_ABI, GAS_LIMITS } from '../config/contracts'
+import { CCUSD_CONFIG } from '../config/mockusdc-config'
 import { useActivityManager } from '../hooks/useActivityManager'
 import { useToast } from '../hooks/useToast'
 
@@ -119,8 +120,8 @@ export default function Exchange() {
   })
 
   const { data: ccusdBalanceData, refetch: refetchCcusdBalance } = useReadContract({
-    address: CONTRACT_ADDRESSES.CCSD_TOKEN,
-    abi: CONTRACT_ABI.CCSD_ABI,
+    address: CCUSD_CONFIG.address,
+    abi: CCUSD_CONFIG.abi,
     functionName: 'balanceOf',
     args: address ? [address] : undefined,
     watch: true,
@@ -130,8 +131,8 @@ export default function Exchange() {
   })
 
   const { data: allowanceData, refetch: refetchAllowance } = useReadContract({
-    address: CONTRACT_ADDRESSES.CCSD_TOKEN,
-    abi: CONTRACT_ABI.CCSD_ABI,
+    address: CCUSD_CONFIG.address,
+    abi: CCUSD_CONFIG.abi,
     functionName: 'allowance',
     args: address ? [address, CONTRACT_ADDRESSES.ETH_CCUSD_CONVERTER] : undefined,
     watch: true,
@@ -349,8 +350,8 @@ export default function Exchange() {
 
   // 监听CCUSD转账事件 - 确认CCUSD是否转入用户钱包
   useWatchContractEvent({
-    address: CONTRACT_ADDRESSES.CCSD_TOKEN,
-    abi: CONTRACT_ABI.CCSD_ABI,
+    address: CCUSD_CONFIG.address,
+    abi: CCUSD_CONFIG.abi,
     eventName: 'Transfer',
     onLogs: (logs) => {
       console.log('💰 检测到CCUSD转账事件:', logs.length, '个事件')
@@ -777,8 +778,8 @@ export default function Exchange() {
       const amount = (parseFloat(fromAmount) * 1e6).toString()
       
       const txHash = await writeContract({
-        address: CONTRACT_ADDRESSES.CCSD_TOKEN,
-        abi: CONTRACT_ABI.CCSD_ABI,
+        address: CCUSD_CONFIG.address,
+        abi: CCUSD_CONFIG.abi,
         functionName: 'approve',
         args: [CONTRACT_ADDRESSES.ETH_CCUSD_CONVERTER, amount],
         gas: GAS_LIMITS.APPROVE,

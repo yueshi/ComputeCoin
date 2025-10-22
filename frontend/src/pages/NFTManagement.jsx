@@ -214,9 +214,12 @@ export default function NFTManagement() {
           console.log('NFT页面初始数据加载完成')
         } catch (error) {
           console.error('NFT页面初始数据加载失败:', error)
+          // 如果初始加载失败，确保NFT列表为空，避免UI卡在加载状态
+          setCustomerNFTs([])
+          setProviderNFTs([])
         }
       }
-      
+
       // 延迟执行以确保所有hook都已准备就绪
       const timer = setTimeout(loadInitialData, 500)
       return () => clearTimeout(timer)
@@ -231,11 +234,17 @@ export default function NFTManagement() {
     args: [address],
     enabled: !!address,
     query: {
-      retry: false,
+      retry: 1, // 允许重试一次
+      retryDelay: 1000, // 重试延迟1秒
       staleTime: 60000, // 增加缓存时间到60秒
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
       refetchOnMount: false,
+    },
+    onError: (error) => {
+      console.error('客户NFT余额查询失败:', error)
+      // 设置NFT列表为空，避免UI卡在加载状态
+      setCustomerNFTs([])
     }
   })
   
@@ -248,10 +257,16 @@ export default function NFTManagement() {
     args: [address],
     enabled: !!address,
     query: {
-      retry: false,
+      retry: 1, // 允许重试一次
+      retryDelay: 1000, // 重试延迟1秒
       staleTime: 60000, // 1分钟缓存
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
+    },
+    onError: (error) => {
+      console.error('提供商NFT余额查询失败:', error)
+      // 设置NFT列表为空，避免UI卡在加载状态
+      setProviderNFTs([])
     }
   })
 
@@ -296,22 +311,46 @@ export default function NFTManagement() {
         setCustomerNFTs([])
         return
       }
-      
+
       const nfts = []
       try {
-        // 批量获取所有tokenId
+        // 批量获取所有tokenId - 增加额外的安全检查
         const tokenIds = []
-        for (let i = 0; i < Number(customerNFTBalance); i++) {
+        const balance = Number(customerNFTBalance)
+
+        console.log(`正在获取客户NFT，地址: ${address}, 余额: ${balance}`)
+
+        for (let i = 0; i < balance; i++) {
           try {
+            // 在调用tokenOfOwnerByIndex之前先验证索引有效性
+            if (i >= balance) {
+              console.warn(`索引 ${i} 超出余额范围 ${balance}，跳过`)
+              break
+            }
+
             const tokenId = await publicClient.readContract({
               address: CONTRACT_ADDRESSES.CUSTOMER_NFT,
               abi: CONTRACT_ABI.CUSTOMER_NFT_ABI,
               functionName: 'tokenOfOwnerByIndex',
               args: [address, i],
             })
-            tokenIds.push(tokenId)
+
+            // 验证tokenId是否有效
+            if (tokenId && tokenId !== 0n) {
+              tokenIds.push(tokenId)
+              console.log(`成功获取客户NFT tokenId: ${tokenId}`)
+            } else {
+              console.warn(`获取到无效的tokenId: ${tokenId}，跳过`)
+            }
           } catch (error) {
-            // 忽略单个token获取失败
+            // 更详细的错误处理
+            console.warn(`获取客户NFT tokenId失败 (索引 ${i}):`, error.message || error)
+            // 如果是revert错误，说明索引超出范围，停止循环
+            if (error.message && error.message.includes('reverted')) {
+              console.log(`检测到revert错误，停止获取更多客户NFT (当前索引: ${i})`)
+              break
+            }
+            // 其他错误则继续尝试下一个
           }
         }
 
@@ -382,9 +421,16 @@ export default function NFTManagement() {
           }
         }
       } catch (error) {
-        console.error('Error fetching customer NFTs:', error)
+        console.error('获取客户NFT详细信息时出错:', error)
+        // 确保即使出错也设置空数组，避免UI卡在加载状态
+        setCustomerNFTs([])
+
+        // 如果是revert错误且包含特定错误代码，记录更详细信息
+        if (error.message && error.message.includes('a57d13dc')) {
+          console.warn('检测到ERC721: owner index out of bounds 错误，这通常意味着用户的NFT余额查询有误')
+        }
       }
-      
+
       setCustomerNFTs(nfts)
     }
 
@@ -398,22 +444,46 @@ export default function NFTManagement() {
         setProviderNFTs([])
         return
       }
-      
+
       const nfts = []
       try {
-        // 批量获取所有tokenId
+        // 批量获取所有tokenId - 增加额外的安全检查
         const tokenIds = []
-        for (let i = 0; i < Number(providerNFTBalance); i++) {
+        const balance = Number(providerNFTBalance)
+
+        console.log(`正在获取提供商NFT，地址: ${address}, 余额: ${balance}`)
+
+        for (let i = 0; i < balance; i++) {
           try {
+            // 在调用tokenOfOwnerByIndex之前先验证索引有效性
+            if (i >= balance) {
+              console.warn(`索引 ${i} 超出余额范围 ${balance}，跳过`)
+              break
+            }
+
             const tokenId = await publicClient.readContract({
               address: CONTRACT_ADDRESSES.PROVIDER_NFT,
               abi: CONTRACT_ABI.PROVIDER_NFT_ABI,
               functionName: 'tokenOfOwnerByIndex',
               args: [address, i],
             })
-            tokenIds.push(tokenId)
+
+            // 验证tokenId是否有效
+            if (tokenId && tokenId !== 0n) {
+              tokenIds.push(tokenId)
+              console.log(`成功获取提供商NFT tokenId: ${tokenId}`)
+            } else {
+              console.warn(`获取到无效的tokenId: ${tokenId}，跳过`)
+            }
           } catch (error) {
-            // 忽略单个token获取失败
+            // 更详细的错误处理
+            console.warn(`获取提供商NFT tokenId失败 (索引 ${i}):`, error.message || error)
+            // 如果是revert错误，说明索引超出范围，停止循环
+            if (error.message && error.message.includes('reverted')) {
+              console.log(`检测到revert错误，停止获取更多提供商NFT (当前索引: ${i})`)
+              break
+            }
+            // 其他错误则继续尝试下一个
           }
         }
 
@@ -502,9 +572,16 @@ export default function NFTManagement() {
           }
         }
       } catch (error) {
-        console.error('Error fetching provider NFTs:', error)
+        console.error('获取提供商NFT详细信息时出错:', error)
+        // 确保即使出错也设置空数组，避免UI卡在加载状态
+        setProviderNFTs([])
+
+        // 如果是revert错误且包含特定错误代码，记录更详细信息
+        if (error.message && error.message.includes('a57d13dc')) {
+          console.warn('检测到ERC721: owner index out of bounds 错误，这通常意味着用户的NFT余额查询有误')
+        }
       }
-      
+
       setProviderNFTs(nfts)
     }
 
@@ -1159,9 +1236,19 @@ export default function NFTManagement() {
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{t('nft.management.myNFTs')}</h2>
           <button
-            onClick={() => {
-              refetchCustomerBalance()
-              refetchProviderBalance()
+            onClick={async () => {
+              try {
+                await Promise.all([
+                  refetchCustomerBalance(),
+                  refetchProviderBalance()
+                ])
+                console.log('NFT数据刷新成功')
+              } catch (error) {
+                console.error('NFT数据刷新失败:', error)
+                // 如果刷新失败，确保NFT列表显示为空
+                setCustomerNFTs([])
+                setProviderNFTs([])
+              }
             }}
             className="px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg transition-colors flex items-center space-x-2"
           >

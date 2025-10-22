@@ -26,6 +26,7 @@ import {
   BuildingLibraryIcon
 } from '@heroicons/react/24/outline'
 import { CONTRACT_ADDRESSES, CONTRACT_ABI, GAS_LIMITS } from '../config/contracts'
+import { CCUSD_CONFIG } from '../config/mockusdc-config'
 import { useActivityManager } from '../hooks/useActivityManager'
 import { getNFTTierIcon, getTierIcon, getTierIconByEnum } from '../config/nftIcons'
 
@@ -724,8 +725,8 @@ export default function Staking() {
 
   // 读取用户CCUSD代币余额 - 长期缓存，事件驱动更新
   const { data: usdcBalance, refetch: refetchCCUSDBalance } = useReadContract({
-    address: CONTRACT_ADDRESSES.CCSD_TOKEN,
-    abi: CONTRACT_ABI.CCSD_ABI,
+    address: CCUSD_CONFIG.address,
+    abi: CCUSD_CONFIG.abi,
     functionName: 'balanceOf',
     args: [address],
     enabled: !!address,
@@ -1017,11 +1018,11 @@ export default function Staking() {
 
   // 监听CCUSD代币余额变化 - 新增事件监听
   useWatchContractEvent({
-    address: CONTRACT_ADDRESSES.CCSD_TOKEN,
-    abi: CONTRACT_ABI.CCSD_ABI,
+    address: CCUSD_CONFIG.address,
+    abi: CCUSD_CONFIG.abi,
     eventName: 'Transfer',
     onLogs: (logs) => {
-      const userCCUSDTransferEvent = logs.find(log => 
+      const userCCUSDTransferEvent = logs.find(log =>
         log.args.from === address || log.args.to === address
       )
       if (userCCUSDTransferEvent) {
