@@ -67,13 +67,83 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
-        "internalType": "bool",
-        "name": "paused",
-        "type": "bool"
+        "indexed": true,
+        "internalType": "address",
+        "name": "admin",
+        "type": "address"
       }
     ],
-    "name": "MarketPaused",
+    "name": "AdminAuthorized",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "client",
+        "type": "address"
+      }
+    ],
+    "name": "ClientAuthorized",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "oldPrice",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newPrice",
+        "type": "uint256"
+      }
+    ],
+    "name": "EmergencyPriceUpdate",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "orderId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "rate",
+        "type": "uint256"
+      }
+    ],
+    "name": "ExchangeRateRecorded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "orderId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "FundsEscrowed",
     "type": "event"
   },
   {
@@ -88,11 +158,17 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "provider",
+        "name": "to",
         "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
       }
     ],
-    "name": "OrderAccepted",
+    "name": "FundsRefunded",
     "type": "event"
   },
   {
@@ -102,6 +178,49 @@
         "indexed": true,
         "internalType": "uint256",
         "name": "orderId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "FundsReleased",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "orderId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum ComputeMarket.CancelReason",
+        "name": "reason",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "refundAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "penalty",
         "type": "uint256"
       }
     ],
@@ -122,6 +241,12 @@
         "internalType": "uint256",
         "name": "finalPrice",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "providerPayment",
+        "type": "uint256"
       }
     ],
     "name": "OrderCompleted",
@@ -141,6 +266,31 @@
         "internalType": "address",
         "name": "client",
         "type": "address"
+      }
+    ],
+    "name": "OrderConfirmed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "orderId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "client",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "provider",
+        "type": "address"
       },
       {
         "indexed": false,
@@ -150,6 +300,44 @@
       }
     ],
     "name": "OrderCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "orderId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "disputer",
+        "type": "address"
+      }
+    ],
+    "name": "OrderDisputed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "orderId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "provider",
+        "type": "address"
+      }
+    ],
+    "name": "OrderStarted",
     "type": "event"
   },
   {
@@ -175,10 +363,116 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "orderId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "payer",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum ComputeMarket.PaymentToken",
+        "name": "tokenType",
+        "type": "uint8"
+      },
+      {
         "indexed": false,
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "description",
+        "type": "string"
+      }
+    ],
+    "name": "PaymentReceived",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "orderId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "charged",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "PenaltyCharged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "permission",
+        "type": "uint8"
+      }
+    ],
+    "name": "PermissionGranted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "permission",
+        "type": "uint8"
+      }
+    ],
+    "name": "PermissionRevoked",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum ComputeMarket.PaymentToken",
+        "name": "token",
+        "type": "uint8"
       }
     ],
     "name": "PlatformFeeCollected",
@@ -187,6 +481,31 @@
   {
     "anonymous": false,
     "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newPrice",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "activationTime",
+        "type": "uint256"
+      }
+    ],
+    "name": "PriceUpdateScheduled",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "oldPrice",
+        "type": "uint256"
+      },
       {
         "indexed": false,
         "internalType": "uint256",
@@ -201,6 +520,19 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": true,
+        "internalType": "address",
+        "name": "provider",
+        "type": "address"
+      }
+    ],
+    "name": "ProviderAuthorized",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": false,
         "internalType": "uint256",
         "name": "amount",
@@ -209,6 +541,104 @@
     ],
     "name": "TokensBurned",
     "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "PERMISSION_ADMIN_FUNCTIONS",
+    "outputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "PERMISSION_CREATE_ORDER",
+    "outputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "PERMISSION_DISPUTE_RESOLUTION",
+    "outputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "PERMISSION_PROVIDER_SERVICE",
+    "outputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "activatePendingPriceUpdate",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "admin",
+        "type": "address"
+      }
+    ],
+    "name": "authorizeAdmin",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "client",
+        "type": "address"
+      }
+    ],
+    "name": "authorizeClient",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "provider",
+        "type": "address"
+      }
+    ],
+    "name": "authorizeProvider",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
     "inputs": [],
@@ -229,6 +659,11 @@
         "internalType": "uint256",
         "name": "orderId",
         "type": "uint256"
+      },
+      {
+        "internalType": "enum ComputeMarket.CancelReason",
+        "name": "_reason",
+        "type": "uint8"
       }
     ],
     "name": "cancelOrder",
@@ -276,6 +711,19 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "clientCancelPenaltyBps",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -286,6 +734,32 @@
     "name": "completeOrder",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "orderId",
+        "type": "uint256"
+      }
+    ],
+    "name": "confirmOrder",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "confirmationWindow",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -304,6 +778,11 @@
         "internalType": "bool",
         "name": "_useNFTDiscount",
         "type": "bool"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_expectedDuration",
+        "type": "uint256"
       }
     ],
     "name": "createOrder",
@@ -333,17 +812,12 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
         "internalType": "uint256",
-        "name": "amount",
+        "name": "newPrice",
         "type": "uint256"
       }
     ],
-    "name": "emergencyWithdraw",
+    "name": "emergencySetCCPrice",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -351,49 +825,16 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "usdAmount",
-        "type": "uint256"
+        "internalType": "enum ComputeMarket.PaymentToken",
+        "name": "",
+        "type": "uint8"
       }
     ],
-    "name": "estimateCCPayment",
+    "name": "feesByToken",
     "outputs": [
       {
         "internalType": "uint256",
         "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getMarketStats",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "orderCount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "volumeUSD",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "volumeCC",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "burnedCC",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "platformFees",
         "type": "uint256"
       }
     ],
@@ -413,9 +854,9 @@
       {
         "components": [
           {
-            "internalType": "uint256",
+            "internalType": "uint128",
             "name": "id",
-            "type": "uint256"
+            "type": "uint128"
           },
           {
             "internalType": "address",
@@ -428,19 +869,14 @@
             "type": "address"
           },
           {
-            "internalType": "uint256",
+            "internalType": "uint128",
             "name": "usdPrice",
-            "type": "uint256"
+            "type": "uint128"
           },
           {
-            "internalType": "uint256",
+            "internalType": "uint128",
             "name": "finalPrice",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "ccPaymentAmount",
-            "type": "uint256"
+            "type": "uint128"
           },
           {
             "internalType": "enum ComputeMarket.OrderStatus",
@@ -448,14 +884,170 @@
             "type": "uint8"
           },
           {
-            "internalType": "uint256",
+            "internalType": "uint64",
             "name": "createTime",
-            "type": "uint256"
+            "type": "uint64"
           },
           {
-            "internalType": "uint256",
+            "internalType": "uint64",
+            "name": "paymentTime",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint64",
+            "name": "serviceStartTime",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint64",
+            "name": "completionTime",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint64",
+            "name": "confirmTime",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint64",
+            "name": "cancelTime",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint128",
             "name": "customerNftId",
-            "type": "uint256"
+            "type": "uint128"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint128",
+                "name": "amount",
+                "type": "uint128"
+              },
+              {
+                "internalType": "enum ComputeMarket.PaymentToken",
+                "name": "tokenType",
+                "type": "uint8"
+              },
+              {
+                "internalType": "uint64",
+                "name": "timestamp",
+                "type": "uint64"
+              },
+              {
+                "internalType": "uint64",
+                "name": "exchangeRate",
+                "type": "uint64"
+              },
+              {
+                "internalType": "string",
+                "name": "description",
+                "type": "string"
+              }
+            ],
+            "internalType": "struct ComputeMarket.PaymentRecord[10]",
+            "name": "payments",
+            "type": "tuple[10]"
+          },
+          {
+            "internalType": "uint8",
+            "name": "paymentCount",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum ComputeMarket.PaymentToken",
+            "name": "primaryPaymentToken",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint128",
+            "name": "totalPaidAmount",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint64",
+            "name": "exchangeRate",
+            "type": "uint64"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint128",
+                "name": "totalAmount",
+                "type": "uint128"
+              },
+              {
+                "internalType": "uint128",
+                "name": "releasedAmount",
+                "type": "uint128"
+              },
+              {
+                "internalType": "uint128",
+                "name": "refundAmount",
+                "type": "uint128"
+              },
+              {
+                "internalType": "uint64",
+                "name": "platformFee",
+                "type": "uint64"
+              },
+              {
+                "internalType": "bool",
+                "name": "isFrozen",
+                "type": "bool"
+              }
+            ],
+            "internalType": "struct ComputeMarket.EscrowFund",
+            "name": "escrow",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint16",
+                "name": "clientPenaltyBps",
+                "type": "uint16"
+              },
+              {
+                "internalType": "uint16",
+                "name": "providerPenaltyBps",
+                "type": "uint16"
+              },
+              {
+                "internalType": "uint16",
+                "name": "refundablePercentage",
+                "type": "uint16"
+              },
+              {
+                "internalType": "bool",
+                "name": "allowRefund",
+                "type": "bool"
+              }
+            ],
+            "internalType": "struct ComputeMarket.CancellationTerms",
+            "name": "cancelTerms",
+            "type": "tuple"
+          },
+          {
+            "internalType": "enum ComputeMarket.CancelReason",
+            "name": "cancelReason",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint16",
+            "name": "serviceProgress",
+            "type": "uint16"
+          },
+          {
+            "internalType": "uint32",
+            "name": "expectedDuration",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "actualDuration",
+            "type": "uint32"
           }
         ],
         "internalType": "struct ComputeMarket.ComputeOrder",
@@ -469,22 +1061,119 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "orderId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getOrderPaymentSummary",
+    "outputs": [
+      {
+        "internalType": "enum ComputeMarket.PaymentToken",
+        "name": "primaryToken",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalPaid",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "paymentCount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "escrowedAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "releasedAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "refundAmount",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "orderId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getOrderPayments",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint128",
+            "name": "amount",
+            "type": "uint128"
+          },
+          {
+            "internalType": "enum ComputeMarket.PaymentToken",
+            "name": "tokenType",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint64",
+            "name": "timestamp",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint64",
+            "name": "exchangeRate",
+            "type": "uint64"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct ComputeMarket.PaymentRecord[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
         "name": "user",
         "type": "address"
       },
       {
-        "internalType": "enum ComputeMarket.OrderStatus",
-        "name": "status",
+        "internalType": "uint8",
+        "name": "permission",
         "type": "uint8"
       }
     ],
-    "name": "getUserOrders",
+    "name": "grantPermission",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "hasPendingPriceUpdate",
     "outputs": [
       {
-        "internalType": "uint256[]",
+        "internalType": "bool",
         "name": "",
-        "type": "uint256[]"
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -511,6 +1200,47 @@
   },
   {
     "inputs": [],
+    "name": "lastPriceUpdateTime",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "orderId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "enum ComputeMarket.PaymentToken",
+        "name": "_tokenType",
+        "type": "uint8"
+      },
+      {
+        "internalType": "string",
+        "name": "_description",
+        "type": "string"
+      }
+    ],
+    "name": "makePartialPayment",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "marketPaused",
     "outputs": [
       {
@@ -525,6 +1255,19 @@
   {
     "inputs": [],
     "name": "maxOrderValue",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "minCancelFee",
     "outputs": [
       {
         "internalType": "uint256",
@@ -562,6 +1305,19 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "orderTimeout",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -572,9 +1328,9 @@
     "name": "orders",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "uint128",
         "name": "id",
-        "type": "uint256"
+        "type": "uint128"
       },
       {
         "internalType": "address",
@@ -587,19 +1343,14 @@
         "type": "address"
       },
       {
-        "internalType": "uint256",
+        "internalType": "uint128",
         "name": "usdPrice",
-        "type": "uint256"
+        "type": "uint128"
       },
       {
-        "internalType": "uint256",
+        "internalType": "uint128",
         "name": "finalPrice",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "ccPaymentAmount",
-        "type": "uint256"
+        "type": "uint128"
       },
       {
         "internalType": "enum ComputeMarket.OrderStatus",
@@ -607,14 +1358,138 @@
         "type": "uint8"
       },
       {
-        "internalType": "uint256",
+        "internalType": "uint64",
         "name": "createTime",
-        "type": "uint256"
+        "type": "uint64"
       },
       {
-        "internalType": "uint256",
+        "internalType": "uint64",
+        "name": "paymentTime",
+        "type": "uint64"
+      },
+      {
+        "internalType": "uint64",
+        "name": "serviceStartTime",
+        "type": "uint64"
+      },
+      {
+        "internalType": "uint64",
+        "name": "completionTime",
+        "type": "uint64"
+      },
+      {
+        "internalType": "uint64",
+        "name": "confirmTime",
+        "type": "uint64"
+      },
+      {
+        "internalType": "uint64",
+        "name": "cancelTime",
+        "type": "uint64"
+      },
+      {
+        "internalType": "uint128",
         "name": "customerNftId",
-        "type": "uint256"
+        "type": "uint128"
+      },
+      {
+        "internalType": "uint8",
+        "name": "paymentCount",
+        "type": "uint8"
+      },
+      {
+        "internalType": "enum ComputeMarket.PaymentToken",
+        "name": "primaryPaymentToken",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint128",
+        "name": "totalPaidAmount",
+        "type": "uint128"
+      },
+      {
+        "internalType": "uint64",
+        "name": "exchangeRate",
+        "type": "uint64"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint128",
+            "name": "totalAmount",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint128",
+            "name": "releasedAmount",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint128",
+            "name": "refundAmount",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint64",
+            "name": "platformFee",
+            "type": "uint64"
+          },
+          {
+            "internalType": "bool",
+            "name": "isFrozen",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct ComputeMarket.EscrowFund",
+        "name": "escrow",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint16",
+            "name": "clientPenaltyBps",
+            "type": "uint16"
+          },
+          {
+            "internalType": "uint16",
+            "name": "providerPenaltyBps",
+            "type": "uint16"
+          },
+          {
+            "internalType": "uint16",
+            "name": "refundablePercentage",
+            "type": "uint16"
+          },
+          {
+            "internalType": "bool",
+            "name": "allowRefund",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct ComputeMarket.CancellationTerms",
+        "name": "cancelTerms",
+        "type": "tuple"
+      },
+      {
+        "internalType": "enum ComputeMarket.CancelReason",
+        "name": "cancelReason",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint16",
+        "name": "serviceProgress",
+        "type": "uint16"
+      },
+      {
+        "internalType": "uint32",
+        "name": "expectedDuration",
+        "type": "uint32"
+      },
+      {
+        "internalType": "uint32",
+        "name": "actualDuration",
+        "type": "uint32"
       }
     ],
     "stateMutability": "view",
@@ -637,26 +1512,37 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "orderId",
+        "name": "",
         "type": "uint256"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
       }
     ],
-    "name": "payOrderWithCC",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "name": "paymentHashes",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [
+    "inputs": [],
+    "name": "pendingPriceUpdate",
+    "outputs": [
       {
         "internalType": "uint256",
-        "name": "orderId",
+        "name": "",
         "type": "uint256"
       }
     ],
-    "name": "payOrderWithCCUSD",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -674,9 +1560,92 @@
   },
   {
     "inputs": [],
+    "name": "priceChangeLimitBps",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "priceUpdateActivationTime",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "priceUpdateDelay",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "providerCancelPenaltyBps",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "renounceOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "internalType": "uint8",
+        "name": "permission",
+        "type": "uint8"
+      }
+    ],
+    "name": "revokePermission",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "serviceGracePeriod",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -708,12 +1677,61 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "_clientPenaltyBps",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_providerPenaltyBps",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_minFee",
+        "type": "uint256"
+      }
+    ],
+    "name": "setCancellationPolicy",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_window",
+        "type": "uint256"
+      }
+    ],
+    "name": "setConfirmationWindow",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "bool",
         "name": "paused",
         "type": "bool"
       }
     ],
     "name": "setMarketPaused",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "timeout",
+        "type": "uint256"
+      }
+    ],
+    "name": "setOrderTimeout",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -752,6 +1770,37 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "_changeLimitBps",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_updateDelay",
+        "type": "uint256"
+      }
+    ],
+    "name": "setPriceProtectionParameters",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_period",
+        "type": "uint256"
+      }
+    ],
+    "name": "setServiceGracePeriod",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
         "name": "newTreasury",
         "type": "address"
@@ -763,8 +1812,60 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "orderId",
+        "type": "uint256"
+      }
+    ],
+    "name": "startService",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "totalBurnedCC",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalCCPayments",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalCCUSDPayments",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalEscrowedAmount",
     "outputs": [
       {
         "internalType": "uint256",
@@ -790,7 +1891,59 @@
   },
   {
     "inputs": [],
+    "name": "totalPenalties",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "totalPlatformFees",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalRefundedAmount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalRefunds",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalReleasedAmount",
     "outputs": [
       {
         "internalType": "uint256",
@@ -856,12 +2009,83 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "orderId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_progress",
+        "type": "uint256"
+      }
+    ],
+    "name": "updateServiceProgress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
         "name": "",
         "type": "address"
       }
     ],
     "name": "userDailyOrderValue",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "users",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "isProvider",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "isClient",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "isAdmin",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint8",
+        "name": "permissions",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "enum ComputeMarket.PaymentToken",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "name": "volumeByToken",
     "outputs": [
       {
         "internalType": "uint256",

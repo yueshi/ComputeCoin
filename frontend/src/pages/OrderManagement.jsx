@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { useAccount } from 'wagmi'
 import { useTranslation } from 'react-i18next'
 import { formatEther, formatUnits } from 'viem'
@@ -17,12 +17,16 @@ import { CONTRACT_ADDRESSES, CONTRACT_ABI } from '../config/contracts'
 import { readContract } from '@wagmi/core'
 import { useConfig } from 'wagmi'
 
-// 订单状态枚举
+// 订单状态枚举 - 基于新的合约 OrderStatus 枚举
 const ORDER_STATUS = {
-  0: { name: 'Created', color: 'yellow', icon: ClockIcon },
-  1: { name: 'Accepted', color: 'blue', icon: CurrencyDollarIcon },
-  2: { name: 'Completed', color: 'green', icon: CheckCircleIcon },
-  3: { name: 'Cancelled', color: 'red', icon: XCircleIcon }
+  0: { name: '已创建', color: 'yellow', icon: ClockIcon },
+  1: { name: '已支付', color: 'blue', icon: CurrencyDollarIcon },
+  2: { name: '服务中', color: 'indigo', icon: ChartBarIcon },
+  3: { name: '已完成', color: 'green', icon: CheckCircleIcon },
+  4: { name: '已确认', color: 'emerald', icon: CheckCircleIcon },
+  5: { name: '已取消', color: 'red', icon: XCircleIcon },
+  6: { name: '已过期', color: 'orange', icon: ExclamationTriangleIcon },
+  7: { name: '争议中', color: 'purple', icon: ExclamationTriangleIcon }
 }
 
 export default function OrderManagement() {
@@ -35,12 +39,37 @@ export default function OrderManagement() {
   const [isAdmin, setIsAdmin] = useState(false)
   const [marketStats, setMarketStats] = useState(null)
   const [debugInfo, setDebugInfo] = useState({})
+  const [error, setError] = useState(null)
 
-  // 获取市场统计信息
-  const { data: statsData } = useReadContract({
+  // 获取市场统计信息 - 使用单独的统计函数
+  const { data: totalOrdersData } = useReadContract({
     address: CONTRACT_ADDRESSES.COMPUTE_MARKET,
     abi: CONTRACT_ABI.COMPUTE_MARKET_ORDER_ABI,
-    functionName: 'getMarketStats'
+    functionName: 'totalOrders'
+  })
+
+  const { data: totalVolumeUSDData } = useReadContract({
+    address: CONTRACT_ADDRESSES.COMPUTE_MARKET,
+    abi: CONTRACT_ABI.COMPUTE_MARKET_ORDER_ABI,
+    functionName: 'totalVolumeUSD'
+  })
+
+  const { data: totalVolumeCCData } = useReadContract({
+    address: CONTRACT_ADDRESSES.COMPUTE_MARKET,
+    abi: CONTRACT_ABI.COMPUTE_MARKET_ORDER_ABI,
+    functionName: 'totalVolumeCC'
+  })
+
+  const { data: totalBurnedCCData } = useReadContract({
+    address: CONTRACT_ADDRESSES.COMPUTE_MARKET,
+    abi: CONTRACT_ABI.COMPUTE_MARKET_ORDER_ABI,
+    functionName: 'totalBurnedCC'
+  })
+
+  const { data: totalPlatformFeesData } = useReadContract({
+    address: CONTRACT_ADDRESSES.COMPUTE_MARKET,
+    abi: CONTRACT_ABI.COMPUTE_MARKET_ORDER_ABI,
+    functionName: 'totalPlatformFees'
   })
 
   // 检查是否为管理员（合约所有者）
@@ -57,28 +86,47 @@ export default function OrderManagement() {
   }, [owner, address])
 
   useEffect(() => {
-    if (statsData) {
+    // 手动组合市场统计数据
+    if (totalOrdersData !== undefined &&
+        totalVolumeUSDData !== undefined &&
+        totalVolumeCCData !== undefined &&
+        totalBurnedCCData !== undefined &&
+        totalPlatformFeesData !== undefined) {
       setMarketStats({
-        totalOrders: statsData[0],
-        totalVolumeUSD: statsData[1],
-        totalVolumeCC: statsData[2],
-        totalBurnedCC: statsData[3],
-        totalPlatformFees: statsData[4]
+        totalOrders: totalOrdersData,
+        totalVolumeUSD: totalVolumeUSDData,
+        totalVolumeCC: totalVolumeCCData,
+        totalBurnedCC: totalBurnedCCData,
+        totalPlatformFees: totalPlatformFeesData
       })
     }
-  }, [statsData])
+  }, [totalOrdersData, totalVolumeUSDData, totalVolumeCCData, totalBurnedCCData, totalPlatformFeesData])
 
-  // 获取用户订单列表
-  const { data: userOrderIds } = useReadContract({
+  // 获取用户订单列表 - 通过遍历所有订单并筛选出与用户相关的订单
+  const { data: totalOrdersCount } = useReadContract({
     address: CONTRACT_ADDRESSES.COMPUTE_MARKET,
     abi: CONTRACT_ABI.COMPUTE_MARKET_ORDER_ABI,
-    functionName: 'getUserOrders',
-    args: [address || '0x0000000000000000000000000000000000000000', 0], // 0 = OrderStatus.CREATED (表示所有状态)
+    functionName: 'totalOrders',
     enabled: !!address && !isAdmin
   })
 
-  // 简化的订单获取逻辑 - 使用单个hook查询多个订单
-  const fetchOrdersForAdmin = () => {
+  // 获取用户订单的订单ID列表 - 通过遍历查询
+  const fetchUserOrderIds = useMemo(() => {
+    if (!totalOrdersCount || !address) return []
+
+    const totalOrders = Number(totalOrdersCount)
+    if (totalOrders === 0) return []
+
+    // 生成要查询的订单ID列表
+    const orderIds = []
+    for (let i = 1; i <= Math.min(totalOrders, 50); i++) { // 限制最多查询50个订单以提高性能
+      orderIds.push(i)
+    }
+    return orderIds
+  }, [totalOrdersCount, address])
+
+  // 管理员订单获取逻辑
+  const fetchOrdersForAdmin = useMemo(() => {
     if (!marketStats) return []
 
     const totalOrders = Number(marketStats.totalOrders)
@@ -96,17 +144,18 @@ export default function OrderManagement() {
     }
 
     return contracts
-  }
+  }, [marketStats])
 
   // 批量查询管理员订单
   const { data: adminOrdersData, isLoading: adminOrdersLoading } = useReadContracts({
-    contracts: isAdmin && marketStats ? fetchOrdersForAdmin() : [],
+    contracts: isAdmin && marketStats ? fetchOrdersForAdmin : [],
     enabled: isAdmin && !!marketStats && marketStats.totalOrders > 0
   })
 
-  // 批量查询用户订单（如果用户有订单ID）
+  // 批量查询用户订单 - 查询所有订单并筛选用户相关的
+  const userOrderIds = fetchUserOrderIds
   const { data: userOrdersData, isLoading: userOrdersLoading } = useReadContracts({
-    contracts: !isAdmin && userOrderIds ? userOrderIds.slice(0, 20).map(orderId => ({
+    contracts: !isAdmin && userOrderIds ? userOrderIds.map(orderId => ({
       address: CONTRACT_ADDRESSES.COMPUTE_MARKET,
       abi: CONTRACT_ABI.COMPUTE_MARKET_ORDER_ABI,
       functionName: 'getOrder',
@@ -130,14 +179,20 @@ export default function OrderManagement() {
         }))
         .filter(order => order.id > 0) // 过滤掉无效订单
     } else if (!isAdmin && userOrdersData) {
-      orderData = userOrderIds
-        .slice(0, 20) // 只处理前20个订单
-        .map((orderId, index) => {
-          const result = userOrdersData[index]
-          return result && result.result ? {
-            id: orderId,
+      // 筛选出与当前用户相关的订单（作为客户或提供商）
+      orderData = userOrdersData
+        .map((result, index) => {
+          if (!result || !result.result) return null
+          const order = {
+            id: userOrderIds[index],
             ...result.result
-          } : null
+          }
+          // 只返回与当前用户相关的订单
+          if (order.client.toLowerCase() === address.toLowerCase() ||
+              order.provider.toLowerCase() === address.toLowerCase()) {
+            return order
+          }
+          return null
         })
         .filter(order => order !== null)
     }
@@ -147,27 +202,72 @@ export default function OrderManagement() {
       ? orderData
       : orderData.filter(order => order.status === parseInt(filter))
 
-    // 按创建时间倒序排列
-    filteredOrders.sort((a, b) => b.createTime - a.createTime)
+    // 按创建时间倒序排列 - 处理 BigInt 类型
+    filteredOrders.sort((a, b) => {
+      const timeA = Number(a.createTime || 0)
+      const timeB = Number(b.createTime || 0)
+      return timeB - timeA
+    })
     setOrders(filteredOrders)
 
     // 调试信息
     setDebugInfo({
       isAdmin,
       totalOrders: marketStats?.totalOrders || 0,
+      totalOrdersCount: totalOrdersCount || 0,
       userOrderIdsCount: userOrderIds?.length || 0,
       rawOrderDataLength: orderData.length,
       filteredOrdersLength: filteredOrders.length,
       contractAddress: CONTRACT_ADDRESSES.COMPUTE_MARKET,
-      networkId: window.ethereum?.networkVersion
+      networkId: window.ethereum?.networkVersion,
+      currentAddress: address
     })
-  }, [adminOrdersData, userOrdersData, isAdmin, userOrderIds, filter, marketStats, adminOrdersLoading, userOrdersLoading])
+  }, [adminOrdersData, userOrdersData, isAdmin, userOrderIds, filter, marketStats, totalOrdersCount, address, adminOrdersLoading, userOrdersLoading])
 
-  // 计算资金流向信息
+  // 清理函数，防止内存泄漏
+  useEffect(() => {
+    return () => {
+      setOrders([])
+      setDebugInfo({})
+      setLoading(false)
+      setError(null)
+    }
+  }, [])
+
+  // 错误处理
+  useEffect(() => {
+    if (error) {
+      console.error('OrderManagement Error:', error)
+      // 可以在这里添加错误通知逻辑
+    }
+  }, [error])
+
+  // 计算资金流向信息 - 基于新的合约结构
   const calculateFundFlow = (order) => {
-    const { finalPrice, ccPaymentAmount, status } = order
+    const {
+      status,
+      finalPrice,
+      totalPaidAmount,
+      escrow,
+      primaryPaymentToken,
+      payments
+    } = order
 
-    if (status === 0) { // Created
+    // 将状态数字转换为可读状态 (OrderStatus enum)
+    const statusMap = {
+      0: 'CREATED',
+      1: 'PAID',
+      2: 'ACTIVE',
+      3: 'COMPLETED',
+      4: 'CONFIRMED',
+      5: 'CANCELLED',
+      6: 'EXPIRED',
+      7: 'DISPUTED'
+    }
+
+    const orderStatus = statusMap[status] || 'UNKNOWN'
+
+    if (orderStatus === 'CREATED') {
       return {
         status: 'pending',
         customerLocked: 0,
@@ -178,33 +278,51 @@ export default function OrderManagement() {
       }
     }
 
-    if (status === 1) { // Accepted
-      if (ccPaymentAmount > 0) {
+    if (orderStatus === 'PAID' || orderStatus === 'ACTIVE') {
+      const platformFeeRate = 0.025 // 2.5%
+      const burnRate = 0.015 // 1.5% for CC payments
+
+      // 确保 totalPaidAmount 是数字类型
+      const paidAmount = Number(totalPaidAmount || 0)
+
+      if (primaryPaymentToken === 2) { // CC Payment (PaymentToken.CC = 2)
+        const ccPaid = paidAmount
+        const burnAmount = ccPaid * burnRate
+        const platformFee = (ccPaid - burnAmount) * platformFeeRate
+
         return {
           status: 'locked',
-          customerLocked: ccPaymentAmount,
-          providerReceivable: ccPaymentAmount * 0.9625, // 96.25% after burn and fee
-          platformFee: ccPaymentAmount * 0.025,
-          burnAmount: ccPaymentAmount * 0.015,
-          message: '资金已锁定，等待完成'
+          customerLocked: paidAmount,
+          providerReceivable: paidAmount - burnAmount - platformFee,
+          platformFee,
+          burnAmount,
+          message: 'CC代币已锁定，等待服务完成'
         }
       } else {
+        const platformFee = paidAmount * platformFeeRate
         return {
           status: 'locked',
-          customerLocked: finalPrice,
-          providerReceivable: finalPrice * 0.975,
-          platformFee: finalPrice * 0.025,
+          customerLocked: paidAmount,
+          providerReceivable: paidAmount - platformFee,
+          platformFee,
           burnAmount: 0,
-          message: '资金已锁定，等待完成'
+          message: 'CCUSD已锁定，等待服务完成'
         }
       }
     }
 
-    if (status === 2) { // Completed
-      if (ccPaymentAmount > 0) {
-        const burnAmount = ccPaymentAmount * 0.015
-        const platformFee = (ccPaymentAmount - burnAmount) * 0.025
-        const providerReceivable = ccPaymentAmount - burnAmount - platformFee
+    if (orderStatus === 'COMPLETED' || orderStatus === 'CONFIRMED') {
+      const platformFeeRate = 0.025
+      const burnRate = 0.015
+
+      // 确保 totalPaidAmount 是数字类型
+      const paidAmount = Number(totalPaidAmount || 0)
+
+      if (primaryPaymentToken === 2) { // CC Payment
+        const ccPaid = paidAmount
+        const burnAmount = ccPaid * burnRate
+        const platformFee = (ccPaid - burnAmount) * platformFeeRate
+        const providerReceivable = ccPaid - burnAmount - platformFee
 
         return {
           status: 'distributed',
@@ -215,8 +333,8 @@ export default function OrderManagement() {
           message: '资金已分配完成'
         }
       } else {
-        const platformFee = finalPrice * 0.025
-        const providerReceivable = finalPrice - platformFee
+        const platformFee = paidAmount * platformFeeRate
+        const providerReceivable = paidAmount - platformFee
 
         return {
           status: 'distributed',
@@ -229,7 +347,7 @@ export default function OrderManagement() {
       }
     }
 
-    if (status === 3) { // Cancelled
+    if (orderStatus === 'CANCELLED' || orderStatus === 'EXPIRED') {
       return {
         status: 'refunded',
         customerLocked: 0,
@@ -237,6 +355,17 @@ export default function OrderManagement() {
         platformFee: 0,
         burnAmount: 0,
         message: '订单已取消，资金已退还'
+      }
+    }
+
+    if (orderStatus === 'DISPUTED') {
+      return {
+        status: 'disputed',
+        customerLocked: escrow?.totalAmount || 0,
+        providerReceivable: 0,
+        platformFee: 0,
+        burnAmount: 0,
+        message: '订单争议处理中，资金已冻结'
       }
     }
 
@@ -303,12 +432,15 @@ export default function OrderManagement() {
                 <div className="font-medium text-yellow-800 mb-2">调试信息:</div>
                 <div className="space-y-1 text-gray-600">
                   <div>总订单数: {debugInfo.totalOrders}</div>
-                  <div>用户订单ID数量: {debugInfo.userOrderIdsCount}</div>
+                  <div>总订单计数: {debugInfo.totalOrdersCount}</div>
+                  <div>查询的订单ID数量: {debugInfo.userOrderIdsCount}</div>
                   <div>原始订单数据长度: {debugInfo.rawOrderDataLength}</div>
                   <div>过滤后订单长度: {debugInfo.filteredOrdersLength}</div>
                   <div>合约地址: {debugInfo.contractAddress}</div>
                   <div>网络ID: {debugInfo.networkId}</div>
+                  <div>当前地址: {debugInfo.currentAddress?.slice(0, 6)}...{debugInfo.currentAddress?.slice(-4)}</div>
                   <div>统计信息状态: {marketStats ? '已加载' : '未加载'}</div>
+                  <div>管理员状态: {debugInfo.isAdmin ? '是' : '否'}</div>
                 </div>
               </div>
             )}
@@ -322,8 +454,18 @@ export default function OrderManagement() {
           </p>
         </div>
 
+        {/* 错误提示 */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <div className="flex items-center">
+              <ExclamationTriangleIcon className="h-5 w-5 text-red-500 mr-2" />
+              <span className="text-red-800 font-medium">错误: {error.message || '数据加载失败'}</span>
+            </div>
+          </div>
+        )}
+
         {/* 市场统计信息 */}
-        {marketStats && (
+        {marketStats && !error && (
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
             <div className="bg-white rounded-lg shadow p-6">
               <div className="flex items-center">
@@ -331,7 +473,7 @@ export default function OrderManagement() {
                 <div className="ml-4">
                   <p className="text-sm text-gray-600">总订单数</p>
                   <p className="text-xl font-bold text-gray-900">
-                    {marketStats.totalOrders.toString()}
+                    {marketStats.totalOrders?.toString() || '0'}
                   </p>
                 </div>
               </div>
@@ -343,7 +485,7 @@ export default function OrderManagement() {
                 <div className="ml-4">
                   <p className="text-sm text-gray-600">总交易额 (USD)</p>
                   <p className="text-xl font-bold text-gray-900">
-                    {formatUnits(marketStats.totalVolumeUSD, 6)} CCUSD
+                    {formatUnits(Number(marketStats.totalVolumeUSD), 6)} CCUSD
                   </p>
                 </div>
               </div>
@@ -355,7 +497,7 @@ export default function OrderManagement() {
                 <div className="ml-4">
                   <p className="text-sm text-gray-600">CC交易量</p>
                   <p className="text-xl font-bold text-gray-900">
-                    {formatEther(marketStats.totalVolumeCC)} CC
+                    {formatEther(Number(marketStats.totalVolumeCC))} CC
                   </p>
                 </div>
               </div>
@@ -367,7 +509,7 @@ export default function OrderManagement() {
                 <div className="ml-4">
                   <p className="text-sm text-gray-600">CC燃烧量</p>
                   <p className="text-xl font-bold text-gray-900">
-                    {formatEther(marketStats.totalBurnedCC)} CC
+                    {formatEther(Number(marketStats.totalBurnedCC))} CC
                   </p>
                 </div>
               </div>
@@ -379,7 +521,7 @@ export default function OrderManagement() {
                 <div className="ml-4">
                   <p className="text-sm text-gray-600">平台费用</p>
                   <p className="text-xl font-bold text-gray-900">
-                    {formatEther(marketStats.totalPlatformFees)} CC
+                    {formatEther(Number(marketStats.totalPlatformFees))} CC
                   </p>
                 </div>
               </div>
@@ -398,10 +540,14 @@ export default function OrderManagement() {
                 className="px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="all">全部订单</option>
-                <option value="0">待支付</option>
+                <option value="0">已创建</option>
                 <option value="1">已支付</option>
-                <option value="2">已完成</option>
-                <option value="3">已取消</option>
+                <option value="2">服务中</option>
+                <option value="3">已完成</option>
+                <option value="4">已确认</option>
+                <option value="5">已取消</option>
+                <option value="6">已过期</option>
+                <option value="7">争议中</option>
               </select>
             </div>
           </div>
@@ -437,13 +583,23 @@ export default function OrderManagement() {
                           <span className="text-sm font-medium text-gray-500">
                             订单 #{order.id}
                           </span>
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-${statusInfo.color}-100 text-${statusInfo.color}-800`}>
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            statusInfo.color === 'yellow' ? 'bg-yellow-100 text-yellow-800' :
+                            statusInfo.color === 'blue' ? 'bg-blue-100 text-blue-800' :
+                            statusInfo.color === 'indigo' ? 'bg-indigo-100 text-indigo-800' :
+                            statusInfo.color === 'green' ? 'bg-green-100 text-green-800' :
+                            statusInfo.color === 'emerald' ? 'bg-emerald-100 text-emerald-800' :
+                            statusInfo.color === 'red' ? 'bg-red-100 text-red-800' :
+                            statusInfo.color === 'orange' ? 'bg-orange-100 text-orange-800' :
+                            statusInfo.color === 'purple' ? 'bg-purple-100 text-purple-800' :
+                            'bg-gray-100 text-gray-800'
+                          }`}>
                             <StatusIcon className="h-4 w-4 mr-1" />
                             {statusInfo.name}
                           </span>
                         </div>
                         <div className="text-sm text-gray-500">
-                          创建时间: {new Date(Number(order.createTime) * 1000).toLocaleString()}
+                          创建时间: {order.createTime ? new Date(Number(order.createTime) * 1000).toLocaleString() : 'N/A'}
                         </div>
                       </div>
                     </div>
@@ -455,13 +611,14 @@ export default function OrderManagement() {
                         <div>
                           <h4 className="text-sm font-medium text-gray-900 mb-2">基本信息</h4>
                           <div className="space-y-1 text-sm text-gray-600">
-                            <div>客户: {order.client.slice(0, 6)}...{order.client.slice(-4)}</div>
-                            <div>提供商: {order.provider.slice(0, 6)}...{order.provider.slice(-4)}</div>
-                            <div>原始价格: {formatUnits(order.usdPrice, 6)} CCUSD</div>
-                            <div>最终价格: {formatUnits(order.finalPrice, 6)} CCUSD</div>
-                            {order.customerNftId > 0 && (
+                            <div>客户: {order.client ? order.client.slice(0, 6) + '...' + order.client.slice(-4) : 'N/A'}</div>
+                            <div>提供商: {order.provider ? order.provider.slice(0, 6) + '...' + order.provider.slice(-4) : 'N/A'}</div>
+                            <div>原始价格: {order.usdPrice ? formatUnits(Number(order.usdPrice), 6) : '0'} CCUSD</div>
+                            <div>最终价格: {order.finalPrice ? formatUnits(Number(order.finalPrice), 6) : '0'} CCUSD</div>
+                            {order.customerNftId && Number(order.customerNftId) > 0 && (
                               <div>客户NFT: #{order.customerNftId}</div>
                             )}
+                            <div>已支付: {order.totalPaidAmount ? formatUnits(Number(order.totalPaidAmount), 6) : '0'} CCUSD</div>
                           </div>
                         </div>
 
@@ -469,19 +626,13 @@ export default function OrderManagement() {
                         <div>
                           <h4 className="text-sm font-medium text-gray-900 mb-2">支付信息</h4>
                           <div className="space-y-1 text-sm text-gray-600">
-                            {order.ccPaymentAmount > 0 ? (
-                              <>
-                                <div>支付方式: CC代币</div>
-                                <div>支付数量: {formatEther(order.ccPaymentAmount)} CC</div>
-                                <div>USD价值: {formatUnits(order.finalPrice, 6)} CCUSD</div>
-                              </>
-                            ) : (
-                              <>
-                                <div>支付方式: CCUSD</div>
-                                <div>支付数量: {formatUnits(order.finalPrice, 6)} CCUSD</div>
-                                <div>CC数量: 0 CC</div>
-                              </>
+                            <div>支付方式: {order.primaryPaymentToken === 2 ? 'CC代币' : order.primaryPaymentToken === 1 ? 'CCUSD' : '未支付'}</div>
+                            <div>已支付金额: {order.totalPaidAmount ? formatUnits(Number(order.totalPaidAmount), 6) : '0'} CCUSD</div>
+                            <div>支付次数: {Number(order.paymentCount || 0)}</div>
+                            {order.primaryPaymentToken === 2 && order.totalPaidAmount > 0 && (
+                              <div>CC数量: ~{formatEther(BigInt(order.totalPaidAmount) * BigInt(10))} CC</div>
                             )}
+                            <div>汇率: {order.exchangeRate ? (Number(order.exchangeRate) / 10**18).toFixed(2) : 'N/A'}</div>
                           </div>
                         </div>
 
@@ -504,7 +655,7 @@ export default function OrderManagement() {
                               <div className="flex justify-between">
                                 <span className="text-gray-600">提供商收入:</span>
                                 <span className="text-green-600">
-                                  {order.ccPaymentAmount > 0
+                                  {order.primaryPaymentToken === 2
                                     ? `${formatEther(fundFlow.providerReceivable)} CC`
                                     : `${formatUnits(fundFlow.providerReceivable, 6)} CCUSD`
                                   }
@@ -515,7 +666,7 @@ export default function OrderManagement() {
                               <div className="flex justify-between">
                                 <span className="text-gray-600">平台费用:</span>
                                 <span className="text-yellow-600">
-                                  {order.ccPaymentAmount > 0
+                                  {order.primaryPaymentToken === 2
                                     ? `${formatEther(fundFlow.platformFee)} CC`
                                     : `${formatUnits(fundFlow.platformFee, 6)} CCUSD`
                                   }

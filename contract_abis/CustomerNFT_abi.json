@@ -292,6 +292,12 @@
         "internalType": "enum CustomerNFT.Tier",
         "name": "newTier",
         "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum CustomerNFT.Tier",
+        "name": "oldTier",
+        "type": "uint8"
       }
     ],
     "name": "NFTUpgraded",

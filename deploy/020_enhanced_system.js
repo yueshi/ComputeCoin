@@ -370,7 +370,50 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   console.log("储备率:", ccusdReserveRatio.toString(), "基点 (", Number(ccusdReserveRatio) / 100, "%)");
   console.log("每代币支撑:", ethers.formatEther(ccusdBackingPerToken.toString()), "ETH");
 
-  // 9. 部署完成总结
+  // 9. 用户权限授权
+  console.log("\n👥 授权用户权限...");
+
+  // 测试账户已在前面获取，直接使用已有的 customer 和 provider 变量
+
+  // 授权客户权限
+  await execute(
+    "ComputeMarket",
+    { from: deployer, log: true },
+    "authorizeClient",
+    customer
+  );
+  console.log("✅ Customer 账户已授权为客户端:", customer);
+
+  // 授权提供商权限
+  await execute(
+    "ComputeMarket",
+    { from: deployer, log: true },
+    "authorizeProvider",
+    provider
+  );
+  console.log("✅ Provider 账户已授权为提供商:", provider);
+
+  // 为特定地址授权客户权限 (解决 "Not authorized to create orders" 错误)
+  const specificUserAddress = "0xa443a7bd118100b1ff8957180be8a9e6c3fcce93";
+  await execute(
+    "ComputeMarket",
+    { from: deployer, log: true },
+    "authorizeClient",
+    specificUserAddress
+  );
+  console.log("✅ 特定用户地址已授权为客户端:", specificUserAddress);
+
+  // 为特定地址授权提供商权限
+  const specificProviderAddress = "0x9FD21285BBC11cCdc3913Ef337ab140c7be8fF66";
+  await execute(
+    "ComputeMarket",
+    { from: deployer, log: true },
+    "authorizeProvider",
+    specificProviderAddress
+  );
+  console.log("✅ 特定提供商地址已授权为提供商:", specificProviderAddress);
+
+  // 10. 部署完成总结
   console.log("\n✅ 增强版CC Token经济系统部署完成！");
   console.log("\n🎯 部署总结:");
   console.log("- ✅ 所有增强版合约已成功部署");
@@ -378,6 +421,9 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   console.log("- ✅ 安全机制已集成，包括日限额、暂停功能等");
   console.log("- ✅ CCUSD储备系统已建立，提供价值支撑");
   console.log("- ✅ 经济模型优化，确保可持续性");
+  console.log("- ✅ 用户权限已授权，可以创建和管理订单");
+  console.log("- ✅ 特定客户地址已获得权限:", specificUserAddress);
+  console.log("- ✅ 特定提供商地址已获得权限:", specificProviderAddress);
   
   console.log("\n📋 合约地址:");
   console.log("CCToken:", ccToken.address);
