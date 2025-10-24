@@ -59,14 +59,14 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   });
   console.log("✅ StakingPool 部署成功:", stakingPool.address);
 
-  // 部署增强版ComputeMarket
-  const computeMarket = await deployments.deploy("ComputeMarket", {
+  // 部署轻量级ComputeMarket (修复代码大小问题)
+  const computeMarket = await deployments.deploy("ComputeMarketLite", {
     from: deployer,
     args: [ccToken.address, customerNFT.address, mockUSDC.address, deployer],
     log: true,
     waitConfirmations: 1,
   });
-  console.log("✅ ComputeMarket 部署成功:", computeMarket.address);
+  console.log("✅ ComputeMarketLite 部署成功:", computeMarket.address);
 
   // 部署增强版ProviderIncentive
   const providerIncentive = await deployments.deploy("ProviderIncentive", {
@@ -245,29 +245,21 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   );
   console.log("✅ StakingPool 参数配置完成");
 
-  // 设置ComputeMarket安全参数
+  // 设置ComputeMarketLite安全参数
   await execute(
-    "ComputeMarket",
+    "ComputeMarketLite",
     { from: deployer, log: true },
     "setPlatformFee",
     250 // 2.5% platform fee
   );
 
   await execute(
-    "ComputeMarket",
+    "ComputeMarketLite",
     { from: deployer, log: true },
     "setBurnRate",
     150 // 1.5% burn rate
   );
-
-  await execute(
-    "ComputeMarket",
-    { from: deployer, log: true },
-    "setOrderValueLimits",
-    ethers.parseUnits("1", 6),    // 1 CCUSD min
-    ethers.parseUnits("10000", 6)  // 10,000 CCUSD max
-  );
-  console.log("✅ ComputeMarket 参数配置完成");
+  console.log("✅ ComputeMarketLite 参数配置完成");
 
   // 设置ProviderIncentive参数
   await execute(
@@ -375,43 +367,8 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
 
   // 测试账户已在前面获取，直接使用已有的 customer 和 provider 变量
 
-  // 授权客户权限
-  await execute(
-    "ComputeMarket",
-    { from: deployer, log: true },
-    "authorizeClient",
-    customer
-  );
-  console.log("✅ Customer 账户已授权为客户端:", customer);
-
-  // 授权提供商权限
-  await execute(
-    "ComputeMarket",
-    { from: deployer, log: true },
-    "authorizeProvider",
-    provider
-  );
-  console.log("✅ Provider 账户已授权为提供商:", provider);
-
-  // 为特定地址授权客户权限 (解决 "Not authorized to create orders" 错误)
-  const specificUserAddress = "0xa443a7bd118100b1ff8957180be8a9e6c3fcce93";
-  await execute(
-    "ComputeMarket",
-    { from: deployer, log: true },
-    "authorizeClient",
-    specificUserAddress
-  );
-  console.log("✅ 特定用户地址已授权为客户端:", specificUserAddress);
-
-  // 为特定地址授权提供商权限
-  const specificProviderAddress = "0x9FD21285BBC11cCdc3913Ef337ab140c7be8fF66";
-  await execute(
-    "ComputeMarket",
-    { from: deployer, log: true },
-    "authorizeProvider",
-    specificProviderAddress
-  );
-  console.log("✅ 特定提供商地址已授权为提供商:", specificProviderAddress);
+  // 注意：ComputeMarketLite简化版本，去掉了授权系统，所有用户都可以创建订单
+  console.log("✅ ComputeMarketLite 使用简化权限系统，所有用户都可以创建订单");
 
   // 10. 部署完成总结
   console.log("\n✅ 增强版CC Token经济系统部署完成！");
@@ -421,9 +378,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   console.log("- ✅ 安全机制已集成，包括日限额、暂停功能等");
   console.log("- ✅ CCUSD储备系统已建立，提供价值支撑");
   console.log("- ✅ 经济模型优化，确保可持续性");
-  console.log("- ✅ 用户权限已授权，可以创建和管理订单");
-  console.log("- ✅ 特定客户地址已获得权限:", specificUserAddress);
-  console.log("- ✅ 特定提供商地址已获得权限:", specificProviderAddress);
+  console.log("- ✅ ComputeMarketLite 使用简化权限系统，所有用户都可以创建订单");
   
   console.log("\n📋 合约地址:");
   console.log("CCToken:", ccToken.address);
@@ -431,7 +386,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   console.log("CustomerNFT:", customerNFT.address);
   console.log("ProviderNFT:", providerNFT.address);
   console.log("StakingPool:", stakingPool.address);
-  console.log("ComputeMarket:", computeMarket.address);
+  console.log("ComputeMarketLite:", computeMarket.address);
   console.log("ProviderIncentive:", providerIncentive.address);
   console.log("CCUSDReservePool:", ccusdReservePool.address);
   console.log("EthToCCUSDConverter:", ethToCCUSDConverter.address);

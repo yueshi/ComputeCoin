@@ -312,7 +312,7 @@ contract ComputeMarket is Ownable, ReentrancyGuard {
     uint8 public constant PERMISSION_DISPUTE_RESOLUTION = 8;
 
     /**
-     * @dev Make partial payment for order with duplicate protection
+     * @dev Make partial payment for order with enhanced security and validation
      */
     function makePartialPayment(
         uint256 orderId,
@@ -325,6 +325,10 @@ contract ComputeMarket is Ownable, ReentrancyGuard {
         require(order.client == msg.sender, "Not order client");
         require(_amount > 0, "Invalid payment amount");
         require(_tokenType != PaymentToken.NONE, "Invalid token type");
+
+        // Pre-validate authorization and balance
+        require(_validateTokenAllowance(_tokenType, msg.sender, _amount), "Insufficient token allowance");
+        require(_validateTokenBalance(_tokenType, msg.sender, _amount), "Insufficient token balance");
 
         // Additional validation to prevent duplicate payments (optimized)
         require(order.paymentCount == 0 || block.timestamp > order.payments[order.paymentCount - 1].timestamp + 1 minutes,
@@ -357,9 +361,14 @@ contract ComputeMarket is Ownable, ReentrancyGuard {
 
         } else if (_tokenType == PaymentToken.CC) {
             uint256 ccAmount = _amount;
+
             require(ccAmount <= type(uint256).max / ccTokenPrice, "CC amount too large");
+            require(ccTokenPrice > 0, "Invalid CC token price");
 
             usdEquivalent = (ccAmount * ccTokenPrice) / 10**18;
+            require(usdEquivalent > 0, "Invalid calculation");
+            require(usdEquivalent <= ccAmount, "Invalid conversion rate");
+
             require(order.totalPaidAmount <= type(uint128).max - uint128(usdEquivalent), "Overflow in payment addition");
             require(order.totalPaidAmount + uint128(usdEquivalent) <= order.finalPrice, "Overpayment");
 
@@ -1025,6 +1034,33 @@ contract ComputeMarket is Ownable, ReentrancyGuard {
         }
 
         return totalCCUSD;
+    }
+
+    // Gas-optimized validation functions
+    function _validateTokenAllowance(
+        PaymentToken tokenType,
+        address user,
+        uint256 amount
+    ) internal view returns (bool) {
+        if (tokenType == PaymentToken.CCUSD) {
+            return ccusdToken.allowance(user, address(this)) >= amount;
+        } else if (tokenType == PaymentToken.CC) {
+            return ccToken.allowance(user, address(this)) >= amount;
+        }
+        return false;
+    }
+
+    function _validateTokenBalance(
+        PaymentToken tokenType,
+        address user,
+        uint256 amount
+    ) internal view returns (bool) {
+        if (tokenType == PaymentToken.CCUSD) {
+            return ccusdToken.balanceOf(user) >= amount;
+        } else if (tokenType == PaymentToken.CC) {
+            return ccToken.balanceOf(user) >= amount;
+        }
+        return false;
     }
 
     // Keep existing utility functions
