@@ -240,6 +240,7 @@
     "exchange": "Exchange",
     "staking": "Staking",
     "nfts": "NFT",
+    "orders": "Orders",
     "profile": "Profile"
   },
   "home": {
@@ -1249,5 +1250,106 @@
     "toggleTheme": "Toggle Theme",
     "switchToDark": "Switch to Dark Theme",
     "switchToLight": "Switch to Light Theme"
+  },
+  "orders": {
+    "title": "Order Management Center",
+    "admin": "Administrator",
+    "connectWalletPrompt": "Please connect wallet",
+    "connectWalletDescription": "Please connect your wallet first to view order information",
+    "userIdentity": {
+      "admin": "Administrator Identity",
+      "user": "Regular User Identity",
+      "adminDescription": "Can view all order information and fund flows",
+      "userDescription": "Can only view order information related to you",
+      "currentAddress": "Current Address",
+      "contractOwner": "Contract Owner"
+    },
+    "marketStats": {
+      "totalOrders": "Total Orders",
+      "totalVolumeUSD": "Total Volume (USD)",
+      "totalVolumeCC": "CC Trading Volume",
+      "burnRate": "Burn Rate",
+      "platformFee": "Platform Fee"
+    },
+    "filter": {
+      "title": "Order Filter",
+      "allOrders": "All Orders",
+      "created": "Created",
+      "paid": "Paid",
+      "inService": "In Service",
+      "completed": "Completed",
+      "confirmed": "Confirmed",
+      "cancelled": "Cancelled"
+    },
+    "orderDetails": {
+      "basicInfo": "Basic Information",
+      "paymentInfo": "Payment Information",
+      "paymentDetails": "Payment Details",
+      "fundFlow": "Fund Flow",
+      "actions": "Actions",
+      "customer": "Customer",
+      "provider": "Provider",
+      "originalPrice": "Original Price",
+      "finalPrice": "Final Price",
+      "discount": "Discount",
+      "customerNFT": "Customer NFT",
+      "paymentProgress": "Payment Progress",
+      "paymentMethod": "Payment Method",
+      "notPaid": "Not Paid",
+      "paidAmount": "Paid Amount",
+      "targetAmount": "Target Amount",
+      "paymentCount": "Payment Count",
+      "usdEquivalent": "USD Equivalent",
+      "exchangeRate": "Exchange Rate",
+      "status": "Status",
+      "providerRevenue": "Provider Revenue",
+      "platformFee": "Platform Fee",
+      "burnAmount": "Burn Amount",
+      "createTime": "Create Time"
+    },
+    "noOrders": {
+      "title": "No Orders",
+      "adminDescription": "Currently no order records",
+      "userDescription": "You haven't created any orders yet"
+    },
+    "errors": {
+      "loadFailed": "Failed to load data"
+    },
+    "status": {
+      "created": "Created",
+      "paid": "Paid",
+      "inService": "In Service",
+      "completed": "Completed",
+      "confirmed": "Confirmed",
+      "cancelled": "Cancelled",
+      "unknown": "Unknown"
+    },
+    "paymentToken": {
+      "none": "Not Paid",
+      "cc": "CC Token",
+      "ccusd": "CCUSD",
+      "unknown": "Unknown"
+    },
+    "fundFlow": {
+      "pending": "Waiting for payment",
+      "active": "Service in progress",
+      "locked": "Funds locked, waiting for service completion",
+      "completed": "Funds distributed successfully",
+      "cancelled": "Order cancelled, funds refunded",
+      "disputed": "Order dispute in progress, funds frozen",
+      "unknown": "Unknown order status",
+      "invalidOrder": "Invalid order information"
+    },
+    "actions": {
+      "payOrder": "Pay Order",
+      "cancelOrder": "Cancel Order",
+      "startService": "Start Service",
+      "requestRefund": "Request Refund",
+      "completeService": "Complete Service",
+      "updateProgress": "Update Progress",
+      "confirm": "Confirm Complete",
+      "resolveDispute": "Resolve Dispute",
+      "viewDetails": "View Details"
+    }
   }
 }

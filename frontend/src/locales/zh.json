@@ -1250,5 +1250,106 @@
     "toggleTheme": "切换主题",
     "switchToDark": "切换到深色主题",
     "switchToLight": "切换到浅色主题"
+  },
+  "orders": {
+    "title": "订单管理中心",
+    "admin": "管理员",
+    "connectWalletPrompt": "请连接钱包",
+    "connectWalletDescription": "请先连接钱包以查看订单信息",
+    "userIdentity": {
+      "admin": "管理员身份",
+      "user": "普通用户身份",
+      "adminDescription": "可以查看所有订单信息和资金流向",
+      "userDescription": "只能查看与您相关的订单信息",
+      "currentAddress": "当前地址",
+      "contractOwner": "合约所有者"
+    },
+    "marketStats": {
+      "totalOrders": "总订单数",
+      "totalVolumeUSD": "总交易额 (USD)",
+      "totalVolumeCC": "CC交易量",
+      "burnRate": "燃烧费率",
+      "platformFee": "平台费率"
+    },
+    "filter": {
+      "title": "订单筛选",
+      "allOrders": "全部订单",
+      "created": "已创建",
+      "paid": "已支付",
+      "inService": "服务中",
+      "completed": "已完成",
+      "confirmed": "已确认",
+      "cancelled": "已取消"
+    },
+    "orderDetails": {
+      "basicInfo": "基本信息",
+      "paymentInfo": "支付信息",
+      "paymentDetails": "支付详情",
+      "fundFlow": "资金流向",
+      "actions": "操作",
+      "customer": "客户",
+      "provider": "提供商",
+      "originalPrice": "原始价格",
+      "finalPrice": "最终价格",
+      "discount": "折扣",
+      "customerNFT": "客户NFT",
+      "paymentProgress": "支付进度",
+      "paymentMethod": "支付方式",
+      "notPaid": "未支付",
+      "paidAmount": "已支付金额",
+      "targetAmount": "目标金额",
+      "paymentCount": "支付次数",
+      "usdEquivalent": "USD等值",
+      "exchangeRate": "汇率",
+      "status": "状态",
+      "providerRevenue": "提供商收入",
+      "platformFee": "平台费用",
+      "burnAmount": "燃烧销毁",
+      "createTime": "创建时间"
+    },
+    "noOrders": {
+      "title": "暂无订单",
+      "adminDescription": "当前没有任何订单记录",
+      "userDescription": "您还没有创建任何订单"
+    },
+    "errors": {
+      "loadFailed": "数据加载失败"
+    },
+    "status": {
+      "created": "已创建",
+      "paid": "已支付",
+      "inService": "服务中",
+      "completed": "已完成",
+      "confirmed": "已确认",
+      "cancelled": "已取消",
+      "unknown": "未知"
+    },
+    "paymentToken": {
+      "none": "未支付",
+      "cc": "CC代币",
+      "ccusd": "CCUSD",
+      "unknown": "未知"
+    },
+    "fundFlow": {
+      "pending": "等待支付",
+      "active": "服务进行中",
+      "locked": "资金已锁定，等待服务完成",
+      "completed": "资金已分配完成",
+      "cancelled": "订单已取消，资金已退还",
+      "disputed": "订单争议处理中，资金已冻结",
+      "unknown": "未知订单状态",
+      "invalidOrder": "订单信息无效"
+    },
+    "actions": {
+      "payOrder": "支付订单",
+      "cancelOrder": "取消订单",
+      "startService": "开始服务",
+      "requestRefund": "申请退款",
+      "completeService": "完成服务",
+      "updateProgress": "更新进度",
+      "confirm": "确认完成",
+      "resolveDispute": "解决争议",
+      "viewDetails": "查看详情"
+    }
   }
 }

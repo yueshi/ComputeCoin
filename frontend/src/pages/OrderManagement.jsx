@@ -10,7 +10,8 @@ import {
   XCircleIcon,
   ExclamationTriangleIcon,
   FireIcon,
-  BanknotesIcon
+  BanknotesIcon,
+  UserIcon
 } from '@heroicons/react/24/outline'
 import { useReadContract, useReadContracts } from 'wagmi'
 import { CONTRACT_ADDRESSES, CONTRACT_ABI } from '../config/contracts'
@@ -116,7 +117,8 @@ export default function OrderManagement() {
         totalPlatformFeesData !== undefined) {
       setMarketStats({
         totalOrders: totalOrdersData,
-        totalVolumeUSD: totalVolumeUSDData,
+        // 🔧 关键修复：totalVolumeUSD也是wei单位，需要转换为可读格式
+        totalVolumeUSD: Number(totalVolumeUSDData || 0) / 1e6,  // CCUSD wei -> 可读CCUSD
         totalVolumeCC: totalVolumeCCData,
         totalBurnedCC: totalBurnedCCData,
         totalPlatformFees: totalPlatformFeesData
@@ -289,18 +291,20 @@ export default function OrderManagement() {
         paymentCount
       ] = orderTuple
 
-      // 转换为对象，并处理BigInt
+      // 转换为对象，并处理BigInt和wei单位
       return {
         id: Number(id),
         client: client,
         provider: provider,
-        finalPrice: Number(finalPrice),
+        // 🔧 关键修复：finalPrice是CCUSD的wei单位，需要转换为可读格式
+        finalPrice: Number(finalPrice) / 1e6,  // CCUSD wei -> 可读CCUSD
         status: Number(status),
         createTime: Number(createTime),
         paymentTime: Number(paymentTime),
         customerNftId: Number(customerNftId),
         primaryPaymentToken: Number(primaryPaymentToken),
-        totalPaidAmount: Number(totalPaidAmount),
+        // 🔧 关键修复：totalPaidAmount也是USD等值的wei单位
+        totalPaidAmount: Number(totalPaidAmount) / 1e6,  // USD等值wei -> 可读CCUSD
         exchangeRate: Number(exchangeRate),
         paymentCount: Number(paymentCount)
       }
@@ -331,64 +335,64 @@ export default function OrderManagement() {
   
   if (!isConnected) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-theme-secondary flex items-center justify-center">
         <div className="text-center">
           <ExclamationTriangleIcon className="h-16 w-16 text-yellow-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">请连接钱包</h2>
-          <p className="text-gray-600">请先连接钱包以查看订单信息</p>
+          <h2 className="text-2xl font-bold text-theme-primary mb-2">{t('orders.connectWalletPrompt')}</h2>
+          <p className="text-theme-secondary">{t('orders.connectWalletDescription')}</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-theme-secondary py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* 页面标题和用户身份信息 */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-3xl font-bold text-gray-900 flex items-center">
+            <h1 className="text-3xl font-bold text-theme-primary flex items-center">
               <ChartBarIcon className="h-8 w-8 mr-3 text-blue-600" />
-              订单管理中心
+              {t('orders.title')}
               {isAdmin && (
-                <span className="ml-3 px-3 py-1 bg-red-100 text-red-800 text-sm rounded-full">
-                  管理员
+                <span className="ml-3 px-3 py-1 bg-red-50 text-red-700 border border-red-200 text-sm font-semibold rounded-full shadow-sm dark:bg-red-900/40 dark:text-red-300 dark:border-red-700">
+                  {t('orders.admin')}
                 </span>
               )}
             </h1>
           </div>
 
           {/* 用户身份和地址信息 */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+          <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div className={`w-3 h-3 rounded-full ${isAdmin ? 'bg-red-500' : 'bg-green-500'}`}></div>
-                <span className="text-sm font-medium text-gray-900">
-                  {isAdmin ? '管理员身份' : '普通用户身份'}
+                <span className="text-sm font-medium text-theme-primary">
+                  {isAdmin ? t('orders.userIdentity.admin') : t('orders.userIdentity.user')}
                 </span>
               </div>
-              <div className="text-sm text-gray-600">
-                当前地址: {address?.slice(0, 6)}...{address?.slice(-4)}
+              <div className="text-sm text-theme-secondary">
+                {t('orders.userIdentity.currentAddress')}: {address?.slice(0, 6)}...{address?.slice(-4)}
               </div>
             </div>
-            <div className="mt-2 text-xs text-gray-500">
+            <div className="mt-2 text-xs text-theme-tertiary">
               {isAdmin
-                ? '可以查看所有订单信息和资金流向'
-                : '只能查看与您相关的订单信息'
+                ? t('orders.userIdentity.adminDescription')
+                : t('orders.userIdentity.userDescription')
               }
             </div>
             {owner && (
-              <div className="mt-2 text-xs text-gray-500">
-                合约所有者: {owner.slice(0, 6)}...{owner.slice(-4)}
+              <div className="mt-2 text-xs text-theme-tertiary">
+                {t('orders.userIdentity.contractOwner')}: {owner.slice(0, 6)}...{owner.slice(-4)}
               </div>
             )}
 
             </div>
 
-          <p className="text-gray-600">
+          <p className="text-theme-secondary">
             {isAdmin
-              ? '查看所有订单信息和资金流向'
-              : '查看您的订单信息和资金状态'
+              ? t('orders.userIdentity.adminDescription')
+              : t('orders.userIdentity.userDescription')
             }
           </p>
         </div>
@@ -396,10 +400,10 @@ export default function OrderManagement() {
   
         {/* 错误提示 */}
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+          <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6">
             <div className="flex items-center">
               <ExclamationTriangleIcon className="h-5 w-5 text-red-500 mr-2" />
-              <span className="text-red-800 font-medium">错误: {error.message || '数据加载失败'}</span>
+              <span className="text-red-800 dark:text-red-300 font-medium">{t('common.error')}: {error.message || t('orders.errors.loadFailed')}</span>
             </div>
           </div>
         )}
@@ -407,60 +411,60 @@ export default function OrderManagement() {
         {/* 市场统计信息 */}
         {marketStats && !error && (
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-theme-card rounded-lg shadow-md hover:shadow-lg dark:shadow-xl transition-shadow duration-200 p-6">
               <div className="flex items-center">
                 <ChartBarIcon className="h-8 w-8 text-blue-600" />
                 <div className="ml-4">
-                  <p className="text-sm text-gray-600">总订单数</p>
-                  <p className="text-xl font-bold text-gray-900">
+                  <p className="text-sm text-theme-secondary">{t('orders.marketStats.totalOrders')}</p>
+                  <p className="text-xl font-bold text-theme-primary">
                     {marketStats.totalOrders?.toString() || '0'}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-theme-card rounded-lg shadow-md hover:shadow-lg dark:shadow-xl transition-shadow duration-200 p-6">
               <div className="flex items-center">
                 <CurrencyDollarIcon className="h-8 w-8 text-green-600" />
                 <div className="ml-4">
-                  <p className="text-sm text-gray-600">总交易额 (USD)</p>
-                  <p className="text-xl font-bold text-gray-900">
+                  <p className="text-sm text-theme-secondary">{t('orders.marketStats.totalVolumeUSD')}</p>
+                  <p className="text-xl font-bold text-theme-primary">
                     {formatPaymentAmount(marketStats.totalVolumeUSD, PAYMENT_TOKEN.CCUSD)}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-theme-card rounded-lg shadow-md hover:shadow-lg dark:shadow-xl transition-shadow duration-200 p-6">
               <div className="flex items-center">
                 <BanknotesIcon className="h-8 w-8 text-purple-600" />
                 <div className="ml-4">
-                  <p className="text-sm text-gray-600">CC交易量</p>
-                  <p className="text-xl font-bold text-gray-900">
-                    {formatPaymentAmount(marketStats.totalVolumeCC, PAYMENT_TOKEN.CC)}
+                  <p className="text-sm text-theme-secondary">{t('orders.marketStats.totalVolumeCC')}</p>
+                  <p className="text-xl font-bold text-theme-primary">
+                    {formatPaymentAmount(marketStats.totalVolumeCC, PAYMENT_TOKEN.CC, true, marketStats.totalVolumeCC > 1e12)}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-theme-card rounded-lg shadow-md hover:shadow-lg dark:shadow-xl transition-shadow duration-200 p-6">
               <div className="flex items-center">
                 <FireIcon className="h-8 w-8 text-red-600" />
                 <div className="ml-4">
-                  <p className="text-sm text-gray-600">燃烧费率</p>
-                  <p className="text-xl font-bold text-gray-900">
+                  <p className="text-sm text-theme-secondary">{t('orders.marketStats.burnRate')}</p>
+                  <p className="text-xl font-bold text-theme-primary">
                     {marketStats.totalBurnedCC ? `${(Number(marketStats.totalBurnedCC) / 100).toFixed(2)}%` : '1.5%'}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-theme-card rounded-lg shadow-md hover:shadow-lg dark:shadow-xl transition-shadow duration-200 p-6">
               <div className="flex items-center">
                 <BanknotesIcon className="h-8 w-8 text-yellow-600" />
                 <div className="ml-4">
-                  <p className="text-sm text-gray-600">平台费率</p>
-                  <p className="text-xl font-bold text-gray-900">
+                  <p className="text-sm text-theme-secondary">{t('orders.marketStats.platformFee')}</p>
+                  <p className="text-xl font-bold text-theme-primary">
                     {marketStats.totalPlatformFees ? `${(Number(marketStats.totalPlatformFees) / 100).toFixed(2)}%` : '2.5%'}
                   </p>
                 </div>
@@ -470,22 +474,22 @@ export default function OrderManagement() {
         )}
 
         {/* 筛选器 */}
-        <div className="bg-white rounded-lg shadow mb-6 p-4">
+        <div className="bg-theme-card rounded-lg shadow-md hover:shadow-lg dark:shadow-xl transition-all duration-200 mb-4 p-4 hover:border-blue-200 border border-transparent">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-medium text-gray-900">订单筛选</h3>
+            <h3 className="text-lg font-medium text-theme-primary">{t('orders.filter.title')}</h3>
             <div className="flex space-x-2">
               <select
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="px-4 py-2 bg-theme-input border border-theme rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-theme-primary hover:border-blue-400 transition-colors"
               >
-                <option value="all">全部订单</option>
-                <option value="0">已创建</option>
-                <option value="1">已支付</option>
-                <option value="2">服务中</option>
-                <option value="3">已完成</option>
-                <option value="4">已确认</option>
-                <option value="5">已取消</option>
+                <option value="all">{t('orders.filter.allOrders')}</option>
+                <option value="0">{t('orders.filter.created')}</option>
+                <option value="1">{t('orders.filter.paid')}</option>
+                <option value="2">{t('orders.filter.inService')}</option>
+                <option value="3">{t('orders.filter.completed')}</option>
+                <option value="4">{t('orders.filter.confirmed')}</option>
+                <option value="5">{t('orders.filter.cancelled')}</option>
                 {/* 🔧 修复：ComputeMarketLite没有过期和争议状态 */}
               </select>
             </div>
@@ -500,153 +504,231 @@ export default function OrderManagement() {
         ) : (
           <div className="space-y-4">
             {orders.length === 0 ? (
-              <div className="bg-white rounded-lg shadow p-8 text-center">
-                <ExclamationTriangleIcon className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">暂无订单</h3>
-                <p className="text-gray-600">
-                  {isAdmin ? '当前没有任何订单记录' : '您还没有创建任何订单'}
+              <div className="bg-theme-card rounded-lg shadow-md hover:shadow-lg dark:shadow-xl transition-shadow duration-200 p-8 text-center">
+                <ExclamationTriangleIcon className="h-16 w-16 text-theme-tertiary mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-theme-primary mb-2">{t('orders.noOrders.title')}</h3>
+                <p className="text-theme-secondary">
+                  {isAdmin ? t('orders.noOrders.adminDescription') : t('orders.noOrders.userDescription')}
                 </p>
               </div>
             ) : (
               orders.map((order) => {
                 // 使用新的工具函数获取状态和资金信息
-                const statusInfo = getOrderStatusInfo(Number(order.status || 0))
+                const statusInfo = getOrderStatusInfo(Number(order.status || 0), t)
                 const StatusIcon = STATUS_ICONS[statusInfo.color] || STATUS_ICONS.gray
                 // 🔧 修复：订单数据已经是转换后的对象，无需再次转换
-                const fundFlow = calculateFundFlow(order)
-                const paymentDetails = getPaymentDetails(order)
-                const orderActions = getOrderActions(order, true, address === order.client ? 'client' : address === order.provider ? 'provider' : 'admin')
+                const fundFlow = calculateFundFlow(order, t)
+                const paymentDetails = getPaymentDetails(order, t)
+                const orderActions = getOrderActions(order, true, address === order.client ? 'client' : address === order.provider ? 'provider' : 'admin', t)
 
                 return (
-                  <div key={`order-${order.id}-${order.createTime}`} className="bg-white rounded-lg shadow overflow-hidden">
+                  <div key={`order-${order.id}-${order.createTime}`} className="bg-theme-card rounded-lg shadow-md hover:shadow-lg dark:shadow-xl transition-all duration-200 overflow-hidden border border-theme">
                     {/* 订单头部 */}
-                    <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                    <div className="bg-theme-secondary px-6 py-4 border-b border-theme">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4">
-                          <span className="text-sm font-medium text-gray-500">
-                            订单 #{order.id}
+                          <span className="text-sm font-medium text-theme-tertiary">
+                            {t('marketplace.myOrders')} #{order.id}
                           </span>
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            statusInfo.color === 'yellow' ? 'bg-yellow-100 text-yellow-800' :
-                            statusInfo.color === 'blue' ? 'bg-blue-100 text-blue-800' :
-                            statusInfo.color === 'indigo' ? 'bg-indigo-100 text-indigo-800' :
-                            statusInfo.color === 'green' ? 'bg-green-100 text-green-800' :
-                            statusInfo.color === 'emerald' ? 'bg-emerald-100 text-emerald-800' :
-                            statusInfo.color === 'red' ? 'bg-red-100 text-red-800' :
-                            statusInfo.color === 'orange' ? 'bg-orange-100 text-orange-800' :
-                            statusInfo.color === 'purple' ? 'bg-purple-100 text-purple-800' :
-                            'bg-gray-100 text-gray-800'
+                          <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-semibold border shadow-sm backdrop-blur-sm ${
+                            statusInfo.color === 'yellow' ? 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-900/40 dark:text-yellow-200 dark:border-yellow-700' :
+                            statusInfo.color === 'blue' ? 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/40 dark:text-blue-200 dark:border-blue-700' :
+                            statusInfo.color === 'indigo' ? 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-900/40 dark:text-indigo-200 dark:border-indigo-700' :
+                            statusInfo.color === 'green' ? 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/40 dark:text-green-200 dark:border-green-700' :
+                            statusInfo.color === 'emerald' ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-200 dark:border-emerald-700' :
+                            statusInfo.color === 'red' ? 'bg-red-50 text-red-700 border-red-200 dark:bg-red-900/40 dark:text-red-200 dark:border-red-700' :
+                            statusInfo.color === 'orange' ? 'bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-900/40 dark:text-orange-200 dark:border-orange-700' :
+                            statusInfo.color === 'purple' ? 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-900/40 dark:text-purple-200 dark:border-purple-700' :
+                            'bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-700/40 dark:text-gray-200 dark:border-gray-600'
                           }`}>
                             <StatusIcon className="h-4 w-4 mr-1" />
                             {statusInfo.name}
                           </span>
                         </div>
-                        <div className="text-sm text-gray-500">
-                          创建时间: {order.createTime ? new Date(Number(order.createTime) * 1000).toLocaleString() : 'N/A'}
+                        <div className="text-sm text-theme-tertiary">
+                          {t('orders.orderDetails.createTime')}: {order.createTime ? new Date(Number(order.createTime) * 1000).toLocaleString() : 'N/A'}
                         </div>
                       </div>
                     </div>
 
                     {/* 订单详情 */}
                     <div className="p-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {/* 基本信息 */}
+                      {/* 关键信息概览行 */}
+                      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6 pb-4 border-b border-theme dark:border-gray-600">
+                        {/* 订单金额和支付状态 */}
+                        <div className="bg-theme-secondary rounded-lg p-4 border border-theme shadow-sm">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-medium text-theme-primary">{t('orders.orderDetails.finalPrice')}</span>
+                            <CurrencyDollarIcon className="h-5 w-5 text-theme-secondary" />
+                          </div>
+                          <div className="text-lg font-bold text-theme-primary">
+                            {paymentDetails?.formattedFinalAmount || '0 CCUSD'}
+                          </div>
+                          <div className="text-xs text-theme-secondary mt-1">
+                            {t('orders.orderDetails.paymentProgress')}: {paymentDetails?.paymentProgress?.toFixed(1)}%
+                          </div>
+                        </div>
+
+                        {/* 客户和提供商信息 */}
+                        <div className="bg-theme-secondary rounded-lg p-4 border border-theme shadow-sm">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-medium text-theme-primary">{t('orders.orderDetails.basicInfo')}</span>
+                            <UserIcon className="h-5 w-5 text-theme-secondary" />
+                          </div>
+                          <div className="space-y-1">
+                            <div className="text-sm">
+                              <span className="text-theme-secondary">{t('orders.orderDetails.customer')}:</span>
+                              <span className="ml-1 font-mono text-theme-primary text-xs">
+                                {order.client ? order.client.slice(0, 6) + '...' + order.client.slice(-4) : 'N/A'}
+                              </span>
+                            </div>
+                            <div className="text-sm">
+                              <span className="text-theme-secondary">{t('orders.orderDetails.provider')}:</span>
+                              <span className="ml-1 font-mono text-theme-primary text-xs">
+                                {order.provider ? order.provider.slice(0, 6) + '...' + order.provider.slice(-4) : 'N/A'}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* 资金流向概览 */}
+                        <div className="bg-theme-secondary rounded-lg p-4 border border-theme shadow-sm">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-medium text-theme-primary">{t('orders.orderDetails.fundFlow')}</span>
+                            <BanknotesIcon className="h-5 w-5 text-theme-secondary" />
+                          </div>
+                          <div className={`text-sm font-semibold px-2 py-1 rounded-md inline-block ${
+                            fundFlow.status === 'distributed' ? 'bg-green-50 text-green-700 border border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-700' :
+                            fundFlow.status === 'active' || fundFlow.status === 'locked' ? 'bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-700' :
+                            fundFlow.status === 'refunded' ? 'bg-yellow-50 text-yellow-700 border border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-700' :
+                            fundFlow.status === 'disputed' ? 'bg-red-50 text-red-700 border border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-700' :
+                            'bg-gray-50 text-gray-700 border border-gray-200 dark:bg-gray-700/30 dark:text-gray-300 dark:border-gray-600'
+                          }`}>
+                            {fundFlow.message}
+                          </div>
+                          {(fundFlow.providerReceivable > 0 || fundFlow.platformFee > 0 || fundFlow.burnAmount > 0) && (
+                            <div className="mt-2 space-y-1 text-xs">
+                              {fundFlow.providerReceivable > 0 && (
+                                <div className="flex justify-between">
+                                  <span className="text-theme-secondary">{t('orders.orderDetails.providerRevenue')}:</span>
+                                  <span className="font-semibold text-theme-primary">
+                                    {fundFlow.formattedProviderRevenue || formatPaymentAmount(fundFlow.providerReceivable, fundFlow.tokenType)}
+                                  </span>
+                                </div>
+                              )}
+                              {fundFlow.platformFee > 0 && (
+                                <div className="flex justify-between">
+                                  <span className="text-theme-secondary">{t('orders.orderDetails.platformFee')}:</span>
+                                  <span className="font-semibold text-theme-primary">
+                                    {fundFlow.formattedPlatformFee || formatPaymentAmount(fundFlow.platformFee, fundFlow.tokenType)}
+                                  </span>
+                                </div>
+                              )}
+                              {fundFlow.burnAmount > 0 && (
+                                <div className="flex justify-between">
+                                  <span className="text-theme-secondary">{t('orders.orderDetails.burnAmount')}:</span>
+                                  <span className="font-semibold text-theme-primary">
+                                    {fundFlow.formattedBurnAmount || formatPaymentAmount(fundFlow.burnAmount, PAYMENT_TOKEN.CC)}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* 详细信息网格 */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {/* 价格和优惠信息 */}
                         <div>
-                          <h4 className="text-sm font-medium text-gray-900 mb-2">基本信息</h4>
-                          <div className="space-y-1 text-sm text-gray-600">
-                            <div>客户: {order.client ? order.client.slice(0, 6) + '...' + order.client.slice(-4) : 'N/A'}</div>
-                            <div>提供商: {order.provider ? order.provider.slice(0, 6) + '...' + order.provider.slice(-4) : 'N/A'}</div>
-                            <div>原始价格: {paymentDetails?.formattedOriginalPrice || '0 CCUSD'}</div>
-                            <div>最终价格: {paymentDetails?.formattedFinalAmount || '0 CCUSD'}</div>
+                          <h4 className="text-sm font-medium text-theme-primary mb-2">{t('orders.orderDetails.paymentInfo')}</h4>
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between items-center">
+                              <span className="text-theme-secondary">{t('orders.orderDetails.originalPrice')}:</span>
+                              <span className="font-medium text-theme-primary">{paymentDetails?.formattedOriginalPrice || '0 CCUSD'}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span className="text-theme-secondary">{t('orders.orderDetails.finalPrice')}:</span>
+                              <span className="font-bold text-lg text-theme-primary">{paymentDetails?.formattedFinalAmount || '0 CCUSD'}</span>
+                            </div>
                             {paymentDetails?.hasDiscount && (
-                              <div className="text-green-600">
-                                折扣: {paymentDetails.discountPercentage}% (-{paymentDetails.formattedDiscountAmount})
+                              <div className="bg-theme-hover rounded-md p-2 border border-theme">
+                                <div className="flex justify-between items-center">
+                                  <span className="text-theme-primary font-medium">{t('orders.orderDetails.discount')}:</span>
+                                  <span className="text-theme-primary font-bold">
+                                    {paymentDetails.discountPercentage}% (-{paymentDetails.formattedDiscountAmount})
+                                  </span>
+                                </div>
                               </div>
                             )}
                             {order.customerNftId && Number(order.customerNftId) > 0 && (
-                              <div>客户NFT: #{order.customerNftId}</div>
-                            )}
-                            <div>支付进度: {paymentDetails?.paymentProgress?.toFixed(1)}%</div>
-                          </div>
-                        </div>
-
-                        {/* 支付信息 */}
-                        <div>
-                          <h4 className="text-sm font-medium text-gray-900 mb-2">支付信息</h4>
-                          <div className="space-y-1 text-sm text-gray-600">
-                            <div>支付方式: {paymentDetails?.paymentTokenName || '未支付'}</div>
-                            <div>已支付金额: {paymentDetails?.formattedPaidAmount || '0'}</div>
-                            <div>目标金额: {paymentDetails?.formattedFinalAmount || '0'}</div>
-                            <div>支付次数: {paymentDetails?.paymentCount || 0}</div>
-                            {paymentDetails?.tokenType === PAYMENT_TOKEN.CC && paymentDetails?.paidAmount > 0 && (
-                              <div>USD等值: {paymentDetails?.formattedUsdEquivalent}</div>
-                            )}
-                            {paymentDetails?.exchangeRate > 0 && (
-                              <div>汇率: {(paymentDetails.exchangeRate / 10**18).toFixed(4)}</div>
+                              <div className="flex justify-between items-center">
+                                <span className="text-theme-secondary">{t('orders.orderDetails.customerNFT')}:</span>
+                                <span className="font-medium text-theme-primary">#{order.customerNftId}</span>
+                              </div>
                             )}
                           </div>
                         </div>
 
-                        {/* 资金流向 */}
+                        {/* 支付详情 */}
                         <div>
-                          <h4 className="text-sm font-medium text-gray-900 mb-2">资金流向</h4>
-                          <div className="space-y-1 text-sm">
-                            <div className="flex justify-between">
-                              <span className="text-gray-600">状态:</span>
-                              <span className={`font-medium ${
-                                fundFlow.status === 'distributed' ? 'text-green-600' :
-                                fundFlow.status === 'active' || fundFlow.status === 'locked' ? 'text-blue-600' :
-                                fundFlow.status === 'refunded' ? 'text-yellow-600' :
-                                fundFlow.status === 'disputed' ? 'text-red-600' :
-                                'text-gray-600'
-                              }`}>
-                                {fundFlow.message}
-                              </span>
+                          <h4 className="text-sm font-medium text-theme-primary mb-2">{t('orders.orderDetails.paymentDetails')}</h4>
+                          <div className="space-y-3 text-sm">
+                            <div className="bg-theme-hover rounded-lg p-3 border border-theme">
+                              <div className="flex justify-between items-center">
+                                <span className="text-theme-secondary font-medium">{t('orders.orderDetails.paymentMethod')}</span>
+                                <span className="font-bold text-theme-primary">{paymentDetails?.paymentTokenName || t('orders.orderDetails.notPaid')}</span>
+                              </div>
                             </div>
-                            {fundFlow.providerReceivable > 0 && (
-                              <div className="flex justify-between">
-                                <span className="text-gray-600">提供商收入:</span>
-                                <span className="text-green-600">
-                                  {fundFlow.formattedProviderRevenue || formatPaymentAmount(fundFlow.providerReceivable, fundFlow.tokenType)}
-                                </span>
+
+                            <div className="space-y-2">
+                              <div className="flex justify-between items-center py-1">
+                                <span className="text-theme-secondary">{t('orders.orderDetails.paidAmount')}</span>
+                                <span className="font-medium text-theme-primary">{paymentDetails?.formattedPaidAmount || '0'}</span>
+                              </div>
+                              <div className="flex justify-between items-center py-1">
+                                <span className="text-theme-secondary">{t('orders.orderDetails.targetAmount')}</span>
+                                <span className="font-medium text-theme-primary">{paymentDetails?.formattedFinalAmount || '0'}</span>
+                              </div>
+                              <div className="flex justify-between items-center py-1">
+                                <span className="text-theme-secondary">{t('orders.orderDetails.paymentCount')}</span>
+                                <span className="font-medium text-theme-primary">{paymentDetails?.paymentCount || 0} 次</span>
+                              </div>
+                            </div>
+
+                            {(paymentDetails?.tokenType === PAYMENT_TOKEN.CC && paymentDetails?.paidAmount > 0) && (
+                              <div className="bg-theme-hover rounded-lg p-3 border border-theme">
+                                <div className="flex justify-between items-center">
+                                  <span className="text-theme-secondary font-medium">{t('orders.orderDetails.usdEquivalent')}</span>
+                                  <span className="font-bold text-theme-primary">{paymentDetails?.formattedUsdEquivalent}</span>
+                                </div>
                               </div>
                             )}
-                            {fundFlow.platformFee > 0 && (
-                              <div className="flex justify-between">
-                                <span className="text-gray-600">平台费用:</span>
-                                <span className="text-yellow-600">
-                                  {fundFlow.formattedPlatformFee || formatPaymentAmount(fundFlow.platformFee, fundFlow.tokenType)}
-                                </span>
-                              </div>
-                            )}
-                            {fundFlow.burnAmount > 0 && (
-                              <div className="flex justify-between">
-                                <span className="text-gray-600">燃烧销毁:</span>
-                                <span className="text-red-600">
-                                  {fundFlow.formattedBurnAmount || formatPaymentAmount(fundFlow.burnAmount, PAYMENT_TOKEN.CC)}
-                                </span>
+
+                            {paymentDetails?.exchangeRate > 0 && (
+                              <div className="flex justify-between items-center text-xs text-theme-tertiary bg-theme-hover rounded px-2 py-1">
+                                <span>{t('orders.orderDetails.exchangeRate')}</span>
+                                <span>{(paymentDetails.exchangeRate / 10**18).toFixed(4)}</span>
                               </div>
                             )}
                           </div>
                         </div>
 
                         {/* 操作按钮 */}
-                        <div>
-                          <h4 className="text-sm font-medium text-gray-900 mb-2">操作</h4>
-                          <div className="space-y-2">
+                        <div className="lg:col-span-3">
+                          <h4 className="text-sm font-medium text-theme-primary mb-3">{t('orders.orderDetails.actions')}</h4>
+                          <div className="flex flex-wrap gap-2">
                             {orderActions.availableActions.map((action) => {
-                              const buttonStyle = action.style === 'primary' ? 'bg-blue-600 hover:bg-blue-700' :
-                                              action.style === 'success' ? 'bg-green-600 hover:bg-green-700' :
-                                              action.style === 'danger' ? 'bg-red-600 hover:bg-red-700' :
-                                              action.style === 'warning' ? 'bg-yellow-600 hover:bg-yellow-700' :
-                                              'border border-gray-300 text-gray-700 hover:bg-gray-50'
+                              const buttonStyle = action.style === 'primary' ? 'bg-theme-primary hover:bg-opacity-90 text-white shadow-sm' :
+                                              action.style === 'success' ? 'bg-green-600 hover:bg-green-700 text-white shadow-sm' :
+                                              action.style === 'danger' ? 'bg-red-500 hover:bg-red-600 text-white shadow-sm' :
+                                              action.style === 'warning' ? 'bg-yellow-500 hover:bg-yellow-600 text-white shadow-sm' :
+                                              'border border-theme text-theme-secondary hover:bg-theme-hover'
 
                               return (
                                 <button
                                   key={action.type}
-                                  className={`w-full px-3 py-2 text-sm rounded-md ${
-                                    action.style !== 'secondary' ? 'text-white' : ''
-                                  } ${buttonStyle}`}
+                                  className={`px-4 py-2 text-sm rounded-md font-medium transition-all duration-200 ${buttonStyle}`}
                                 >
                                   {action.label}
                                 </button>

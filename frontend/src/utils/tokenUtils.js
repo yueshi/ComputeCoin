@@ -13,9 +13,20 @@ export const PAYMENT_TOKEN = {
 }
 
 export const PAYMENT_TOKEN_NAME = {
-  [PAYMENT_TOKEN.NONE]: '未支付',
-  [PAYMENT_TOKEN.CC]: 'CC代币',
-  [PAYMENT_TOKEN.CCUSD]: 'CCUSD'
+  [PAYMENT_TOKEN.NONE]: 'paymentToken.none',
+  [PAYMENT_TOKEN.CC]: 'paymentToken.cc',
+  [PAYMENT_TOKEN.CCUSD]: 'paymentToken.ccusd'
+}
+
+/**
+ * 获取支付方式显示名称（支持国际化）
+ * @param {number} tokenType 支付token类型
+ * @param {function} t 翻译函数
+ * @returns {string} 支付方式名称
+ */
+export function getPaymentMethodName(tokenType, t) {
+  const key = PAYMENT_TOKEN_NAME[tokenType]
+  return t ? t(`orders.${key}`) : 'Not Paid'
 }
 
 // Token 精度配置
@@ -41,9 +52,10 @@ export const FEE_RATES = {
  * 格式化代币金额显示
  * @param {number|string|bigint} amount 原始金额
  * @param {number} tokenType 代币类型 (PAYMENT_TOKEN)
+ * @param {boolean} isRawPrecision 是否为原始精度数据
  * @returns {string} 格式化后的金额字符串
  */
-export function formatTokenAmount(amount, tokenType) {
+export function formatTokenAmount(amount, tokenType, isRawPrecision = false) {
   if (!amount || amount === 0) return '0'
 
   const numAmount = Number(amount)
@@ -51,11 +63,65 @@ export function formatTokenAmount(amount, tokenType) {
 
   switch (tokenType) {
     case PAYMENT_TOKEN.CC:
-      return formatEther(numAmount)
+      // CC代币使用18位精度，但为了人类可读，使用更友好的格式化
+      return formatCCAmount(numAmount, isRawPrecision)
     case PAYMENT_TOKEN.CCUSD:
-      return formatUnits(numAmount, decimals)
+      // 🔧 关键修复：CCUSD需要区分是否为wei单位
+      if (isRawPrecision) {
+        // 原始wei单位，需要转换为可读格式
+        return formatUnits(numAmount, decimals)
+      } else {
+        // 已经是可读格式，直接使用
+        return numAmount.toFixed(decimals).replace(/\.?0+$/, '')
+      }
     default:
       return formatUnits(numAmount, decimals)
+  }
+}
+
+/**
+ * 格式化CC代币金额为人类可读的格式
+ * @param {number|string|bigint} amount CC代币数量
+ * @param {boolean} isRawPrecision 是否为原始18位精度数据（默认false）
+ * @returns {string} 格式化后的金额字符串
+ */
+export function formatCCAmount(amount, isRawPrecision = false) {
+  const ccAmount = Number(amount)
+
+  if (ccAmount === 0) return '0'
+
+  // 根据数据源决定是否需要精度转换
+  let readableAmount
+  if (isRawPrecision) {
+    // 原始18位精度数据，需要转换为可读格式
+    readableAmount = ccAmount / 1e18
+  } else {
+    // 已经是处理过的可读数据，直接使用
+    readableAmount = ccAmount
+  }
+
+  // 对于非常大的数值，使用缩写
+  if (readableAmount >= 1e9) {
+    // 超过10亿，使用B (Billion)
+    return (readableAmount / 1e9).toFixed(2) + 'B'
+  } else if (readableAmount >= 1e6) {
+    // 超过100万，使用M (Million)
+    return (readableAmount / 1e6).toFixed(2) + 'M'
+  } else if (readableAmount >= 1e3) {
+    // 超过1000，使用K (Thousand)
+    return (readableAmount / 1e3).toFixed(2) + 'K'
+  } else if (readableAmount >= 1) {
+    // 1-1000之间，保留2位小数
+    return readableAmount.toFixed(2)
+  } else if (readableAmount >= 0.01) {
+    // 0.01-1之间，保留4位小数
+    return readableAmount.toFixed(4)
+  } else if (readableAmount >= 0.000001) {
+    // 0.000001-0.01之间，保留6位小数
+    return readableAmount.toFixed(6)
+  } else {
+    // 很小的数值，使用科学计数法
+    return readableAmount.toExponential(4)
   }
 }
 
@@ -75,14 +141,6 @@ export function getTokenSymbol(tokenType) {
   }
 }
 
-/**
- * 获取支付方式显示名称
- * @param {number} tokenType 支付token类型
- * @returns {string} 支付方式名称
- */
-export function getPaymentMethodName(tokenType) {
-  return PAYMENT_TOKEN_NAME[tokenType] || '未知'
-}
 
 /**
  * CC 代币转换为 CCUSD 等值
@@ -109,12 +167,13 @@ export function convertUSDtoCC(usdAmount) {
  * @param {number|string} amount 金额
  * @param {number} tokenType 代币类型
  * @param {boolean} includeSymbol 是否包含代币符号
+ * @param {boolean} isRawPrecision 是否为原始精度数据
  * @returns {string} 格式化的金额显示
  */
-export function formatPaymentAmount(amount, tokenType, includeSymbol = true) {
+export function formatPaymentAmount(amount, tokenType, includeSymbol = true, isRawPrecision = false) {
   if (!amount || amount === 0) return includeSymbol ? '0' : '0'
 
-  const formattedAmount = formatTokenAmount(amount, tokenType)
+  const formattedAmount = formatTokenAmount(amount, tokenType, isRawPrecision)
   const symbol = getTokenSymbol(tokenType)
 
   return includeSymbol ? `${formattedAmount} ${symbol}` : formattedAmount
@@ -179,21 +238,27 @@ export function calculateProviderRevenue(totalAmount, tokenType) {
 /**
  * 获取订单状态显示信息
  * @param {number} status 订单状态码
+ * @param {function} t 翻译函数
  * @returns {object} 状态信息对象
  */
-export function getOrderStatusInfo(status) {
+export function getOrderStatusInfo(status, t) {
   // 🔧 修复：ComputeMarketLite只有0-5状态，移除不存在的状态6和7
   const statusMap = {
-    0: { name: '已创建', color: 'yellow', type: 'pending' },
-    1: { name: '已支付', color: 'blue', type: 'paid' },
-    2: { name: '服务中', color: 'indigo', type: 'active' },
-    3: { name: '已完成', color: 'green', type: 'completed' },
-    4: { name: '已确认', color: 'emerald', type: 'confirmed' },
-    5: { name: '已取消', color: 'red', type: 'cancelled' }
+    0: { key: 'status.created', color: 'yellow', type: 'pending' },
+    1: { key: 'status.paid', color: 'blue', type: 'paid' },
+    2: { key: 'status.inService', color: 'indigo', type: 'active' },
+    3: { key: 'status.completed', color: 'green', type: 'completed' },
+    4: { key: 'status.confirmed', color: 'emerald', type: 'confirmed' },
+    5: { key: 'status.cancelled', color: 'red', type: 'cancelled' }
     // 注意：ComputeMarketLite没有EXPIRED(6)和DISPUTED(7)状态
   }
 
-  return statusMap[status] || { name: '未知', color: 'gray', type: 'unknown' }
+  const statusInfo = statusMap[status] || { key: 'status.unknown', color: 'gray', type: 'unknown' }
+
+  return {
+    ...statusInfo,
+    name: t ? t(`orders.${statusInfo.key}`) : 'Unknown'
+  }
 }
 
 /**
@@ -225,8 +290,17 @@ export function getOrderPaymentInfo(order) {
 
   const isPaid = paidAmount > 0
   const isFullyPaid = paidAmount >= finalAmount
-  const paymentTokenName = getPaymentMethodName(tokenType)
-  const formattedPaidAmount = formatPaymentAmount(paidAmount, tokenType)
+  const paymentTokenName = getPaymentMethodName(tokenType, null)
+  // 🔧 修复：totalPaidAmount 在这里是USD等值，不是原始CC数据，所以CC需要转换
+  let formattedPaidAmount
+  if (tokenType === PAYMENT_TOKEN.CC) {
+    // 如果是CC支付，totalPaidAmount是USD等值，需要转换为CC数量进行显示
+    const ccAmount = convertUSDtoCC(paidAmount) // 11 CCUSD -> 110 CC
+    formattedPaidAmount = formatPaymentAmount(ccAmount, PAYMENT_TOKEN.CC, true, false)
+  } else {
+    // CCUSD支付，直接使用
+    formattedPaidAmount = formatPaymentAmount(paidAmount, PAYMENT_TOKEN.CCUSD)
+  }
   const formattedFinalPrice = formatPaymentAmount(finalAmount, PAYMENT_TOKEN.CCUSD)
 
   return {
