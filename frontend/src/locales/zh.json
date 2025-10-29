@@ -661,6 +661,7 @@
       "providerNFTDescription": "Provider NFT提供算力奖励加成",
       "realTimeUpdate": "实时更新",
       "required": "必填",
+      "providerNFTETHNotSupported": "ProviderNFT不支持ETH质押",
       "reward": "奖励",
       "selectNFTType": "选择NFT类型",
       "selectNFTTier": "选择{type} NFT等级",

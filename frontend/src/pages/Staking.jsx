@@ -62,56 +62,61 @@ const NFT_TIERS = [
 ]
 
 const PROVIDER_NFT_TIERS = [
-  { 
-    tier: 1, 
-    name: 'BRONZE', 
-    color: 'from-yellow-600 to-yellow-700', 
-    multiplier: '5%', 
-    stakeCC: '200', 
-    stakeETH: '0.2',
-    deviceCount: 5,
+  {
+    tier: 1,
+    name: 'BRONZE',
+    color: 'from-yellow-600 to-yellow-700',
+    multiplier: '5%',
+    stakeCC: '1000',
+    stakeETH: null, // ProviderNFT 不支持 ETH 质押
+    deviceCount: 1,
     bonus: '105%'
   },
-  { 
-    tier: 2, 
-    name: 'SILVER', 
-    color: 'from-gray-400 to-gray-500', 
-    multiplier: '8%', 
-    stakeCC: '1000', 
-    stakeETH: '1.0',
-    deviceCount: 25,
+  {
+    tier: 2,
+    name: 'SILVER',
+    color: 'from-gray-400 to-gray-500',
+    multiplier: '8%',
+    stakeCC: '3000',
+    stakeETH: null, // ProviderNFT 不支持 ETH 质押
+    deviceCount: 3,
     bonus: '108%'
   },
-  { 
-    tier: 3, 
-    name: 'GOLD', 
-    color: 'from-yellow-400 to-yellow-500', 
-    multiplier: '12%', 
-    stakeCC: '5000', 
-    stakeETH: '3.0',
-    deviceCount: 100,
+  {
+    tier: 3,
+    name: 'GOLD',
+    color: 'from-yellow-400 to-yellow-500',
+    multiplier: '12%',
+    stakeCC: '6000',
+    stakeETH: null, // ProviderNFT 不支持 ETH 质押
+    deviceCount: 5,
     bonus: '112%'
   },
-  { 
-    tier: 4, 
-    name: 'PLATINUM', 
-    color: 'from-slate-300 to-slate-400', 
-    multiplier: '15%', 
-    stakeCC: '10000', 
-    stakeETH: '8.0',
-    deviceCount: 500,
+  {
+    tier: 4,
+    name: 'PLATINUM',
+    color: 'from-slate-300 to-slate-400',
+    multiplier: '15%',
+    stakeCC: '10000',
+    stakeETH: null, // ProviderNFT 不支持 ETH 质押
+    deviceCount: 10,
     bonus: '115%'
   }
 ]
 
 // 合约中的NFT等级要求验证
 const validateNFTRequirements = (tier, nftType, selectedOption, stakeAmount) => {
-  const tierData = nftType === 'customer' 
+  const tierData = nftType === 'customer'
     ? NFT_TIERS.find(t => t.tier === tier)
     : PROVIDER_NFT_TIERS.find(t => t.tier === tier)
-    
+
   if (!tierData) return false
-  
+
+  // ProviderNFT 只支持 CC 质押
+  if (nftType === 'provider' && selectedOption === 'eth') {
+    return false
+  }
+
   const requiredAmount = selectedOption === 'cc' ? tierData.stakeCC : tierData.stakeETH
   return parseFloat(stakeAmount) >= parseFloat(requiredAmount)
 }
@@ -1096,14 +1101,20 @@ export default function Staking() {
 
       // Provider NFT设备数量验证
       if (nftType === 'provider') {
+        // 检查是否支持 ETH 质押
+        if (selectedOption === 'eth') {
+          alert('Provider NFT 不支持 ETH 质押，请选择 CC 代币进行质押')
+          return
+        }
+
         const deviceCount = selectedTierData.deviceCount
         const bonus = selectedTierData.bonus
         if (!confirm(t('staking.errors.providerNFTRequirements', {
           tier: selectedTierData.name,
           devices: deviceCount,
           bonus: bonus,
-          amount: selectedOption === 'cc' ? selectedTierData.stakeCC : selectedTierData.stakeETH,
-          token: selectedOptionData.token
+          amount: selectedTierData.stakeCC,
+          token: 'CC'
         }))) {
           return
         }
@@ -2005,10 +2016,15 @@ export default function Staking() {
                       <button
                         type="button"
                         onClick={() => setNftType('provider')}
+                        disabled={selectedOption === 'eth'}
                         className={`p-3 rounded-lg border-2 text-center transition-all ${
                           nftType === 'provider'
                             ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20'
                             : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
+                        } ${
+                          selectedOption === 'eth'
+                            ? 'opacity-50 cursor-not-allowed'
+                            : ''
                         }`}
                       >
                         <CpuChipIcon className="w-6 h-6 mx-auto mb-1 text-emerald-600 dark:text-emerald-400" />
@@ -2069,9 +2085,15 @@ export default function Staking() {
                                 <>
                                   <p className="text-xs text-gray-600 dark:text-gray-400">{t('staking.ui.reward')}: {tier.bonus}</p>
                                   <p className="text-xs font-semibold text-orange-600 dark:text-orange-400">{t('staking.ui.deviceRequirement', { count: tier.deviceCount })}</p>
-                                  <p className="text-xs text-gray-600 dark:text-gray-400">
-                                    {t('staking.ui.required')}: {selectedOption === 'cc' ? tier.stakeCC : tier.stakeETH} {selectedOptionData.token}
-                                  </p>
+                                  {selectedOption === 'eth' ? (
+                                    <p className="text-xs text-red-600 dark:text-red-400 font-medium">
+                                      ❌ {t('staking.ui.providerNFTETHNotSupported')}
+                                    </p>
+                                  ) : (
+                                    <p className="text-xs text-gray-600 dark:text-gray-400">
+                                      {t('staking.ui.required')}: {tier.stakeCC} CC
+                                    </p>
+                                  )}
                                 </>
                               )}
                             </div>

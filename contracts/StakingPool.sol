@@ -397,15 +397,31 @@ contract StakingPool is Ownable, ReentrancyGuard {
         if (providerNFT.balanceOf(user) > 0) {
             revert("User already has Provider NFT");
         }
-        
+
         // Check requirements
         require(amount >= providerNftStakeRequirements[tier], "Insufficient stake for Provider NFT tier");
-        
-        // Mint NFT
-        uint256 tokenId = providerNFT.mintNFT(user, tier, 1); // Default 1 device for initial mint
+
+        // Get device requirements for the tier
+        uint256 deviceCount = _getProviderNFTDeviceRequirement(tier);
+
+        // Mint NFT with correct device count
+        uint256 tokenId = providerNFT.mintNFT(user, tier, deviceCount);
         totalProviderNftMinted++;
-        
+
         emit ProviderNFTMintedFromStake(user, tokenId, tier, amount);
+    }
+
+    /**
+     * @dev Get device requirement for Provider NFT tier
+     * @param tier Provider NFT tier
+     * @return deviceCount Required device count
+     */
+    function _getProviderNFTDeviceRequirement(ProviderNFT.Tier tier) internal pure returns (uint256) {
+        if (tier == ProviderNFT.Tier.BRONZE) return 1;
+        if (tier == ProviderNFT.Tier.SILVER) return 3;
+        if (tier == ProviderNFT.Tier.GOLD) return 5;
+        if (tier == ProviderNFT.Tier.PLATINUM) return 10;
+        return 1; // Default fallback
     }
     
     /**
