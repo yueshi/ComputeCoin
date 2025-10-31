@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAccount, useConnect, useConnectors } from 'wagmi'
+import { metaMask, injected } from 'wagmi/connectors'
 import { useTranslation } from 'react-i18next'
 import { WALLET_CONFIGS, WALLET_TYPES } from '../config/rainbowKit'
 import {
@@ -57,18 +58,36 @@ export default function WalletConnect() {
   const checkWalletAvailability = useCallback(async (walletId) => {
     setIsChecking(true)
 
-    // 模拟检查延迟
-    await new Promise(resolve => setTimeout(resolve, 500))
-
     let available = false
     try {
       switch (walletId) {
         case WALLET_TYPES.METAMASK:
-          available = !!(window.ethereum?.isMetaMask ||
-                         window.ethereum?.providers?.some(p => p.isMetaMask))
+          // 更精确的 MetaMask 检测
+          available = !!(
+            window.ethereum?.isMetaMask ||
+            window.ethereum?.providers?.some(p => p.isMetaMask) ||
+            (typeof window.ethereum !== 'undefined' && window.ethereum.constructor.name === 'Object')
+          )
+
+          // 如果检测到 MetaMask，进一步验证其功能
+          if (available && window.ethereum) {
+            try {
+              // 尝试获取账户权限来验证钱包功能
+              const accounts = await window.ethereum.request({ method: 'eth_accounts' })
+              available = Array.isArray(accounts)
+            } catch (error) {
+              // 如果请求失败，仍然认为是可用的，只是需要用户授权
+              available = true
+            }
+          }
           break
         case WALLET_TYPES.INJECTED:
-          available = !!window.ethereum
+          // 检测其他注入式钱包（如 Trust Wallet, Coinbase Wallet 等）
+          available = !!(
+            window.ethereum &&
+            !window.ethereum.isMetaMask &&
+            typeof window.ethereum.request === 'function'
+          )
           break
         default:
           available = false
@@ -78,32 +97,40 @@ export default function WalletConnect() {
       available = false
     }
 
-    setWalletStatus(prev => ({
-      ...prev,
-      [walletId]: {
-        available,
-        checked: true,
-        timestamp: Date.now()
+    // 强制状态更新，确保触发重新渲染
+    setWalletStatus(prev => {
+      const newStatus = {
+        ...prev,
+        [walletId]: {
+          available,
+          checked: true,
+          timestamp: Date.now()
+        }
       }
-    }))
+      console.log(`钱包 ${walletId} 状态更新:`, { available, status: newStatus[walletId] })
+      return newStatus
+    })
 
     setIsChecking(false)
     return available
-  }, [])
+  }, []) // 保持空依赖数组，因为我们使用函数式更新
 
   // 初始化时检查所有钱包状态
   useEffect(() => {
-    Object.values(WALLET_TYPES).forEach(walletId => {
-      checkWalletAvailability(walletId)
-    })
-  }, [checkWalletAvailability])
-
-  // 如果已经连接，跳转到主页
-  useEffect(() => {
-    if (isConnected && address) {
-      navigate('/')
+    const checkAllWallets = async () => {
+      for (const walletId of Object.values(WALLET_TYPES)) {
+        await checkWalletAvailability(walletId)
+      }
     }
-  }, [isConnected, address, navigate])
+    checkAllWallets()
+  }, []) // 只在组件挂载时执行一次
+
+  // 注释掉自动跳转逻辑，让用户在连接成功页面手动选择下一步操作
+  // useEffect(() => {
+  //   if (isConnected && address) {
+  //     navigate('/')
+  //   }
+  // }, [isConnected, address, navigate])
 
   // 处理钱包选择
   const handleWalletSelect = (wallet) => {
@@ -115,19 +142,14 @@ export default function WalletConnect() {
   // 连接钱包
   const connectToWallet = async (wallet) => {
     try {
-      // 查找对应的连接器
+      // 直接使用特定的钱包连接器
       let connector
       if (wallet.id === WALLET_TYPES.METAMASK) {
-        connector = connectors.find(c => c.id === 'metaMask') ||
-                   connectors.find(c => c.name === 'MetaMask') ||
-                   connectors.find(c => c.type === 'metaMask')
+        // 直接使用 metaMask 连接器
+        connector = metaMask()
       } else {
-        connector = connectors.find(c => c.id === 'injected') ||
-                   connectors.find(c => c.type === 'injected')
-      }
-
-      if (!connector) {
-        throw new Error(`未找到 ${wallet.name} 连接器`)
+        // 使用 injected 连接器处理其他钱包
+        connector = injected()
       }
 
       console.log(`正在连接 ${wallet.name}...`)
@@ -169,33 +191,25 @@ export default function WalletConnect() {
   const getWalletStatus = (wallet) => {
     const status = walletStatus[wallet.id]
 
+    // 添加调试日志
+    console.log(`获取 ${wallet.id} 状态:`, { status, walletStatus })
+
     if (!status || !status.checked) {
       return {
         text: '检查中...',
-        color: 'text-yellow-600',
-        bgColor: 'bg-yellow-50',
-        borderColor: 'border-yellow-200',
+        available: false,
         actionable: false
       }
     }
 
-    if (status.available) {
-      return {
-        text: '可用',
-        color: 'text-green-600',
-        bgColor: 'bg-green-50',
-        borderColor: 'border-green-200',
-        actionable: true
-      }
-    } else {
-      return {
-        text: '未安装',
-        color: 'text-red-600',
-        bgColor: 'bg-red-50',
-        borderColor: 'border-red-200',
-        actionable: true
-      }
+    const result = {
+      text: status.available ? '已安装' : '未安装',
+      available: status.available,
+      actionable: true
     }
+
+    console.log(`${wallet.id} 最终状态:`, result)
+    return result
   }
 
   // 连接步骤
@@ -341,20 +355,11 @@ export default function WalletConnect() {
                   return (
                     <div
                       key={wallet.id}
-                      className={`relative p-6 rounded-xl border-2 transition-all duration-200 ${
-                        status.actionable
-                          ? 'cursor-pointer hover:shadow-lg hover:-translate-y-1'
-                          : 'cursor-not-allowed opacity-75'
-                      } ${status.borderColor} ${status.bgColor}`}
-                      onClick={() => {
-                        if (status.actionable) {
-                          if (status.available) {
-                            handleWalletSelect(wallet)
-                          } else {
-                            window.open(wallet.downloadUrl, '_blank')
-                          }
-                        }
-                      }}
+                      className={`relative p-6 rounded-xl border-2 transition-all duration-300 ${
+                        status.available
+                          ? 'bg-white dark:bg-gray-800 border-emerald-300 dark:border-emerald-600 shadow-lg hover:shadow-xl hover:border-emerald-400 dark:hover:border-emerald-500'
+                          : 'cursor-not-allowed opacity-60 bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-700'
+                      }`}
                     >
                       {/* 推荐标签 */}
                       {wallet.recommended && (
@@ -369,12 +374,17 @@ export default function WalletConnect() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4">
                           <div className="text-4xl">{wallet.icon}</div>
-                          <div>
+                          <div className="flex-1">
                             <div className="flex items-center space-x-3 mb-2">
                               <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                                 {wallet.name}
                               </h3>
-                              <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${status.color} ${status.bgColor}`}>
+                              <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold border-2 transition-all duration-300 ${
+                                status.available
+                                  ? 'text-white bg-gradient-to-r from-emerald-500 to-emerald-600 border-emerald-600 shadow-lg animate-pulse'
+                                  : 'text-white bg-gradient-to-r from-gray-400 to-gray-500 border-gray-500 shadow-sm'
+                              }`}>
+                                {status.available && <span className="w-1.5 h-1.5 bg-white rounded-full mr-1.5"></span>}
                                 {status.text}
                               </span>
                             </div>
@@ -396,16 +406,27 @@ export default function WalletConnect() {
 
                         <div className="flex items-center space-x-3">
                           {status.available ? (
-                            <ChevronRightIcon className="w-6 h-6 text-gray-400" />
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                handleWalletSelect(wallet)
+                              }}
+                              className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl hover:from-emerald-600 hover:to-teal-600 transition-all duration-300 text-sm font-bold shadow-xl hover:shadow-2xl transform hover:-translate-y-1 flex items-center space-x-2 ring-2 ring-emerald-200 hover:ring-emerald-300"
+                            >
+                              <WalletIcon className="w-5 h-5" />
+                              <span>连接钱包</span>
+                              <ChevronRightIcon className="w-4 h-4" />
+                            </button>
                           ) : (
                             <button
                               onClick={(e) => {
                                 e.stopPropagation()
                                 window.open(wallet.downloadUrl, '_blank')
                               }}
-                              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
+                              className="px-6 py-3 bg-gradient-to-r from-gray-400 to-gray-500 text-white rounded-lg hover:from-gray-500 hover:to-gray-600 transition-all duration-200 text-sm font-medium shadow-md hover:shadow-lg flex items-center space-x-2"
                             >
-                              安装钱包
+                              <ArrowPathIcon className="w-4 h-4" />
+                              <span>安装钱包</span>
                             </button>
                           )}
                         </div>
