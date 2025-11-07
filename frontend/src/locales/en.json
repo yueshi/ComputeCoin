@@ -241,6 +241,7 @@
     "staking": "Staking",
     "nfts": "NFT",
     "orders": "Orders",
+    "equipment": "Equipment",
     "profile": "Profile"
   },
   "home": {
@@ -248,7 +249,7 @@
       "tagline": "De-Service New Era",
       "title": "Global De-Service Market",
       "subtitle": "Connect Global Service Resources, Provide Efficient Decentralized Services",
-      "description": "Connect global service resources through blockchain technology, providing efficient, secure, and transparent decentralized services for AI training, 3D rendering, scientific computing, data storage, and other fields",
+      "description": "Connect global service resources through blockchain technology, providing efficient, secure, and transparent decentralized services for AI training, 3D rendering, scientific computing, drone services, data storage, and other fields",
       "connectWallet": "Connect Wallet",
       "enterMarket": "Enter Market",
       "viewDocs": "View Docs"
@@ -343,7 +344,8 @@
       "rendering": "3D Rendering",
       "scientific": "Scientific Computing",
       "blockchain": "Blockchain Computing",
-      "video": "Video Processing"
+      "video": "Video Processing",
+      "drone": "Drone Inspection"
     },
     "sort": {
       "highestRated": "Highest Rated",
@@ -365,6 +367,18 @@
         "title": "Scientific Computing Cluster",
         "description": "High-performance computing environment, suitable for numerical simulation and scientific computing"
       },
+      "droneInspection": {
+        "title": "Intelligent Drone Inspection Service",
+        "description": "Professional drone equipment and AI image recognition, providing efficient and precise infrastructure inspection solutions"
+      },
+      "droneShow": {
+        "title": "Drone Fleet Performance Service",
+        "description": "Professional drone formation performances, supporting customized light shows and 3D animations, suitable for various business events and celebrations"
+      },
+      "droneSpraying": {
+        "title": "Agricultural Drone Spraying Service",
+        "description": "Professional crop protection drones, precision agricultural spraying solutions, supporting pesticides, fertilizers and herbicides for various farming operations"
+      },
       "scientific": {
         "title": "Scientific Computing"
       },
@@ -378,7 +392,16 @@
       "deepLearning": "Deep Learning",
       "creative": "Creative",
       "hpc": "HPC",
-      "numericalSimulation": "Numerical Simulation"
+      "numericalSimulation": "Numerical Simulation",
+      "drone": "Drone",
+      "inspection": "Inspection",
+      "ai": "AI",
+      "show": "Performance",
+      "led": "LED",
+      "animation": "Animation",
+      "agriculture": "Agriculture",
+      "spraying": "Spraying",
+      "pesticide": "Pesticide"
     },
     "specs": {
       "cpu": {
@@ -430,7 +453,8 @@
       "blockchain": "Blockchain",
       "rendering": "Rendering",
       "scientific": "Scientific",
-      "video": "Video Processing"
+      "video": "Video Processing",
+      "drone": "Drone"
     },
     "features": {
       "ccPayment": {
@@ -1350,6 +1374,129 @@
       "confirm": "Confirm Complete",
       "resolveDispute": "Resolve Dispute",
       "viewDetails": "View Details"
+    }
+  },
+  "equipment": {
+    "title": "Equipment Management",
+    "subtitle": "Manage your GPU computing hosts and drone equipment",
+    "wallet": {
+      "connect": "Connect Wallet",
+      "manage": "Manage Your Equipment",
+      "description": "Connect your Web3 wallet to view and manage your GPU computing hosts and drone equipment, monitor device status and earnings"
+    },
+    "totalGpuDevices": "Total GPU Devices",
+    "totalDroneDevices": "Total Drone Devices",
+    "onlineDevices": "Online Devices",
+    "totalRevenue": "Total Revenue",
+    "addEquipment": "Add Equipment",
+    "gpuDevices": "GPU Computing Hosts",
+    "droneDevices": "Drone Equipment",
+    "filterByStatus": "Filter by Status",
+    "noDevices": "No Devices",
+    "noDevicesDescription": "You haven't added any devices yet. Click the button below to add your first device",
+    "addFirstEquipment": "Add First Equipment",
+    "utilization": "Utilization",
+    "temperature": "Temperature",
+    "location": "Location",
+    "uptime": "Uptime",
+    "battery": "Battery",
+    "flightTime": "Flight Time",
+    "missions": "Missions",
+    "missionsUnit": "missions",
+    "revenue": "Revenue",
+    "status": {
+      "online": "Online",
+      "offline": "Offline",
+      "active": "Active",
+      "maintenance": "Maintenance",
+      "charging": "Charging"
+    },
+    "filter": {
+      "all": "All",
+      "online": "Online",
+      "offline": "Offline",
+      "maintenance": "Maintenance"
+    },
+    "actions": {
+      "view": "View Details",
+      "configure": "Configure",
+      "track": "Track"
+    },
+    "devices": {
+      "gpu": {
+        "name": "GPU Computing Host #{id}",
+        "a100": {
+          "model": "NVIDIA A100 80GB",
+          "gpu": "8x NVIDIA A100 80GB",
+          "cpu": "128-core AMD EPYC",
+          "memory": "2TB DDR4",
+          "storage": "100TB NVMe"
+        },
+        "rtx4090": {
+          "model": "RTX 4090 24GB",
+          "gpu": "4x RTX 4090 24GB",
+          "cpu": "64-core Intel Xeon",
+          "memory": "512GB DDR4",
+          "storage": "20TB NVMe"
+        },
+        "h100": {
+          "model": "NVIDIA H100 80GB",
+          "gpu": "6x NVIDIA H100 80GB",
+          "cpu": "96-core Intel Xeon",
+          "memory": "1TB DDR4",
+          "storage": "50TB NVMe"
+        }
+      },
+      "drone": {
+        "inspection": {
+          "name": "Drone Inspection #{id}",
+          "model": "DJI Matrice 300 RTK",
+          "camera": "Zenmuse H20T",
+          "battery": "59 minutes",
+          "range": "15km",
+          "flightTime": "125 hours",
+          "location": "Shanghai Bund Area"
+        },
+        "show": {
+          "name": "Drone Performance #{id}",
+          "model": "HighGreat Spark",
+          "lights": "RGB LED",
+          "battery": "25 minutes",
+          "swarm": "500+ drones",
+          "flightTime": "89 hours",
+          "location": "Performance Center Warehouse"
+        },
+        "spraying": {
+          "name": "Drone Spraying #{id}",
+          "model": "AG-40 Agricultural Drone",
+          "tank": "40L Spraying Tank",
+          "battery": "35 minutes",
+          "coverage": "50 hectares/hour",
+          "flightTime": "203 hours",
+          "location": "Agricultural Service Station"
+        }
+      },
+      "locations": {
+        "dataCenterA": "Data Center A",
+        "dataCenterB": "Data Center B",
+        "dataCenterC": "Data Center C",
+        "shanghaiBund": "Shanghai Bund Area",
+        "performanceCenter": "Performance Center Warehouse",
+        "agriculturalStation": "Agricultural Service Station"
+      },
+      "uptime": {
+        "days": "{days} days",
+        "offline": "Offline",
+        "failure": "Failure"
+      },
+      "headers": {
+        "equipmentHeader": "Equipment Header",
+        "specsHeader": "Specifications",
+        "performanceHeader": "Performance Metrics",
+        "deviceInfoHeader": "Device Information",
+        "actionsHeader": "Actions",
+        "batteryHeader": "Battery Indicator"
+      }
     }
   }
 }

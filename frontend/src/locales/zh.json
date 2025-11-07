@@ -68,7 +68,7 @@
       "tagline": "去中心化服务新纪元",
       "title": "全球去中心化服务市场",
       "subtitle": "连接全球服务资源，提供高效去中心化服务",
-      "description": "通过区块链技术连接全球服务资源，为AI训练、3D渲染、科学计算、数据存储等领域提供高效、安全、透明的去中心化服务",
+      "description": "通过区块链技术连接全球服务资源，为AI训练、3D渲染、科学计算、无人机服务、数据存储等领域提供高效、安全、透明的去中心化服务",
       "connectWallet": "连接钱包",
       "enterMarket": "进入市场",
       "viewDocs": "查看文档"
@@ -330,6 +330,7 @@
     "staking": "质押",
     "nfts": "NFT",
     "orders": "订单",
+    "equipment": "设备",
     "profile": "我的"
   },
   "marketplace": {
@@ -343,7 +344,8 @@
       "rendering": "3D渲染",
       "scientific": "科学计算",
       "blockchain": "区块链计算",
-      "video": "视频处理"
+      "video": "视频处理",
+      "drone": "无人机巡检"
     },
     "sort": {
       "highestRated": "评分最高",
@@ -365,6 +367,18 @@
         "title": "科学计算集群",
         "description": "高性能计算环境，适合数值模拟和科学计算"
       },
+      "droneInspection": {
+        "title": "智能无人机巡检服务",
+        "description": "专业无人机设备和AI图像识别，提供高效、精准的基础设施巡检解决方案"
+      },
+      "droneShow": {
+        "title": "无人机集群表演服务",
+        "description": "专业无人机编队表演，支持定制化灯光秀和3D动画展示，适用于各种商业活动和庆典"
+      },
+      "droneSpraying": {
+        "title": "农业无人机喷洒服务",
+        "description": "专业植保无人机，精准农业喷洒解决方案，支持农药、肥料和除草剂等多种农业作业"
+      },
       "scientific": {
         "title": "科学计算"
       },
@@ -378,7 +392,16 @@
       "deepLearning": "深度学习",
       "creative": "创意",
       "hpc": "HPC",
-      "numericalSimulation": "数值模拟"
+      "numericalSimulation": "数值模拟",
+      "drone": "无人机",
+      "inspection": "巡检",
+      "ai": "人工智能",
+      "show": "表演",
+      "led": "LED",
+      "animation": "动画",
+      "agriculture": "农业",
+      "spraying": "喷洒",
+      "pesticide": "农药"
     },
     "specs": {
       "cpu": {
@@ -430,7 +453,8 @@
       "blockchain": "区块链",
       "rendering": "渲染",
       "scientific": "科学计算",
-      "video": "视频处理"
+      "video": "视频处理",
+      "drone": "无人机"
     },
     "features": {
       "ccPayment": {
@@ -1351,6 +1375,129 @@
       "confirm": "确认完成",
       "resolveDispute": "解决争议",
       "viewDetails": "查看详情"
+    }
+  },
+  "equipment": {
+    "title": "设备管理",
+    "subtitle": "管理您的GPU算力主机和无人机设备",
+    "wallet": {
+      "connect": "连接钱包",
+      "manage": "管理您的设备",
+      "description": "连接您的Web3钱包，查看和管理您的GPU算力主机和无人机设备，监控设备状态和收益"
+    },
+    "totalGpuDevices": "GPU设备总数",
+    "totalDroneDevices": "无人机设备总数",
+    "onlineDevices": "在线设备",
+    "totalRevenue": "总收益",
+    "addEquipment": "添加设备",
+    "gpuDevices": "GPU算力主机",
+    "droneDevices": "无人机设备",
+    "filterByStatus": "按状态过滤",
+    "noDevices": "暂无设备",
+    "noDevicesDescription": "您还没有添加任何设备，点击下方按钮添加您的第一台设备",
+    "addFirstEquipment": "添加第一台设备",
+    "utilization": "利用率",
+    "temperature": "温度",
+    "location": "位置",
+    "uptime": "运行时间",
+    "battery": "电池电量",
+    "flightTime": "飞行时间",
+    "missions": "任务次数",
+    "missionsUnit": "次",
+    "revenue": "收益",
+    "status": {
+      "online": "在线",
+      "offline": "离线",
+      "active": "活跃",
+      "maintenance": "维护中",
+      "charging": "充电中"
+    },
+    "filter": {
+      "all": "全部",
+      "online": "在线",
+      "offline": "离线",
+      "maintenance": "维护中"
+    },
+    "actions": {
+      "view": "查看详情",
+      "configure": "配置",
+      "track": "追踪"
+    },
+    "devices": {
+      "gpu": {
+        "name": "GPU算力主机 #{id}",
+        "a100": {
+          "model": "NVIDIA A100 80GB",
+          "gpu": "8x NVIDIA A100 80GB",
+          "cpu": "128核 AMD EPYC",
+          "memory": "2TB DDR4",
+          "storage": "100TB NVMe"
+        },
+        "rtx4090": {
+          "model": "RTX 4090 24GB",
+          "gpu": "4x RTX 4090 24GB",
+          "cpu": "64核 Intel Xeon",
+          "memory": "512GB DDR4",
+          "storage": "20TB NVMe"
+        },
+        "h100": {
+          "model": "NVIDIA H100 80GB",
+          "gpu": "6x NVIDIA H100 80GB",
+          "cpu": "96核 Intel Xeon",
+          "memory": "1TB DDR4",
+          "storage": "50TB NVMe"
+        }
+      },
+      "drone": {
+        "inspection": {
+          "name": "无人机巡检 #{id}",
+          "model": "DJI Matrice 300 RTK",
+          "camera": "Zenmuse H20T",
+          "battery": "59分钟",
+          "range": "15km",
+          "flightTime": "125小时",
+          "location": "上海外滩区域"
+        },
+        "show": {
+          "name": "无人机表演 #{id}",
+          "model": "HighGreat Spark",
+          "lights": "RGB LED",
+          "battery": "25分钟",
+          "swarm": "500+架",
+          "flightTime": "89小时",
+          "location": "表演中心仓库"
+        },
+        "spraying": {
+          "name": "无人机喷洒 #{id}",
+          "model": "AG-40 Agricultural Drone",
+          "tank": "40L喷洒箱",
+          "battery": "35分钟",
+          "coverage": "50公顷/小时",
+          "flightTime": "203小时",
+          "location": "农业服务站"
+        }
+      },
+      "locations": {
+        "dataCenterA": "数据中心 A",
+        "dataCenterB": "数据中心 B",
+        "dataCenterC": "数据中心 C",
+        "shanghaiBund": "上海外滩区域",
+        "performanceCenter": "表演中心仓库",
+        "agriculturalStation": "农业服务站"
+      },
+      "uptime": {
+        "days": "{days}天",
+        "offline": "离线",
+        "failure": "故障"
+      },
+      "headers": {
+        "equipmentHeader": "设备头部",
+        "specsHeader": "规格信息",
+        "performanceHeader": "性能指标",
+        "deviceInfoHeader": "设备信息",
+        "actionsHeader": "操作按钮",
+        "batteryHeader": "电池指示器"
+      }
     }
   }
 }

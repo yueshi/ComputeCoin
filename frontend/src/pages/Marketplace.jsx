@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useAccount } from 'wagmi'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { 
+import {
   ShoppingCartIcon,
   MagnifyingGlassIcon,
   FunnelIcon,
@@ -16,7 +16,8 @@ import {
   ChartBarIcon,
   SparklesIcon,
   ArrowTrendingUpIcon,
-  TagIcon
+  TagIcon,
+  CameraIcon
 } from '@heroicons/react/24/outline'
 
 
@@ -83,6 +84,63 @@ export default function Marketplace() {
       },
       availability: "limited",
       tags: ["HPC", t('marketplace.services.scientific.title'), t('marketplace.tags.numericalSimulation')]
+    },
+    {
+      id: 4,
+      title: t('marketplace.services.droneInspection.title'),
+      description: t('marketplace.services.droneInspection.description'),
+      category: "drone",
+      provider: "0xFEDC...BA98",
+      rating: 4.7,
+      reviewCount: 156,
+      pricePerHour: "3.5",
+      currency: "CCUSD",
+      specs: {
+        drone: "DJI Matrice 300 RTK",
+        camera: "Zenmuse H20T (4K/Thermal)",
+        battery: "59min Flight Time",
+        range: "15km Control Range"
+      },
+      availability: "available",
+      tags: [t('marketplace.tags.drone'), t('marketplace.tags.inspection'), t('marketplace.tags.ai'), "4K", "Thermal"]
+    },
+    {
+      id: 5,
+      title: t('marketplace.services.droneShow.title'),
+      description: t('marketplace.services.droneShow.description'),
+      category: "drone",
+      provider: "0xSHOWTIME...1234",
+      rating: 4.9,
+      reviewCount: 289,
+      pricePerHour: "8.8",
+      currency: "CCUSD",
+      specs: {
+        fleet: "500+ Drones Fleet",
+        lights: "RGB LED Programmable",
+        duration: "20min Show Duration",
+        software: "3D Animation Software"
+      },
+      availability: "available",
+      tags: [t('marketplace.tags.drone'), t('marketplace.tags.show'), t('marketplace.tags.led'), t('marketplace.tags.animation'), "3D", "Event"]
+    },
+    {
+      id: 6,
+      title: t('marketplace.services.droneSpraying.title'),
+      description: t('marketplace.services.droneSpraying.description'),
+      category: "drone",
+      provider: "0xAGRIBOT...5678",
+      rating: 4.6,
+      reviewCount: 342,
+      pricePerHour: "4.2",
+      currency: "CCUSD",
+      specs: {
+        drone: "AG-40 Agricultural Drone",
+        tank: "40L Spraying Tank",
+        coverage: "50 Hectares/Hour",
+        gps: "RTK GPS Precision"
+      },
+      availability: "available",
+      tags: [t('marketplace.tags.drone'), t('marketplace.tags.agriculture'), t('marketplace.tags.spraying'), t('marketplace.tags.pesticide'), "Farming", "GPS"]
     }
   ]
 
@@ -91,6 +149,7 @@ export default function Marketplace() {
     { id: "ai", name: t('marketplace.categories.aiMl'), icon: "🤖" },
     { id: "render", name: t('marketplace.categories.rendering'), icon: "🎨" },
     { id: "science", name: t('marketplace.categories.scientific'), icon: "🔬" },
+    { id: "drone", name: t('marketplace.categories.drone'), icon: "🚁" },
     { id: "crypto", name: t('marketplace.categories.blockchain'), icon: "⛓️" },
     { id: "video", name: t('marketplace.categories.video'), icon: "🎬" }
   ]
@@ -151,14 +210,55 @@ export default function Marketplace() {
       {/* 规格信息 */}
       <div className="space-y-2 mb-4">
         <div className="flex items-center space-x-4 text-sm text-theme-secondary dark:text-gray-300">
-          <div className="flex items-center space-x-1">
-            <ComputerDesktopIcon className="w-5 h-5 text-emerald-600 dark:text-emerald-400 drop-shadow-sm" />
-            <span>{service.specs.cpu || service.specs.gpu}</span>
-          </div>
-          <div className="flex items-center space-x-1">
-            <ClockIcon className="w-5 h-5 text-emerald-600 dark:text-emerald-400 drop-shadow-sm" />
-            <span>{service.specs.memory}</span>
-          </div>
+          {service.specs.fleet ? (
+            // 无人机集群表演服务规格
+            <>
+              <div className="flex items-center space-x-1">
+                <ComputerDesktopIcon className="w-5 h-5 text-emerald-600 dark:text-emerald-400 drop-shadow-sm" />
+                <span>{service.specs.fleet}</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <SparklesIcon className="w-5 h-5 text-emerald-600 dark:text-emerald-400 drop-shadow-sm" />
+                <span>{service.specs.lights}</span>
+              </div>
+            </>
+          ) : service.specs.tank ? (
+            // 无人机喷洒服务规格
+            <>
+              <div className="flex items-center space-x-1">
+                <ComputerDesktopIcon className="w-5 h-5 text-emerald-600 dark:text-emerald-400 drop-shadow-sm" />
+                <span>{service.specs.drone}</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <ChartBarIcon className="w-5 h-5 text-emerald-600 dark:text-emerald-400 drop-shadow-sm" />
+                <span>{service.specs.coverage}</span>
+              </div>
+            </>
+          ) : service.specs.drone ? (
+            // 无人机巡检服务规格
+            <>
+              <div className="flex items-center space-x-1">
+                <ComputerDesktopIcon className="w-5 h-5 text-emerald-600 dark:text-emerald-400 drop-shadow-sm" />
+                <span>{service.specs.drone}</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <CameraIcon className="w-5 h-5 text-emerald-600 dark:text-emerald-400 drop-shadow-sm" />
+                <span>{service.specs.camera}</span>
+              </div>
+            </>
+          ) : (
+            // 传统计算服务规格
+            <>
+              <div className="flex items-center space-x-1">
+                <ComputerDesktopIcon className="w-5 h-5 text-emerald-600 dark:text-emerald-400 drop-shadow-sm" />
+                <span>{service.specs.cpu || service.specs.gpu}</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <ClockIcon className="w-5 h-5 text-emerald-600 dark:text-emerald-400 drop-shadow-sm" />
+                <span>{service.specs.memory || service.specs.battery || service.specs.duration}</span>
+              </div>
+            </>
+          )}
         </div>
         <div className="flex flex-wrap gap-1">
           {service.tags.map((tag, index) => (

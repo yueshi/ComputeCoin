@@ -16,6 +16,7 @@ import Profile from './pages/Profile'
 import Exchange from './pages/Exchange'
 import WalletConnect from './pages/WalletConnect'
 import OrderManagement from './pages/OrderManagement'
+import Equipment from './pages/Equipment'
 
 function App() {
   const { isConnected } = useAccount()
@@ -37,6 +38,7 @@ function App() {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/exchange" element={<Exchange />} />
                 <Route path="/orders" element={<OrderManagement />} />
+                <Route path="/equipment" element={<Equipment />} />
                 <Route path="/wallet-connect" element={<WalletConnect />} />
               </Routes>
             </Layout>
