@@ -1387,11 +1387,13 @@
     },
     "totalGpuDevices": "GPU设备总数",
     "totalDroneDevices": "无人机设备总数",
+    "totalGroundStationDevices": "地面服务站总数",
     "onlineDevices": "在线设备",
     "totalRevenue": "总收益",
     "addEquipment": "添加设备",
     "gpuDevices": "GPU算力主机",
     "droneDevices": "无人机设备",
+    "groundStationDevices": "地面服务站",
     "filterByStatus": "按状态过滤",
     "noDevices": "暂无设备",
     "noDevicesDescription": "您还没有添加任何设备，点击下方按钮添加您的第一台设备",
@@ -1405,12 +1407,23 @@
     "missions": "任务次数",
     "missionsUnit": "次",
     "revenue": "收益",
+    "signalStrength": "信号强度",
+    "capacity": "容量",
+    "coverage": "覆盖范围",
+    "responseTime": "响应时间",
+    "efficiency": "效率",
+    "activeConnections": "活跃连接",
+    "totalConnections": "总连接数",
+    "serviceTime": "服务时间",
+    "powerUsage": "功率消耗",
     "status": {
       "online": "在线",
       "offline": "离线",
       "active": "活跃",
       "maintenance": "维护中",
-      "charging": "充电中"
+      "charging": "充电中",
+      "idle": "空闲",
+      "busy": "繁忙"
     },
     "filter": {
       "all": "全部",
@@ -1475,6 +1488,28 @@
           "coverage": "50公顷/小时",
           "flightTime": "203小时",
           "location": "农业服务站"
+        }
+      },
+      "groundStation": {
+        "charging": {
+          "name": "充电服务站 #{id}",
+          "model": "ChargeStation-Max",
+          "ports": "16个快充端口",
+          "power": "480kW总功率",
+          "efficiency": "95%充电效率",
+          "chargingSpeed": "30分钟充满",
+          "uptime": "2200小时",
+          "location": "交通枢纽充电站"
+        },
+        "maintenance": {
+          "name": "维护服务站 #{id}",
+          "model": "ServiceHub-Full",
+          "facilities": "完整维修设施",
+          "tools": "专业工具套装",
+          "capacity": "同时维护8架设备",
+          "serviceTime": "2小时标准维护",
+          "uptime": "1450小时",
+          "location": "设备维护基地"
         }
       },
       "locations": {

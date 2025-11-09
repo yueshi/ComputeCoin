@@ -1386,11 +1386,13 @@
     },
     "totalGpuDevices": "Total GPU Devices",
     "totalDroneDevices": "Total Drone Devices",
+    "totalGroundStationDevices": "Total Ground Station Devices",
     "onlineDevices": "Online Devices",
     "totalRevenue": "Total Revenue",
     "addEquipment": "Add Equipment",
     "gpuDevices": "GPU Computing Hosts",
     "droneDevices": "Drone Equipment",
+    "groundStationDevices": "Ground Stations",
     "filterByStatus": "Filter by Status",
     "noDevices": "No Devices",
     "noDevicesDescription": "You haven't added any devices yet. Click the button below to add your first device",
@@ -1404,12 +1406,23 @@
     "missions": "Missions",
     "missionsUnit": "missions",
     "revenue": "Revenue",
+    "signalStrength": "Signal Strength",
+    "capacity": "Capacity",
+    "coverage": "Coverage",
+    "responseTime": "Response Time",
+    "efficiency": "Efficiency",
+    "activeConnections": "Active Connections",
+    "totalConnections": "Total Connections",
+    "serviceTime": "Service Time",
+    "powerUsage": "Power Usage",
     "status": {
       "online": "Online",
       "offline": "Offline",
       "active": "Active",
       "maintenance": "Maintenance",
-      "charging": "Charging"
+      "charging": "Charging",
+      "idle": "Idle",
+      "busy": "Busy"
     },
     "filter": {
       "all": "All",
@@ -1474,6 +1487,28 @@
           "coverage": "50 hectares/hour",
           "flightTime": "203 hours",
           "location": "Agricultural Service Station"
+        }
+      },
+      "groundStation": {
+        "charging": {
+          "name": "Charging Station #{id}",
+          "model": "ChargeStation-Max",
+          "ports": "16 Fast Charging Ports",
+          "power": "480kW Total Power",
+          "efficiency": "95% Charging Efficiency",
+          "chargingSpeed": "30min Full Charge",
+          "uptime": "2200 hours",
+          "location": "Transport Hub Charging Station"
+        },
+        "maintenance": {
+          "name": "Maintenance Station #{id}",
+          "model": "ServiceHub-Full",
+          "facilities": "Complete Repair Facilities",
+          "tools": "Professional Tool Set",
+          "capacity": "Maintain 8 Devices Simultaneously",
+          "serviceTime": "2-hour Standard Maintenance",
+          "uptime": "1450 hours",
+          "location": "Equipment Maintenance Base"
         }
       },
       "locations": {
