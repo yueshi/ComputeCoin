@@ -48,11 +48,11 @@ export default function Layout({ children }) {
   // 连接钱包后的导航菜单（去掉home项，英文大写）
   const navigationConnected = [
     { name: t('navigation.marketplace').toUpperCase(), href: '/marketplace', icon: ShoppingCartIcon },
+    { name: t('navigation.orders').toUpperCase(), href: '/orders', icon: ChartBarIcon },
+    { name: t('navigation.equipment').toUpperCase(), href: '/equipment', icon: ServerIcon },
     { name: t('navigation.exchange').toUpperCase(), href: '/exchange', icon: ArrowTrendingUpIcon },
     { name: t('navigation.staking').toUpperCase(), href: '/staking', icon: CurrencyDollarIcon },
     { name: t('navigation.nfts').toUpperCase(), href: '/nfts', icon: PhotoIcon },
-    { name: t('navigation.orders').toUpperCase(), href: '/orders', icon: ChartBarIcon },
-    { name: t('navigation.equipment').toUpperCase(), href: '/equipment', icon: ServerIcon },
     { name: t('navigation.profile').toUpperCase(), href: '/profile', icon: UserIcon },
   ]
   

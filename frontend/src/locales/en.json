@@ -302,7 +302,8 @@
       "step4": {
         "title": "Get Services",
         "description": "Instantly obtain required service resources, complete tasks and enjoy services"
-      }
+      },
+      "learnMore": "Learn More"
     },
     "stats": {
       "activeUsers": "Active Users",

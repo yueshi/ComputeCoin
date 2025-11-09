@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
-import { useAccount } from 'wagmi'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
 import {
   ShoppingCartIcon,
   MagnifyingGlassIcon,
@@ -11,7 +9,6 @@ import {
   CurrencyDollarIcon,
   CheckCircleIcon,
   ComputerDesktopIcon,
-  WalletIcon,
   ComputerDesktopIcon as ComputerIcon,
   ChartBarIcon,
   SparklesIcon,
@@ -23,7 +20,6 @@ import {
 
 export default function Marketplace() {
   const { t } = useTranslation()
-  const { isConnected } = useAccount()
   const [selectedCategory, setSelectedCategory] = useState("all")
 
   // 模拟服务数据
@@ -33,7 +29,7 @@ export default function Marketplace() {
       title: t('marketplace.services.aiTraining.title'),
       description: t('marketplace.services.aiTraining.description'),
       category: "ai",
-      provider: "0x1234...5678",
+      provider: "AI Computing Lab",
       rating: 4.8,
       reviewCount: 127,
       pricePerHour: "2.5",
@@ -52,7 +48,7 @@ export default function Marketplace() {
       title: t('marketplace.services.renderFarm.title'),
       description: t('marketplace.services.renderFarm.description'),
       category: "render",
-      provider: "0x8765...4321",
+      provider: "Render Studios",
       rating: 4.6,
       reviewCount: 89,
       pricePerHour: "1.8",
@@ -71,7 +67,7 @@ export default function Marketplace() {
       title: t('marketplace.services.scientificCompute.title'),
       description: t('marketplace.services.scientificCompute.description'),
       category: "science",
-      provider: "0xABCD...EF01",
+      provider: "Science Computing Center",
       rating: 4.9,
       reviewCount: 203,
       pricePerHour: "1.2",
@@ -90,7 +86,7 @@ export default function Marketplace() {
       title: t('marketplace.services.droneInspection.title'),
       description: t('marketplace.services.droneInspection.description'),
       category: "drone",
-      provider: "0xFEDC...BA98",
+      provider: "Drone Inspection Services",
       rating: 4.7,
       reviewCount: 156,
       pricePerHour: "3.5",
@@ -109,7 +105,7 @@ export default function Marketplace() {
       title: t('marketplace.services.droneShow.title'),
       description: t('marketplace.services.droneShow.description'),
       category: "drone",
-      provider: "0xSHOWTIME...1234",
+      provider: "Sky Show Entertainment",
       rating: 4.9,
       reviewCount: 289,
       pricePerHour: "8.8",
@@ -128,7 +124,7 @@ export default function Marketplace() {
       title: t('marketplace.services.droneSpraying.title'),
       description: t('marketplace.services.droneSpraying.description'),
       category: "drone",
-      provider: "0xAGRIBOT...5678",
+      provider: "Agri Drone Solutions",
       rating: 4.6,
       reviewCount: 342,
       pricePerHour: "4.2",
@@ -150,7 +146,6 @@ export default function Marketplace() {
     { id: "render", name: t('marketplace.categories.rendering'), icon: "🎨" },
     { id: "science", name: t('marketplace.categories.scientific'), icon: "🔬" },
     { id: "drone", name: t('marketplace.categories.drone'), icon: "🚁" },
-    { id: "crypto", name: t('marketplace.categories.blockchain'), icon: "⛓️" },
     { id: "video", name: t('marketplace.categories.video'), icon: "🎬" }
   ]
 
@@ -289,20 +284,13 @@ export default function Marketplace() {
           </span>
           
           <button
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              isConnected
-                ? 'bg-emerald-500 hover:bg-emerald-600 text-white'
-                : 'bg-theme-secondary text-theme-tertiary cursor-not-allowed'
-            }`}
-            disabled={!isConnected}
+            className="px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-emerald-500 hover:bg-emerald-600 text-white"
             onClick={() => {
-              if (isConnected) {
-                // 处理订单创建逻辑
-                console.log(t('marketplace.actions.createOrder'), service.id)
-              }
+              // 处理订单创建逻辑
+              console.log(t('marketplace.actions.createOrder'), service.id)
             }}
           >
-            {isConnected ? t('marketplace.buttons.orderNow') : t('marketplace.errors.connectWallet')}
+            {t('marketplace.buttons.orderNow')}
           </button>
         </div>
       </div>
@@ -311,138 +299,15 @@ export default function Marketplace() {
       <div className="mt-4 pt-4 border-t border-theme">
         <div className="flex items-center justify-between text-sm text-theme-secondary dark:text-gray-300">
           <div className="flex items-center space-x-2">
-            <div className="w-6 h-6 bg-theme-secondary rounded-full flex items-center justify-center">
-              <span className="text-xs font-medium">{service.provider.slice(-2)}</span>
-            </div>
+            <CheckCircleIcon className="w-5 h-5 text-emerald-500 dark:text-emerald-400 drop-shadow-sm" />
             <span className="text-theme-primary dark:text-gray-200">{t('marketplace.serviceCard.providerLabel')} {service.provider}</span>
           </div>
-          <CheckCircleIcon className="w-5 h-5 text-emerald-500 dark:text-emerald-400 drop-shadow-sm" />
         </div>
       </div>
     </div>
   )
 
-  if (!isConnected) {
-    return (
-      <div className="space-y-16">
-        {/* 连接钱包提示区域 */}
-        <section className="relative pt-16 pb-20 px-4 sm:px-6 lg:px-8">
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-theme-bg to-teal-50 dark:from-emerald-900/20 dark:via-theme-bg dark:to-teal-900/20"></div>
-          <div className="relative max-w-7xl mx-auto text-center">
-            <div className="space-y-8">
-              {/* 主标题 */}
-              <div className="space-y-6">
-                <div className="inline-flex items-center space-x-2 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 px-4 py-2 rounded-full text-lg font-medium">
-                  <ShoppingCartIcon className="w-4 h-4" />
-                  <span>{t('marketplace.title')}</span>
-                </div>
-                
-                <h1 className="text-3xl md:text-5xl font-bold text-theme-primary">
-                  <span className="block">{t('marketplace.wallet.connect')}</span>
-                  <span className="block bg-gradient-to-r from-emerald-600 via-teal-600 to-green-600 bg-clip-text text-transparent mt-2">
-                    {t('marketplace.wallet.exploreMarket')}
-                  </span>
-                </h1>
-                
-                <p className="text-xl text-theme-secondary max-w-3xl mx-auto leading-relaxed">
-                  {t('marketplace.wallet.description')}
-                </p>
-              </div>
-              
-              {/* 连接钱包按钮 */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <div className="transform hover:scale-105 transition-all duration-200">
-                  <Link
-                    to="/wallet-connect"
-                    className="group relative bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 inline-flex items-center"
-                  >
-                    <span className="absolute inset-0 bg-white/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
-                    <span className="relative flex items-center space-x-2">
-                      <WalletIcon className="w-5 h-5" />
-                      <span>{t('marketplace.wallet.connectStart')}</span>
-                    </span>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 功能介绍区域 */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-theme-primary mb-4">{t('marketplace.features.title')}</h2>
-            <p className="text-xl text-theme-secondary max-w-3xl mx-auto">
-              {t('marketplace.features.subtitle')}
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="group text-center">
-              <div className="relative">
-                <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-xl shadow-emerald-500/25 group-hover:shadow-2xl group-hover:shadow-emerald-500/30">
-                  <ComputerDesktopIcon className="w-8 h-8 text-white drop-shadow-md" />
-                </div>
-                <div className="absolute -top-2 -right-2 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                  1
-                </div>
-              </div>
-              <h3 className="text-xl font-semibold text-theme-primary mb-3">{t('marketplace.features.diverseCompute.title')}</h3>
-              <p className="text-theme-secondary leading-relaxed">
-                {t('marketplace.features.diverseCompute.description')}
-              </p>
-            </div>
-
-            <div className="group text-center">
-              <div className="relative">
-                <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-xl shadow-emerald-500/25 group-hover:shadow-2xl group-hover:shadow-emerald-500/30">
-                  <TagIcon className="w-8 h-8 text-white drop-shadow-md" />
-                </div>
-                <div className="absolute -top-2 -right-2 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                  2
-                </div>
-              </div>
-              <h3 className="text-xl font-semibold text-theme-primary mb-3">{t('marketplace.features.nftDiscount.title')}</h3>
-              <p className="text-theme-secondary leading-relaxed">
-                {t('marketplace.features.nftDiscount.description')}
-              </p>
-            </div>
-
-            <div className="group text-center">
-              <div className="relative">
-                <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-xl shadow-emerald-500/25 group-hover:shadow-2xl group-hover:shadow-emerald-500/30">
-                  <CurrencyDollarIcon className="w-8 h-8 text-white drop-shadow-md" />
-                </div>
-                <div className="absolute -top-2 -right-2 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                  3
-                </div>
-              </div>
-              <h3 className="text-xl font-semibold text-theme-primary mb-3">{t('marketplace.features.ccPayment.title')}</h3>
-              <p className="text-theme-secondary leading-relaxed">
-                {t('marketplace.features.ccPayment.description')}
-              </p>
-            </div>
-
-            <div className="group text-center">
-              <div className="relative">
-                <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-xl shadow-emerald-500/25 group-hover:shadow-2xl group-hover:shadow-emerald-500/30">
-                  <CheckCircleIcon className="w-8 h-8 text-white drop-shadow-md" />
-                </div>
-                <div className="absolute -top-2 -right-2 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                  4
-                </div>
-              </div>
-              <h3 className="text-xl font-semibold text-theme-primary mb-3">{t('marketplace.features.security.title')}</h3>
-              <p className="text-theme-secondary leading-relaxed">
-                {t('marketplace.features.security.description')}
-              </p>
-            </div>
-          </div>
-        </section>
-      </div>
-    )
-  }
-
+  
   return (
     <div className="space-y-8">
 

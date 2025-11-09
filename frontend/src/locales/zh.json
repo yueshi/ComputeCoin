@@ -121,7 +121,8 @@
       "step4": {
         "title": "获得服务",
         "description": "即时获得所需服务资源，完成任务并享受服务"
-      }
+      },
+      "learnMore": "了解更多"
     },
     "stats": {
       "activeUsers": "活跃用户",
